@@ -1,5 +1,5 @@
 <?php
-/* $Id$
+/* $Id: action_unattend_xp_tftp.php 5491 2010-05-04 20:55:01Z dbo $
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
@@ -1210,11 +1210,12 @@ AutoLogon=Yes\r
 [Unattended]\r
 UnattendMode=FullUnattended\r
 FileSystem=ConvertNTFS\r
-ExtendOemPartition=1\r
+ExtendOemPartition=Yes\r
 OemSkipEula=Yes\r
 OemPreinstall=Yes\r
 AutomaticUpdates=$AutomaticUpdates\r
-OemFilesPath=\"..\\\$OEM$\"\r
+; OemFilesPath=\"..\\\$OEM$\"\r
+OemPnpDriverPath=\\D\r
 TargetPath=\"\\WINDOWS\"\r
 AutoActivate=Yes\r
 DisableDynamicUpdates=$DisableDynamicUpdates\r
@@ -1278,12 +1279,12 @@ z_path=\"\\\\$dhcp_tftp_server\install\"\r
 autolog=\"autolog.pl --logon=1 --user=administrateur --password=wawa\"\r
 \r
 [RegionalSettings]\r
-; In french in the text
+; In french in the text\r
 ;Language=000040C\r
 LanguageGroup=1\r
-SystemLocale=0000080c\r
-UserLocale=0000080c\r
-InputLocale=080c:0000080c\r
+SystemLocale=0000040c\r
+UserLocale=0000040c\r
+InputLocale=080c:0000040c\r
 \r
 [Branding]\r
 BrandIEUsingUnattended=Yes\r
@@ -1305,7 +1306,7 @@ mswordpad=$mswordpad\r
 paint=$paint\r
 rec=$rec\r
 vol=$vol\r
-; Jeux
+; Jeux\r
 freecell=$freecell\r
 hearts=$hearts\r
 minesweeper=$minesweeper\r
@@ -1313,7 +1314,6 @@ pinball=$pinball\r
 solitaire=$solitaire\r
 spider=$spider\r
 zonegames=$zonegames\r
-
 IEAccess=$IEAccess\r
 msnexplr=$msnexplr\r
 \r
