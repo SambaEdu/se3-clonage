@@ -1210,7 +1210,7 @@ AutoLogon=Yes\r
 [Unattended]\r
 UnattendMode=FullUnattended\r
 FileSystem=ConvertNTFS\r
-ExtendOemPartition=Yes\r
+ExtendOemPartition=1\r
 OemSkipEula=Yes\r
 OemPreinstall=Yes\r
 AutomaticUpdates=$AutomaticUpdates\r
@@ -1259,7 +1259,7 @@ bottom=\"\"\r
 local_admins=\"\"\r\n");
 		
 						if($fdisk_cmds==0) {
-							fwrite($fu,"fdisk_cmds=\"fdisk /clear 1;fdisk /pri:4000;fdisk /activate:1\"\r\n");
+							fwrite($fu,"fdisk_cmds=\"fdisk /clear 1;fdisk /pri:8000;fdisk /activate:1\"\r\n");
 							fwrite($fu,"format_cmd=\"format /y /z:seriously /q /u /a /v: c:\"\r\n");
 						}
 						elseif($fdisk_cmds==1) {
@@ -1284,7 +1284,7 @@ autolog=\"autolog.pl --logon=1 --user=administrateur --password=wawa\"\r
 LanguageGroup=1\r
 SystemLocale=0000040c\r
 UserLocale=0000040c\r
-InputLocale=080c:0000040c\r
+InputLocale=040c:0000040c\r
 \r
 [Branding]\r
 BrandIEUsingUnattended=Yes\r
