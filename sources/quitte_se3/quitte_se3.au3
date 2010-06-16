@@ -12,7 +12,7 @@
 
 ; $Id$
 ; Stephane Boireau (27)
-; Modification: 13/06/2010
+; Modification: 16/06/2010
 
 $DEFAULT_WORKGROUP = "TEST"
 
@@ -281,6 +281,36 @@ Else
 								EndIf
 							Next
 
+							$DOSSIER_A_VIRER=@WindowsDir & "\System32\GroupPolicy"
+							If FileExists($DOSSIER_A_VIRER) Then
+								$suppr=DirRemove($DOSSIER_A_VIRER,1)
+								If $suppr == 1 Then
+									MsgBox(0, "Info", "Suppression de " & $DOSSIER_A_VIRER & " effectuée!", 1)
+								Else
+									; Tentative de suppression recursive des fichiers
+									MsgBox(0, "Erreur", "Echec de la suppression de " & $DOSSIER_A_VIRER & @CRLF & "On va tenter de supprimer les fichiers de cette arborescence...",3)
+									
+									;#include(@ScriptDir & "_FileListToArrayEx.au3")
+									;#include("_FileListToArrayEx.au3")
+									#include <_FileListToArrayEx.au3>
+									$sPath=$DOSSIER_A_VIRER
+									$sFilter = '*.*'
+									$iFlag=1
+									$sExclude = ''
+									$iRecurse=True
+									$TAB=_FileListToArrayEx($sPath, $sFilter, $iFlag, $sExclude, $iRecurse)
+									;$TAB=_FileListToArray($sPath,$sFilter,$iFlag)
+									For $i = 1 To UBound($TAB) -1
+										If FileRecycle($TAB[$i]) Then
+											;MsgBox(0,"Info","Suppression du fichier $TAB["&$i&"]=" & $TAB[$i])
+											MsgBox(0,"Info","Suppression du fichier " & $TAB[$i] & " effectuée.",1)
+										Else
+											MsgBox(48,"Erreur","Echec de la suppression du fichier " & $TAB[$i],"3")
+										EndIf
+									Next
+								EndIf
+							EndIf
+							
 							$LISTE_MENAGE_FICHIERS=@ScriptDir & "\outils\liste_menage.txt"
 							If FileExists($LISTE_MENAGE_FICHIERS) Then
 								$FICH_MENAGE=FileOpen($LISTE_MENAGE_FICHIERS,0)
@@ -294,7 +324,7 @@ Else
 											If FileRecycle($LIGNE) Then
 												MsgBox(0,"Information","Suppression de " & $LIGNE & " réussie.",1)
 											Else
-												MsgBox(0,"Erreur","La suppression de " & $LIGNE & " a échoué.")
+												MsgBox(48,"Erreur","La suppression de " & $LIGNE & " a échoué.")
 											EndIf
 										EndIf
 									WEnd
@@ -345,7 +375,7 @@ Else
 			WEnd
 		EndIf
 	Else
-		MsgBox(0,"Information","Ce programme doit être exécuté" & @CRLF & "avec les droits administrateur.")
+		MsgBox(48,"Information","Ce programme doit être exécuté" & @CRLF & "avec les droits administrateur.")
 		Exit
 	EndIf
 EndIf
