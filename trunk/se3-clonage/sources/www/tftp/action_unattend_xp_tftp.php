@@ -1275,7 +1275,8 @@ local_admins=\"\"\r\n");
 						fwrite($fu,"replace_mbr=$replace_mbr\r
 local_admins=\"\"\r
 ntp_servers=\"$dhcp_ntp\"\r
-z_path=\"\\\\$dhcp_tftp_server\install\"\r
+z_path=\"\\\\$dhcp_tftp_server\\install\"\r
+netlogon_dir=\"\\\\$se3ip\\netlogon\\domscripts\"\r
 autolog=\"autolog.pl --logon=1 --user=administrateur --password=wawa\"\r
 \r
 [RegionalSettings]\r
