@@ -1,7 +1,0 @@
-usr/bin
-usr/sbin
-var/se3/Progs/install
-usr/share/se3/scripts
-usr/share/se3/sbin
-etc/cron.d
-var/www/se3

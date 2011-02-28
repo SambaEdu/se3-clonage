@@ -1,5 +1,0 @@
-C:\WINDOWS\system32\GroupPolicy\User\Scripts\Logon\startup.bat
-C:\WINDOWS\system32\GroupPolicy\User\Scripts\Logoff\shutdown.bat
-C:\WINDOWS\system32\GroupPolicy\Machine\Scripts\Shutdown\shutdown.bat
-C:\WINDOWS\system32\GroupPolicy\Machine\Scripts\Startup\startup.bat
-

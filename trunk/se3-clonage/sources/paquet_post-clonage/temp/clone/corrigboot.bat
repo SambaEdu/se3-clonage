@@ -1,1 +1,0 @@
-bootcfg /timeout 0
