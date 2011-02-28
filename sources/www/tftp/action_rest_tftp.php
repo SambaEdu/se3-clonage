@@ -38,18 +38,10 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	$parametrage_action=isset($_POST['parametrage_action']) ? $_POST['parametrage_action'] : (isset($_GET['parametrage_action']) ? $_GET['parametrage_action'] : NULL);
 
-	/*
+	$distrib=isset($_POST['distrib']) ? $_POST['distrib'] : "slitaz";
+	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescuecd";
+
 	// Création de la table dès que possible:
-	$sql="CREATE TABLE IF NOT EXISTS se3_tftp_action (
-			id INT(11),
-			mac VARCHAR(255),
-			name VARCHAR(255),
-			date INT(11),
-			type VARCHAR(255),
-			num_op INT(11)
-			);";
-	$creation_table=mysql_query($sql);
-	*/
 	creation_tftp_tables();
 
 	// Paramètres SliTaz:
@@ -323,6 +315,34 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 				echo "<p>Choisissez les paramètres de restauration: <br />\n";
 
+				$temoin_sysresccd=check_sysresccd_files();
+
+				if($temoin_sysresccd=="y") {
+					// Il faut aussi le noyau et l'initram.igz dans /tftpboot, 
+					echo "<input type='radio' name='distrib' id='distrib_slitaz' value='slitaz' onchange='affiche_sections_distrib()' /><label for='distrib_slitaz'>Utiliser la distribution SliTaz</label><br />\n";
+					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' checked /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)<br />\n";
+
+
+echo "<div id='div_sysresccd_kernel'>\n";
+echo "<table border='0'>\n";
+echo "<tr>\n";
+echo "<td valign='top'>\n";
+echo "Utiliser le noyau&nbsp;: ";
+echo "</td>\n";
+echo "<td>\n";
+echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_rescuecd' value='rescuecd' checked /><label for='sysresccd_kernel_rescuecd'>rescuecd</label><br />\n";
+echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_altker32' value='altker32' /><label for='sysresccd_kernel_altker32'>altker32</label><br />\n";
+echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_rescue64' value='rescue64' /><label for='sysresccd_kernel_rescue64'>rescue64</label><br />\n";
+echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_altker64' value='altker64' /><label for='sysresccd_kernel_altker64'>altker64</label><br />\n";
+echo "</td>\n";
+echo "</tr>\n";
+echo "</table>\n";
+echo "</div>\n";
+
+				}
+				else {
+					echo "<input type=\"hidden\" name=\"distrib\" value=\"slitaz\" />\n";
+				}
 
 				echo "<table border='0'>\n";
 				echo "<tr><td>Nom de l'image à restaurer: </td><td><input type='text' name='nom_image' value='' />\n";
@@ -378,6 +398,28 @@ if (is_admin("system_is_admin",$login)=="Y")
 				echo "<p align='center'><input type=\"submit\" name=\"validation_parametres\" value=\"Valider\" /></p>\n";
 				echo "</form>\n";
 
+echo "<script type='text/javascript'>
+function affiche_sections_distrib() {
+	if(document.getElementById('distrib_sysresccd').checked==true) {
+		distrib='sysresccd';
+	}
+	else {
+		distrib='slitaz';
+	}
+	//alert(distrib);
+
+	if(distrib=='slitaz') {
+		document.getElementById('div_sysresccd_kernel').style.display='none';
+	}
+	else {
+		document.getElementById('div_sysresccd_kernel').style.display='block';
+	}
+}
+
+affiche_sections_distrib();
+</script>\n";
+
+
 				//======================================================
 				$temoin_svg_existantes=0;
 				$chaine_tab="<p>Liste des sauvegardes existantes:</p>\n";
@@ -394,19 +436,22 @@ if (is_admin("system_is_admin",$login)=="Y")
 					$sql="SELECT * FROM se3_tftp_sauvegardes WHERE id='".$id_machine[$i]."';";
 					//echo "$sql<br />";
 					$res=mysql_query($sql);
+					$sql="SELECT * FROM se3_tftp_sauvegardes WHERE id='".$id_machine[$i]."' ORDER BY date DESC;";
+					//echo "$sql<br />";
+					$res=mysql_query($sql);
 					if(mysql_num_rows($res)>0) {
-						$lig=mysql_fetch_object($res);
-
-						$chaine_tab.="<tr>\n";
-						$chaine_tab.="<th>$lig->id</th>\n";
-						$chaine_tab.="<th>$lig->nom</th>\n";
-						$chaine_tab.="<th>$lig->partition</th>\n";
-						$chaine_tab.="<th>$lig->image</th>\n";
-						$chaine_tab.="<th>".mysql_date_to_fr_date($lig->date)."</th>\n";
-						$chaine_tab.="<th>$lig->descriptif</th>\n";
-						$chaine_tab.="</tr>\n";
-
-						$temoin_svg_existantes++;
+						while($lig=mysql_fetch_object($res)) {
+							$chaine_tab.="<tr>\n";
+							$chaine_tab.="<th>$lig->id</th>\n";
+							$chaine_tab.="<th>$lig->nom</th>\n";
+							$chaine_tab.="<th>$lig->partition</th>\n";
+							$chaine_tab.="<th>$lig->image</th>\n";
+							$chaine_tab.="<th>".mysql_date_to_fr_date($lig->date)."</th>\n";
+							$chaine_tab.="<th>$lig->descriptif</th>\n";
+							$chaine_tab.="</tr>\n";
+	
+							$temoin_svg_existantes++;
+						}
 					}
 				}
 				$chaine_tab.="</table>\n";
@@ -434,7 +479,27 @@ if (is_admin("system_is_admin",$login)=="Y")
 				echo "<h2>Validation des paramètres de la restauration</h2>\n";
 
 				echo "<p>Rappel des paramètres:</p>\n";
-				echo "<table class='crob'>\n";
+
+				$temoin_sysresccd=check_sysresccd_files();
+
+				if($temoin_sysresccd=="y") {
+					echo "<table class='crob'>\n";
+					echo "<tr>\n";
+					echo "<th style='text-align:left;'>Distribution linux à utiliser: </th>\n";
+					echo "<td>\n";
+					echo $distrib;
+					if($distrib=='sysresccd') {
+						echo " (<i>noyau $sysresccd_kernel</i>)";
+					}
+					echo "<input type=\"hidden\" name=\"distrib\" value=\"$distrib\" />\n";
+					echo "</td>\n";
+					echo "</tr>\n";
+				}
+				else {
+					echo "<input type=\"hidden\" name=\"distrib\" value=\"slitaz\" />\n";
+					echo "<table class='crob'>\n";
+				}
+
 				echo "<tr>\n";
 				echo "<th style='text-align:left;'>Nom de l'image: </th>\n";
 				echo "<td>\n";
@@ -445,14 +510,14 @@ if (is_admin("system_is_admin",$login)=="Y")
 				echo "<tr>\n";
 				echo "<th style='text-align:left;'>Partition à restaurer: </th>\n";
 				echo "<td>\n";
-				if($dest_part=="auto") {echo "Détectée automatiquement lors de la sauvegarde.";} else {echo $dest_part;}
+				if($dest_part=="auto") {echo "Détectée automatiquement lors de la restauration.";} else {echo $dest_part;}
 				echo "</td>\n";
 				echo "</tr>\n";
 
 				echo "<tr>\n";
 				echo "<th style='text-align:left;'>Partition de stockage de la sauvegarde: </th>\n";
 				echo "<td>\n";
-				if($src_part=="auto") {echo "Détectée automatiquement lors de la sauvegarde.";} else {echo $src_part;}
+				if($src_part=="auto") {echo "Détectée automatiquement lors de la restauration.";} else {echo $src_part;}
 				echo "</td>\n";
 				echo "</tr>\n";
 
@@ -502,7 +567,22 @@ if (is_admin("system_is_admin",$login)=="Y")
 						$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 
 						$chemin="/usr/share/se3/scripts";
-						$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'restaure' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'", $retour);
+
+						if($distrib=='slitaz') {
+							$ajout_kernel="";
+						}
+						else {
+							$ajout_kernel="|kernel=$sysresccd_kernel";
+						}
+
+						if($distrib=='slitaz') {
+							//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'restaure' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'", $retour);
+							$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot'", $retour);
+    					}
+						else {
+							//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'", $retour);
+							$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel'", $retour);
+						}
 
 						if(count($retour)>0){
 							echo "<span style='color:red;'>ECHEC de la génération du fichier</span><br />\n";
@@ -522,7 +602,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 																	date='$timestamp',
 																	type='restauration',
 																	num_op='$num_op',
-																	infos='nom_image=$nom_image|src_part=$src_part|dest_part=$dest_part|auto_reboot=$auto_reboot|delais_reboot=$delais_reboot';";
+																	infos='nom_image=$nom_image|src_part=$src_part|dest_part=$dest_part|auto_reboot=$auto_reboot|delais_reboot=${delais_reboot}$ajout_kernel';";
 							$insert=mysql_query($sql);
 							if(!$insert) {
 								echo "<span style='color:red;'>ECHEC de l'enregistrement dans 'se3_tftp_action'</span><br />\n";
@@ -537,7 +617,13 @@ if (is_admin("system_is_admin",$login)=="Y")
 							$fich=fopen($lanceur_recup,"w+");
 							$timestamp_limit=time()+4*3600;
 							//fwrite($fich,"/usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' 'restauration' '$timestamp_limit'");
-							fwrite($fich,"sudo /usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' 'restauration' '$timestamp_limit'");
+							if($distrib=='slitaz') {
+								$mode_restauration="restauration";
+							}
+							else {
+								$mode_restauration="restauration_sysresccd";
+							}
+							fwrite($fich,"sudo /usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' '$mode_restauration' '$timestamp_limit'");
 							fclose($fich);
 							chmod($lanceur_recup,0750);
 

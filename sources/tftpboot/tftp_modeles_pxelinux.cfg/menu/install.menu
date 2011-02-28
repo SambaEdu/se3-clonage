@@ -1,0 +1,15 @@
+menu title Installation
+
+# Decommenter la ligne ci-dessous pour interdire les modifications de ligne de commande avec TAB et la saisie d'une nouvelle ligne de commande avec ECHAP
+#menu INCLUDE pxelinux.cfg/graphics.conf
+
+LABEL Menu_maintenance
+      MENU LABEL ^Retour au menu Maintenance
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/maintenance.menu
+
+label unattended
+    MENU LABEL ^Unattended
+    kernel bzImageunattend
+    # Add options (z_user=..., z_path=..., etc.) to this line.
+    append initrd=initrdunattend

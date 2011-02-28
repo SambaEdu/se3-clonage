@@ -1,5 +1,5 @@
 <?php
-/* $Id: action_unattend_xp_tftp.php 5491 2010-05-04 20:55:01Z dbo $
+/* $Id$
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
@@ -39,18 +39,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 	$parametrage_action=isset($_POST['parametrage_action']) ? $_POST['parametrage_action'] : (isset($_GET['parametrage_action']) ? $_GET['parametrage_action'] : NULL);
 
 
-	/*
 	// Création de la table dès que possible:
-	$sql="CREATE TABLE IF NOT EXISTS se3_tftp_action (
-			id INT(11),
-			mac VARCHAR(255),
-			name VARCHAR(255),
-			date INT(11),
-			type VARCHAR(255),
-			num_op INT(11)
-			);";
-	$creation_table=mysql_query($sql);
-	*/
 	creation_tftp_tables();
 
 	// Paramètres SliTaz:
@@ -1201,6 +1190,9 @@ echo "</tr>\n";
 							die();
 						}
 						fwrite($fu,"[GuiUnattended]\r
+; Fichier genere automatiquement par se3 pour $nom_machine \r
+; ne pas modifier \r
+; \r
 TimeZone=105\r
 OEMSkipRegional=1\r
 OemSkipWelcome=1\r
@@ -1214,7 +1206,6 @@ ExtendOemPartition=1\r
 OemSkipEula=Yes\r
 OemPreinstall=Yes\r
 AutomaticUpdates=$AutomaticUpdates\r
-; OemFilesPath=\"..\\\$OEM$\"\r
 OemPnpDriverPath=\\D\r
 TargetPath=\"\\WINDOWS\"\r
 AutoActivate=Yes\r
@@ -1281,7 +1272,6 @@ autolog=\"autolog.pl --logon=1 --user=administrateur --password=wawa\"\r
 \r
 [RegionalSettings]\r
 ; In french in the text\r
-;Language=000040C\r
 LanguageGroup=1\r
 SystemLocale=0000040c\r
 UserLocale=0000040c\r

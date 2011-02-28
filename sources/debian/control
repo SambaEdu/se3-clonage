@@ -7,6 +7,6 @@ Standards-Version: 3.6.1
 
 Package: se3-clonage
 Architecture: all
-Depends: se3(>= 1.18.4), se3-dhcp, atftpd
+Depends: se3(>= 2.0.5900), se3-dhcp, atftpd, libdigest-sha1-perl, syslinux
 Description: Clonage des postes clients du serveur se3
 

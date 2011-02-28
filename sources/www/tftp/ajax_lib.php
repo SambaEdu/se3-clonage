@@ -11,20 +11,29 @@
 	require ("config.inc.php");
 	require_once ("functions.inc.php");
 	require_once ("lang.inc.php");
+	require_once ("ihm.inc.php");
+	require_once ("ldap.inc.php");
+	require_once ("fonc_parc.inc.php");
+    require_once ("fonc_outils.inc.php");
 
-	include "ldap.inc.php";
-	include "ihm.inc.php";
+	require_once ("lib_action_tftp.php");
 
-	include "lib_action_tftp.php";
+	//debug_var();
+	$login=isauth();
+
+	if (is_admin("system_is_admin",$login)!="Y") {
+		echo "<p style='color:red'>Action non autorisee.</p>";
+		die();
+	}
 
 	//echo "<script type='text/javascript' src='position.js'></script>\n";
 
 	//====================================================
 
-	function fping($ip) { // Ping une machine Return 1 si Ok 0 pas de ping
+/*	function fping($ip) { // Ping une machine Return 1 si Ok 0 pas de ping
 		return exec("ping ".$ip." -c 1 -w 1 | grep received | awk '{print $4}'");
 	}
-
+*/
 	//====================================================
 
 	function get_smbsess($mp_en_cours) {
@@ -84,7 +93,7 @@
 				}
 
 				if($smbsess=="") {
-					@exec("sudo /usr/share/se3/scripts/start_poste.sh $nom reboot");
+					@start_poste("reboot", $nom);
 					echo "Signal de reboot envoy&eacute;.";
 				}
 				else {
@@ -98,13 +107,13 @@
 				}
 			}
 			elseif($shutdown_reboot=="reboot") {
-				@exec("sudo /usr/share/se3/scripts/start_poste.sh $nom reboot");
+				@start_poste("reboot", $nom);
 				echo "Signal de reboot envoy&eacute;.";
 			}
 		}
 		else {
 			if("$wake"=="y") {
-				@exec("sudo /usr/share/se3/scripts/start_poste.sh $nom wol");
+				@start_poste("wol", $nom);
 				echo "Signal de r&eacute;veil envoy&eacute;.";
 			}
 		}
@@ -128,6 +137,13 @@
 	}
 	elseif($_GET['mode']=='wake_shutdown_or_reboot') {
 		wake_shutdown_or_reboot($_GET['ip'],$_GET['nom'],$_GET['wake'],$_GET['shutdown_reboot']);
+	}
+	elseif($_GET['mode']=='check_versions_sysresccd') {
+		$resultat2=exec("/usr/bin/sudo /usr/share/se3/scripts/se3_get_sysresccd.sh 'check_version'", $retour);
+		foreach($retour as $key => $value) {
+			//echo "\$retour[$key]=$value<br />";
+			echo $value;
+		}
 	}
 
 	//====================================================

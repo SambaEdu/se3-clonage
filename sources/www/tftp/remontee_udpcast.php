@@ -26,59 +26,79 @@ $fin=$_GET['fin'];
 $succes=$_GET['succes'];
 $mac=$_GET['mac'];
 $umode=$_GET['umode'];
+$name=$_GET['name'];
+$oldname=$_GET['oldname'];
 
 // Controler les valeurs transmises
 // num_op: doit etre un entier et l'action doit exister dans la table se3_tftp_action... euh, non, ce doit etre supprime une fois les fichiers /tftpboot/pxelinux.cfg/01-AD_MAC supprimes
 // debut et fin doivent etre des entiers
 // mac: doit n'avoir que des 0-9a-f et tiret ou : et correspondre a une machine dans se3_dhcp
 // succes: vaut y ou n
+// umode: vaut snd (emetteur) rcv (recepteur) ou pre (pre-clonage) ou post (unattended, jonction au domaine)
 
 creation_tftp_tables();
 
-
 //date='',
 $duree=$fin-$debut;
-
-$corrige_mac=preg_replace("/-/",":",$mac);
+$corrige_mac=strtolower(strtr($mac,"-",":"));
+$corrige_mac2=strtolower(strtr($mac,":","-"));
 $sql="SELECT * FROM se3_dhcp WHERE mac='$corrige_mac';";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)>0) {
     $lig_dhcp=mysql_fetch_object($res);
 
-    $sql="INSERT INTO se3_tftp_rapports SET id='$lig_dhcp->id',
-    name='$lig_dhcp->name',
-    mac='".$corrige_mac."',
-    tache='clonage',";
-    if($succes='y') {
+    $sql="INSERT INTO se3_tftp_rapports SET id='$lig_dhcp->id', name='$lig_dhcp->name', mac='$corrige_mac',";
+    if ($umode=='pre') {
+        $sql.="tache='preparation',";
+    }
+    elseif ($umode=='post') {
+        $sql.="tache='jonction',";
+    }
+    else {
+        $sql.="tache='clonage',";
+    }
+    if($succes=='y') {
         $sql.="statut='SUCCES',";
     }
-    elseif($succes='n') {
-        $sql.="statut='ECHEC',";
+    else {
+        $sql.="statut='ECHEC : $succes',";
     }
-    $sql.="descriptif='Clonage n°$num_op\n";
+    $sql.="descriptif='Operation $num_op\n";
     if($umode=='rcv') {
         $sql.="Recepteur\n";
+    }
+    elseif($umode=='post')  {
+        $sql.="jonction\n";
+    }
+    elseif($umode=='pre') {
+        $sql.="preparation\n";
     }
     elseif($umode=='snd') {
         $sql.="Emetteur\n";
     }
+    else {    
+        $sql.="$umode\n";
+    }
     $sql.="Debut: $debut\nFin: $fin\nDuree: $duree';";
     $res=mysql_query($sql);
-
-    /*
-    //+++++++++++++++++++++++++++++++++++++++++++++
-    $fich=fopen("/var/lib/se3/import_comptes/remontee_clonage.txt","a+");
-    fwrite($fich,"Numero du clonage: $num_op\n");
-    fwrite($fich,"Debut du clonage: $debut\n");
-    fwrite($fich,"Fin du clonage: $fin\n");
-    fwrite($fich,"Succes: $succes\n");
-    fwrite($fich,"MAC: $mac\n");
-    fwrite($fich,"==============================\n");
-    fclose($fich);
-    //+++++++++++++++++++++++++++++++++++++++++++++
-    */
-
-    echo "Remontee effectuee.";
+    if ($umode=='pre') {
+        // on attend 500 s que le fichier pxe soit pret pour rendre la main
+        echo "On attend /tftpboot/pxelinux.cfg/01-$corrige_mac2 <br>\n";
+        $incr=0;
+        while (!file_exists("/tftpboot/pxelinux.cfg/01-$corrige_mac2")) {
+            sleep(10);
+            echo ".";
+            if ($incr++==10) { 
+                echo "Probleme : pas de fichier PXE";
+                break;
+            }
+        }
+    }
+//    elseif ($umode=='post') {
+    // on fait les changements de noms, de parcs...
+//        renomme_machine($name,$oldname);
+//    }         
+    echo "<br>Remontee effectuee.<br>";
 }
 else {
     echo "Echec de la remontee.\n";

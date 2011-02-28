@@ -39,18 +39,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 	$parametrage_action=isset($_POST['parametrage_action']) ? $_POST['parametrage_action'] : (isset($_GET['parametrage_action']) ? $_GET['parametrage_action'] : NULL);
 
 
-	/*
 	// Création de la table dès que possible:
-	$sql="CREATE TABLE IF NOT EXISTS se3_tftp_action (
-			id INT(11),
-			mac VARCHAR(255),
-			name VARCHAR(255),
-			date INT(11),
-			type VARCHAR(255),
-			num_op INT(11)
-			);";
-	$creation_table=mysql_query($sql);
-	*/
 	creation_tftp_tables();
 
 	// Paramètres SliTaz:

@@ -14,7 +14,7 @@ fi
 
 SE3MODULE="se3-clonage"
 PATH_SVN_LOCAL="/digloo/deb/se3/"
-PATH_SE3MODULE="${PATH_SVN_LOCAL}${SE3MODULE}"
+PATH_SE3MODULE="$(pwd)"
 
 
 SOURCE_DIR="sources"

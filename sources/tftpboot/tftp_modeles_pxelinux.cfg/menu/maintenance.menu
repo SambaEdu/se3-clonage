@@ -1,0 +1,34 @@
+menu title Maintenance
+
+# Decommenter la ligne ci-dessous pour interdire les modifications de ligne de commande avec TAB et la saisie d'une nouvelle ligne de commande avec ECHAP
+#menu INCLUDE pxelinux.cfg/graphics.conf
+
+LABEL Menu_principal
+      MENU LABEL ^Retour au menu principal
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/default
+
+LABEL Clonage
+      MENU LABEL ^Clonage
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/clonage.menu
+
+LABEL Linux
+      MENU LABEL ^Sauvegarde/Restauration/Repartitionnement
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/linux.menu
+
+LABEL Installation
+      MENU LABEL ^Installation
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/install.menu
+
+LABEL Test
+      MENU LABEL ^Test de memoire vive,...
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/test.menu
+
+LABEL Peripheriques
+      MENU LABEL ^Peripheriques de boot
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/peripheriques.menu

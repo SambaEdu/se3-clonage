@@ -1,3 +1,135 @@
+se3-clonage (0.46) lucid; urgency=low
+
+  * correctif export modif plan adressage
+
+ -- root <root@localhost.localdomain>  Fri, 25 Feb 2011 01:46:06 +0100
+
+se3-clonage (0.45) lucid; urgency=low
+
+  * correctif slistaz et rapports
+
+ -- root <root@localhost.localdomain>  Thu, 10 Feb 2011 01:28:56 +0100
+
+se3-clonage (0.44) lucid; urgency=low
+
+  * nouvelle version slistaz
+
+ -- root <root@localhost.localdomain>  Mon, 31 Jan 2011 01:56:29 +0100
+
+se3-clonage (0.43) lucid; urgency=low
+
+  * correctif secu et menu default
+
+ -- root <root@localhost.localdomain>  Thu,  6 Jan 2011 00:57:28 +0100
+
+se3-clonage (0.42) lucid; urgency=low
+
+  * ajout dep sysutils
+
+ -- root <root@localhost.localdomain>  Mon, 13 Dec 2010 02:06:16 +0100
+
+se3-clonage (0.41) lucid; urgency=low
+
+  * correction bug mise en place menus sysrescd
+
+ -- root <root@localhost.localdomain>  Thu,  9 Dec 2010 15:40:03 +0100
+
+se3-clonage (0.40) lucid; urgency=low
+
+  * correctif bug demarrage inopine clonage avant tous les recepteurs
+
+ -- root <root@localhost.localdomain>  Thu, 18 Nov 2010 00:58:03 +0100
+
+se3-clonage (0.39) lucid; urgency=low
+
+  * maj post-clonage
+
+ -- root <root@localhost.localdomain>  Wed, 10 Nov 2010 23:41:40 +0100
+
+se3-clonage (0.38) lucid; urgency=low
+
+  * Correctifs divers pour corrections bug  / ajout reglage temps
+    attente avant boot
+
+ -- root <root@localhost.localdomain>  Mon,  8 Nov 2010 23:08:53 +0100
+
+se3-clonage (0.37) lucid; urgency=low
+
+  * Possibilit����e de choisir le noyau SysRescCD sur lequel booter.
+    Masquage des options inutiles selon la distrib choisie.
+
+ -- root <root@localhost.localdomain>  Mon,  8 Nov 2010 09:50:09 +0100
+
+se3-clonage (0.36) lucid; urgency=low
+
+  * correctifs supression mode menu - modifs crob
+
+ -- root <root@localhost.localdomain>  Sat, 30 Oct 2010 11:15:52 +0200
+
+se3-clonage (0.35) lucid; urgency=low
+
+  * ajout support sysrescd - modifs crob
+
+ -- root <root@localhost.localdomain>  Wed, 20 Oct 2010 17:27:00 +0200
+
+se3-clonage (0.34) lucid; urgency=low
+
+  * support des menus et passwd - modifs crob
+
+ -- root <root@localhost.localdomain>  Fri, 15 Oct 2010 13:51:35 +0200
+
+se3-clonage (0.33) lucid; urgency=low
+
+  * ajout message plus explicite sur la page clonage, petites corrections
+
+ -- denis bonnenfant <denis@bureau>  Sun, 04 Jul 2010 17:10:28 +0200
+
+se3-clonage (0.32) lucid; urgency=low
+
+  * correction probleme affichage
+
+ -- denis bonnenfant <denis@bureau>  Fri, 18 Jun 2010 14:50:36 +0200
+
+se3-clonage (0.31) testing; urgency=low
+
+  * correctif denis : mdp adminse3 unlimitted
+
+ -- root <root@localhost.localdomain>  Fri,  4 Jun 2010 23:53:35 +0200
+
+se3-clonage (0.30) testing; urgency=low
+
+  * correctif denis
+
+ -- root <root@localhost.localdomain>  Wed,  2 Jun 2010 01:52:12 +0200
+
+se3-clonage (0.29) testing; urgency=low
+
+  [ root ]
+  * Unattended : langage francais.
+
+  [ denis bonnenfant ]
+  * extendOEMpartion=1
+
+ -- denis bonnenfant <denis@bureau>  Tue, 01 Jun 2010 16:29:29 +0200
+
+se3-clonage (0.28) testing; urgency=low
+
+  * maj corrective pour unattended
+
+ -- root <root@localhost.localdomain>  Wed,  5 May 2010 01:14:01 +0200
+
+se3-clonage (0.27) testing; urgency=low
+
+  * modif post-clonage pour adaptation nouvelle architecture v2.0
+
+ -- root <root@localhost.localdomain>  Mon, 26 Apr 2010 01:58:03 +0200
+
+se3-clonage (0.26) testing; urgency=low
+
+  * mise a jour slitaz en cooking 20100225
+
+ -- root <root@localhost.localdomain>  Sun, 28 Feb 2010 18:52:54 +0100
+
 se3-clonage (0.25) testing; urgency=low
 
   * supr script start_poste en conflit et chmod qui va avec

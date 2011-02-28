@@ -1,0 +1,80 @@
+menu title Clonage
+
+# Decommenter la ligne ci-dessous pour interdire les modifications de ligne de commande avec TAB et la saisie d'une nouvelle ligne de commande avec ECHAP
+#menu INCLUDE pxelinux.cfg/graphics.conf
+
+LABEL Menu_maintenance
+      MENU LABEL ^Retour au menu Maintenance
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/maintenance.menu
+
+label clonage
+    MENU LABEL ^Clonage UDPcast sans preselection
+    kernel vmlu26
+    append initrd=udprd root=01:00
+
+label clonageold
+    MENU LABEL ^Clonage UDPcast sans preselection (ancien)
+    kernel vmlu26.old
+    append initrd=udprd.old root=01:00
+
+#label emetteur
+#    MENU LABEL ^Clonage UDPcast emetteur, client DHCP, lzop, port 9002
+#    kernel vmlu26
+#    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=snd
+
+#label recepteur
+#    MENU LABEL ^Clonage UDPcast recepteur, client DHCP, lzop, port 9002
+#    kernel vmlu26
+#    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=rcv
+
+label u1
+    MENU LABEL ^Clonage UDPcast emetteur, client DHCP, lzop, port 9002
+    kernel vmlu26
+    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=snd
+
+label u2
+    MENU LABEL ^Clonage UDPcast recepteur, client DHCP, lzop, port 9002
+    kernel vmlu26
+    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=rcv
+
+label u1old
+    MENU LABEL ^Clonage UDPcast (ancien) emetteur, client DHCP, lzop, port 9002
+    kernel vmlu26.old
+    append initrd=udprd.old root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=snd
+
+label u2old
+    MENU LABEL ^Clonage UDPcast (ancien) recepteur, client DHCP, lzop, port 9002
+    kernel vmlu26.old
+    append initrd=udprd.old root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=rcv
+
+label su1
+    MENU LABEL ^SliTaz UDPcast emetteur
+    kernel bzImage
+    append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text umode=snd work=udpcast2.sh ###TFTP_SLITAZ_CMDLINE###
+
+label su2
+    MENU LABEL ^SliTaz UDPcast recepteur
+    kernel bzImage
+    append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text umode=rcv work=udpcast2.sh ###TFTP_SLITAZ_CMDLINE###
+
+# UdpCast depuis SystemRescueCd
+###SYSRESCCD###LABEL nofbu1
+###SYSRESCCD###     MENU LABEL SystemRescueCd emetteur UdpCast
+###SYSRESCCD###     kernel rescuecd
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp
+###SYSRESCCD###     TEXT HELP
+###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
+###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec
+###SYSRESCCD###     preselection du mode emetteur.
+###SYSRESCCD###     ENDTEXT
+
+###SYSRESCCD###LABEL nofbu2
+###SYSRESCCD###     MENU LABEL SystemRescueCd recepteur UdpCast (poste ecrase)
+###SYSRESCCD###     kernel rescuecd
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp
+###SYSRESCCD###     TEXT HELP
+###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
+###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec
+###SYSRESCCD###     preselection du mode recepteur.
+###SYSRESCCD###     ENDTEXT

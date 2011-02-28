@@ -1,0 +1,31 @@
+default menu.c32
+prompt 0
+
+KBDMAP french.kbd
+
+menu title Menu de boot PXE SambaEdu3
+menu INCLUDE pxelinux.cfg/graphics.conf
+MENU AUTOBOOT Demarrage du systeme local dans # secondes
+
+#timeout 80
+timeout ###TFTP_DELAIS_BOOT_PXE###0
+#TOTALTIMEOUT 9000
+ONTIMEOUT bootlocal
+
+#label bootlocal
+#  menu label ^Boot disque dur local
+#  kernel chain.c32
+#  append hd0
+
+label bootlocal
+  menu label ^Boot disque dur local
+  menu default
+  localboot 0
+#  timeout 80
+#  TOTALTIMEOUT 9000
+
+LABEL Maintenance
+  MENU LABEL ^Maintenance
+#  MENU PASSWD ###TFTP_PASSWORD_MENU_PXE###
+  KERNEL menu.c32
+  APPEND pxelinux.cfg/graphics.conf pxelinux.cfg/maintenance.menu

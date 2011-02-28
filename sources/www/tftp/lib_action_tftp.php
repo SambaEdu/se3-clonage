@@ -62,6 +62,21 @@ PRIMARY KEY  (identifiant)
 		$retour=false;
 	}
 
+	$sql="CREATE TABLE IF NOT EXISTS se3_tftp_infos (
+`id` INT( 11 ) NOT NULL ,
+`name` VARCHAR( 255 ) NOT NULL ,
+`mac` VARCHAR( 255 ) NOT NULL ,
+`nom` VARCHAR( 255 ) NOT NULL ,
+`valeur` VARCHAR( 255 ) NOT NULL ,
+identifiant int(11) NOT NULL auto_increment,
+PRIMARY KEY  (identifiant)
+);";
+	$creation_table=mysql_query($sql);
+	if(!$creation_table) {
+		echo "<span style='color:red'>Erreur lors de la création de la table d'après la requête: </span><br /><pre style='color:green; border:1px solid red;'>$sql</pre>\n";
+		$retour=false;
+	}
+
 	return $retour;
 }
 
@@ -164,8 +179,8 @@ function search_machines2 ($filter,$branch) {
 								if ("$branch"=="computers") {
 									$computers[$loop]["ipHostNumber"] = $info[$loop]["iphostnumber"][0];
 									$computers[$loop]["macAddress"] = $info[$loop]["macaddress"][0];
-									$computers[$loop]["l"] = $info[$loop]["l"][0];
-									$computers[$loop]["description"] = utf8_decode($info[$loop]["description"][0]);
+									if(isset($info[$loop]["l"][0])) {$computers[$loop]["l"] = $info[$loop]["l"][0];}
+									if(isset($info[$loop]["description"][0])) {$computers[$loop]["description"] = utf8_decode($info[$loop]["description"][0]);}
 								}
 						}
 					}
@@ -451,6 +466,42 @@ function visu_tache($mac_machine,$mode=NULL) {
 }
 // Fin de visu_tache()
 //====================================================
+function crob_getParam($name) {
+	$sql="SELECT value FROM params WHERE name='".addslashes($name)."';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		return $lig->value;
+	}
+	else {
+		return "";
+	}
+}
+//====================================================
+function crob_setParam($name,$value,$descr) {
+	$sql="DELETE FROM params WHERE name='".addslashes($name)."';";
+	$del=mysql_query($sql);
 
-
+	$sql="INSERT INTO params SET name='$name', descr='$descr', cat='7', value='".addslashes($value)."';";
+	$insert=mysql_query($sql);
+	if($insert) {return true;} else  {return false;}
+}
+//====================================================
+function check_sysresccd_files() {
+	$tab_fichiers_sysresccd=array("/var/www/sysresccd/sysrcd.dat","/var/www/sysresccd/sysrcd.md5","/var/www/sysresccd/autorun2","/var/www/sysresccd/scripts.tar.gz", "/tftpboot/rescuecd", "/tftpboot/initram.igz");
+	$temoin_sysresccd="n";
+	$cpt_sysresccd=0;
+	foreach($tab_fichiers_sysresccd as $key => $value) {
+		if(file_exists("$value")) {
+			//echo "<p>Le fichier /var/www/sysresccd/$value est present.</p>";
+			$cpt_sysresccd++;
+		}
+	}
+	if($cpt_sysresccd==count($tab_fichiers_sysresccd)) {
+		//echo "<p>Tout est en place</p>";
+		$temoin_sysresccd="y";
+	}
+	return $temoin_sysresccd;
+}
+//====================================================
 ?>

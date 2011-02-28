@@ -51,8 +51,7 @@ num_op INT(11),
 infos VARCHAR(255)
 );" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N
 
-	echo "DROP TABLE IF EXISTS se3_tftp_sauvegardes;
-CREATE TABLE IF NOT EXISTS se3_tftp_sauvegardes (
+	echo "CREATE TABLE IF NOT EXISTS se3_tftp_sauvegardes (
 id INT( 11 ) NOT NULL ,
 name VARCHAR( 255 ) NOT NULL ,
 mac VARCHAR( 255 ) NOT NULL ,
@@ -67,8 +66,7 @@ PRIMARY KEY  (identifiant)
 );" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N
 
 
-	echo "DROP TABLE IF EXISTS se3_tftp_rapports;
-CREATE TABLE IF NOT EXISTS se3_tftp_rapports (
+	echo "CREATE TABLE IF NOT EXISTS se3_tftp_rapports (
 id INT( 11 ) NOT NULL ,
 name VARCHAR( 255 ) NOT NULL ,
 mac VARCHAR( 255 ) NOT NULL ,
@@ -81,13 +79,30 @@ PRIMARY KEY  (identifiant)
 );" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N
 
 
+	echo "CREATE TABLE IF NOT EXISTS se3_tftp_infos (
+id INT( 11 ) NOT NULL ,
+name VARCHAR( 255 ) NOT NULL ,
+mac VARCHAR( 255 ) NOT NULL ,
+nom VARCHAR( 255 ) NOT NULL ,
+valeur VARCHAR( 255 ) NOT NULL ,
+identifiant int(11) NOT NULL auto_increment,
+PRIMARY KEY  (identifiant)
+);" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N
+
+#==============================================================================
+
 # on rend executable les script sudo et sbin
-[ -e /usr/share/se3/scripts/se3_tftp_boot_pxe.sh ] && chmod +x /usr/share/se3/scripts/se3_tftp_boot_pxe.sh
-[ -e /usr/share/se3/scripts/recup_rapport.php ] && chmod +x /usr/share/se3/scripts/recup_rapport.php
-[ -e /usr/share/se3/scripts/pxe_gen_cfg.sh ] && chmod +x /usr/share/se3/scripts/pxe_gen_cfg.sh
-[ -e /usr/share/se3/scripts/se3_tftp_menage_atq.sh ] && chmod +x /usr/share/se3/scripts/se3_tftp_menage_atq.sh
+for i in se3_tftp_boot_pxe.sh pxe_gen_cfg.sh recup_rapport.php se3_tftp_menage_atq.sh se3_pxe_menu_ou_pas.sh set_password_menu_tftp.sh se3_pxe_slitaz_cmdline.sh se3_get_sysresccd.sh
+do
+	if [ -e /usr/share/se3/scripts/$i ]; then
+		chmod +x /usr/share/se3/scripts/$i
+		chown www-se3 /usr/share/se3/scripts/$i
+	fi
+done
 
 [ -e /usr/share/se3/sbin/controle_actions_tftp.sh ] && chmod +x /usr/share/se3/sbin/controle_actions_tftp.sh
+
+#==============================================================================
 
 ##### ADD good line in /etc/sudoers.conf if necessary and restart sudo
 TEMOIN_CHGT_SUDO="n"
@@ -102,42 +117,67 @@ fi
 
 if [ ! "$(grep "Cmnd_Alias SE3CLONAGE" /etc/sudoers)" ]; then
 	# On insère toute la ligne des commandes
-	sed -i 's|^\(# Cmnd alias specification.*\)$|\1\nCmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh,/usr/share/se3/scripts/recup_rapport.php,/usr/share/se3/scripts/se3_tftp_menage_atq.sh|' /etc/sudoers
+	sed -i 's|^\(# Cmnd alias specification.*\)$|\1\nCmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh,/usr/share/se3/scripts/recup_rapport.php,/usr/share/se3/scripts/se3_tftp_menage_atq.sh,/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh,/usr/share/se3/scripts/set_password_menu_tftp.sh,/usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh,/usr/share/se3/scripts/se3_get_sysresccd.sh|' /etc/sudoers
 	TEMOIN_CHGT_SUDO="y"
 else
 	# La ligne Cmnd_Alias SE3CLONAGE existe déjà (avec au moins une commande donc)
-# 	TEST1=$(cat /etc/sudoers | grep "/usr/share/se3/scripts/se3_tftp_boot_pxe.sh")
-	if [ ! "$(grep "/usr/share/se3/scripts/se3_tftp_boot_pxe.sh" /etc/sudoers)" ]; then
-		# On ajoute la commande au premier rang
-		sed -i 's|Cmnd_Alias SE3CLONAGE=|Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,|' /etc/sudoers
-		TEMOIN_CHGT_SUDO="y"
-	fi
 
-# 	TEST2=$(cat /etc/sudoers | grep "/usr/share/se3/scripts/pxe_gen_cfg.sh")
-	if [ ! "$(grep "/usr/share/se3/scripts/pxe_gen_cfg.sh" /etc/sudoers)" ]; then
-		# On ajoute la commande au premier rang
-		sed -i 's|Cmnd_Alias SE3CLONAGE=|Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/pxe_gen_cfg.sh,|' /etc/sudoers
-		TEMOIN_CHGT_SUDO="y"
-	fi
-
-# 	TEST3=$(cat /etc/sudoers | grep "/usr/share/se3/scripts/recup_rapport.php")
-	if [ ! "$(grep "/usr/share/se3/scripts/recup_rapport.php" /etc/sudoers)" ]; then
-		# On ajoute la commande au premier rang
-		sed -i 's|Cmnd_Alias SE3CLONAGE=|Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/recup_rapport.php,|' /etc/sudoers
-		TEMOIN_CHGT_SUDO="y"
-	fi
-
-# 	TEST4=$(cat /etc/sudoers | grep "/usr/share/se3/scripts/se3_tftp_menage_atq.sh")
-	if [ ! "$(grep "/usr/share/se3/scripts/se3_tftp_menage_atq.sh" /etc/sudoers)" ]; then
-		# On ajoute la commande au premier rang
-		sed -i 's|Cmnd_Alias SE3CLONAGE=|Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_menage_atq.sh,|' /etc/sudoers
-		TEMOIN_CHGT_SUDO="y"
-	fi
+	for i in se3_tftp_boot_pxe.sh pxe_gen_cfg.sh recup_rapport.php se3_tftp_menage_atq.sh se3_pxe_menu_ou_pas.sh set_password_menu_tftp.sh se3_pxe_slitaz_cmdline.sh se3_get_sysresccd.sh
+	do
+		if [ ! "$(grep "/usr/share/se3/scripts/$i" /etc/sudoers)" ]; then
+			# On ajoute la commande au premier rang
+			sed -i "s|Cmnd_Alias SE3CLONAGE=|Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/$i,|" /etc/sudoers
+			TEMOIN_CHGT_SUDO="y"
+		fi
+	done
 fi
 
 if [ "$TEMOIN_CHGT_SUDO" = "y" ]; then
 	/etc/init.d/sudo restart
 fi
+
+#==============================================================================
+
+# Pour toujours utiliser la derniere version des outils pxelinux
+if [ -e /tftpboot/pxelinux.0 ]; then
+	rm -f /tftpboot/pxelinux.0
+fi
+
+#for A in chain.c32 cpuidtest.c32 dmitest.c32 ethersel.c32 mboot.c32 menu.c32 pcitest.c32 vesamenu.c32 pxelinux.0
+#do
+#	if [ ! -e "/tftpboot/$A" ]; then
+#		ln -s /usr/lib/syslinux/$A /tftpboot
+#	fi
+#done
+
+ls /usr/lib/syslinux/ | egrep -v "(\.com$|\.exe$|\.gz$)" | while read A
+do 
+	if [ ! -e /tftpboot/$A ]; then
+	ln -s /usr/lib/syslinux/$A /tftpboot/$A 
+	fi
+	
+done
+
+#==============================================================================
+# Configuration des scripts dans /tftpboot d'apres les enregistrements en cours
+tftp_aff_menu_pxe=$(echo "SELECT value FROM params WHERE name='tftp_aff_menu_pxe';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
+tftp_pass_menu_pxe=$(echo "SELECT value FROM params WHERE name='tftp_pass_menu_pxe';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
+tftp_slitaz_cmdline=$(echo "SELECT value FROM params WHERE name='tftp_slitaz_cmdline';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
+
+if [ "${tftp_aff_menu_pxe}" != "y" ]; then
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'standard'
+else
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu'
+fi
+
+if [ "${tftp_pass_menu_pxe}" != "" ]; then
+	/usr/share/se3/scripts/set_password_menu_tftp.sh "${tftp_pass_menu_pxe}"
+fi
+
+if [ "${tftp_slitaz_cmdline}" != "" ]; then
+	/usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh "${tftp_slitaz_cmdline}"
+fi
+#==============================================================================
 
 mkdir -p /etc/se3/www-tools/tftp
 chmod 770 /etc/se3/www-tools/tftp
@@ -151,6 +191,43 @@ fi
 # Activation par inetd.conf
 [ "$test_exist" != "0" ] && /usr/share/se3/scripts/se3_tftp_boot_pxe.sh start
 
+# Pour renseigner le fichier param.ini du paquet post-clonage
+if [ -e /var/se3/Progs/install/paquet_post-clonage/temp/clone/param.ini -a -z "$(grep 'Ne pas modifier' /var/se3/Progs/install/paquet_post-clonage/temp/clone/param.ini)" ]; then
+	dhcp_iface=$(echo "SELECT value FROM params WHERE name='dhcp_iface';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
+	netmask=$(/sbin/ifconfig $dhcp_iface |/bin/grep 'inet ' |/usr/bin/cut -d":" -f4 |/usr/bin/cut -d' '  -f1)
+	dhcp_gateway=$(echo "SELECT value FROM params WHERE name='dhcp_gateway';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
+	dhcp_dns_server_prim=$(echo "SELECT value FROM params WHERE name='dhcp_dns_server_prim';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
+	dhcp_wins=$(echo "SELECT value FROM params WHERE name='dhcp_wins';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
+	se3_domain=$(echo "SELECT value FROM params WHERE name='se3_domain';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
+	se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
+	
+	if [ -n "$dhcp_iface" -a -n "$netmask" -a -n "$dhcp_gateway" -a -n "$dhcp_dns_server_prim" -a -n "$dhcp_wins" -a -n "$se3_domain" -a -n "$se3ip" ]; then
+		cp /var/se3/Progs/install/paquet_post-clonage/temp/clone/param.ini /var/se3/Progs/install/paquet_post-clonage/temp/clone/param.ini.$(date +%Y%m%d%%H%M%S)
+
+		prefip=$(echo "$se3ip" | cut -d'.' -f1)
+
+		octet=$(echo "$netmask" | cut -d'.' -f2)
+		if [ "$octet" = "255" ]; then
+			prefip="$prefip."$(echo "$se3ip" | cut -d'.' -f2)
+
+			octet=$(echo "$netmask" | cut -d'.' -f3)
+			if [ "$octet" = "255" ]; then
+				prefip="$prefip."$(echo "$se3ip" | cut -d'.' -f3)	
+			fi
+		fi
+		prefip="$prefip."
+
+		echo "GW=$dhcp_gateway
+MASK=$netmask
+DNS=$dhcp_dns_server_prim
+WINS=$dhcp_wins
+PREFIP=$prefip
+SMB_DOMAIN=$se3_domain
+" > /var/se3/Progs/install/paquet_post-clonage/temp/clone/param.ini.tmp
+		cat /var/se3/Progs/install/paquet_post-clonage/temp/clone/param.ini.tmp | perl -pe 's/\n/\r\n/' > /var/se3/Progs/install/paquet_post-clonage/temp/clone/param.ini
+		rm -f /var/se3/Progs/install/paquet_post-clonage/temp/clone/param.ini.tmp
+	fi
+fi
 
 	;;
 

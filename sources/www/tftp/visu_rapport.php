@@ -84,6 +84,9 @@ if (is_admin("system_is_admin",$login)=="Y")
 				elseif($tmp=="Echec") {
 					echo "<span style='color:red;'>Echec</span>";
 				}
+				elseif($tmp=="Valide") {
+					echo "<span style='color:blue;'>Valide</span>";
+				}
 				else{
 					echo $tmp;
 				}

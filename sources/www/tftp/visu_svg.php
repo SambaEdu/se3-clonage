@@ -96,7 +96,8 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 					//echo nl2br(htmlentities($lig2->descriptif));
 
-					if(!preg_match("/Infos sur /".$lig2->image."\n",$lig2->descriptif)){
+					//if(!preg_match("/Infos sur ".$lig2->image."\n/",$lig2->descriptif)){
+					if(!mb_ereg("Infos sur ".$lig2->image."\n",$lig2->descriptif)){
 						echo nl2br(htmlentities($lig2->descriptif));
 					}
 					else {
@@ -108,7 +109,8 @@ if (is_admin("system_is_admin",$login)=="Y")
 						$infos_complementaires_svg="";
 						$tab_descr=explode("\n",$lig2->descriptif);
 						for($i=0;$i<count($tab_descr);$i++){
-							if(preg_match("/^Infos sur /".$lig2->image."$",$tab_descr[$i])){
+							//if(preg_match("/^Infos sur ".$lig2->image."$/",$tab_descr[$i])){
+							if(mb_ereg("^Infos sur ".$lig2->image."$",$tab_descr[$i])){
 								$temoin_infos_image++;
 							}
 
@@ -119,7 +121,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 								$temoin_volume_image++;
 							}
 
-							if(preg_match("/^Espace total/occupé/encore disponible:$/",$tab_descr[$i])) {
+							if(preg_match("/^Espace total\/occupé\/encore disponible:$/",$tab_descr[$i])) {
 								break;
 							}
 

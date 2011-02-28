@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-## $Id: se3_tftp_boot_pxe.sh 1402 2006-11-23 01:36:32Z keyser $ ##
+## $Id$ ##
 #
 ##### Permet de faire, l'activation ou la désactivation de tftp_boot #####
 
@@ -10,12 +10,20 @@ REPORT_FILE="/root/mailtoadmin"
 echo "" > $REPORT_FILE
 DEBUG="0"
 
-# Script inetd sarge ou etch ?
-if [ -z $(grep "3.1" /etc/debian_version) ]; then
-INETD_SCRIPT="/etc/init.d/openbsd-inetd"
+# Script inetd etch ou lenny ?
+INETD_SCRIPT="$(find /etc/init.d/ -name "*inetd*")"
+
+if [ "$(cat /etc/debian_version)" == "4.0" ]; then
+UDP="udp"
 else
-INETD_SCRIPT="/etc/init.d/inetd"
+UDP="udp4"
 fi
+# 
+# 
+# TFTP_ETCH="tftp dgram udp wait nobody /usr/sbin/tcpd /usr/sbin/in.tftpd --tftpd-timeout 300 --retry-timeout 5     --mcast-port 1758 --mcast-addr 239.239.239.0-255 --mcast-ttl 1 --maxthread 100 --verbose=5  /tftpboot"
+# 
+# TFTP_LENNY="tftp dgram udp4 wait nobody /usr/sbin/tcpd /usr/sbin/in.tftpd --tftpd-timeout 300 --retry-timeout 5 --mcast-port 1758 --mcast-addr 239.239.239.0-255 --mcast-ttl 1 --maxthread 100 --verbose=5 /tftpboot"
+
 MAIL_REPORT()
 {
 [ -e /etc/ssmtp/ssmtp.conf ] && MAIL_ADMIN=$(cat /etc/ssmtp/ssmtp.conf | grep root | cut -d= -f2)
@@ -38,7 +46,11 @@ fi
 # }
 case "$1" in
 	start)
-	[ -z "$(grep tftp /etc/inetd.conf)" ] && echo "tftp            dgram   udp     wait    nobody /usr/sbin/tcpd /usr/sbin/in.tftpd --tftpd-timeout 300 --retry-timeout 5     --mcast-port 1758 --mcast-addr 239.239.239.0-255 --mcast-ttl 1 --maxthread 100 --verbose=5  /tftpboot" >> /etc/inetd.conf
+	if [ -z "$(grep tftp /etc/inetd.conf)" ]; then 
+	echo "tftp            dgram   $UDP     wait    nobody /usr/sbin/tcpd /usr/sbin/in.tftpd --tftpd-timeout 300 --retry-timeout 5     --mcast-port 1758 --mcast-addr 239.239.239.0-255 --mcast-ttl 1 --maxthread 100 --verbose=5  /tftpboot" >> /etc/inetd.conf
+	else
+	sed "s/\/var\/lib\/tftpboot/\/tftpboot/" -i /etc/inetd.conf 
+	fi
 	echo "Activation de atftpd" | tee -a $REPORT_FILE
 	$INETD_SCRIPT restart
 	;;

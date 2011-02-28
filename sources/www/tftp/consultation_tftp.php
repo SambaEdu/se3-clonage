@@ -92,40 +92,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 		}
 	}
 
-	/*
-	$sql="CREATE TABLE IF NOT EXISTS se3_tftp_action (
-			id INT(11),
-			mac VARCHAR(255),
-			name VARCHAR(255),
-			date INT(11),
-			type VARCHAR(255),
-			num_op INT(11)
-			);";
-	$creation_table=mysql_query($sql);
-
-	$sql="CREATE TABLE IF NOT EXISTS se3_tftp_rapports (
-`id` INT( 11 ) NOT NULL ,
-`name` VARCHAR( 255 ) NOT NULL ,
-`mac` VARCHAR( 255 ) NOT NULL ,
-`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`tache` VARCHAR( 255 ) NOT NULL ,
-`statut` VARCHAR( 255 ) NOT NULL ,
-`descriptif` TEXT NOT NULL
-);";
-	$creation_table=mysql_query($sql);
-
-	$sql="CREATE TABLE IF NOT EXISTS se3_tftp_sauvegardes (
-`id` INT( 11 ) NOT NULL ,
-`name` VARCHAR( 255 ) NOT NULL ,
-`mac` VARCHAR( 255 ) NOT NULL ,
-`partition` VARCHAR( 255 ) NOT NULL ,
-`image` VARCHAR( 255 ) NOT NULL ,
-`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`descriptif` TEXT NOT NULL,
-`partitionnement` TEXT NOT NULL
-);";
-	$creation_table=mysql_query($sql);
-	*/
+	// Création de la table dès que possible:
 	creation_tftp_tables();
 
 	echo "<h1>".gettext("Consultation TFTP")."</h1>\n";
