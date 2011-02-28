@@ -1,0 +1,117 @@
+prompt 1
+
+kbdmap fr.ktl
+
+default 0
+timeout 50
+
+label clonage
+    kernel vmlu26
+    append initrd=udprd root=01:00
+
+label clonageold
+    kernel vmlu26.old
+    append initrd=udprd.old root=01:00
+
+label emetteur
+    kernel vmlu26
+    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=snd
+
+label recepteur
+    kernel vmlu26
+    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=rcv
+
+label u1
+    kernel vmlu26
+    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=snd
+
+label u2
+    kernel vmlu26
+    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=rcv
+
+label u1old
+    kernel vmlu26.old
+    append initrd=udprd.old root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=snd
+
+label u2old
+    kernel vmlu26.old
+    append initrd=udprd.old root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=lzop port=9002 umode=rcv
+
+label slitaz
+    kernel bzImage
+    append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal ###TFTP_SLITAZ_CMDLINE###
+
+label taz
+    kernel bzImage
+    append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=noconf ###TFTP_SLITAZ_CMDLINE###
+
+# Label de sauvegarde:
+label tazsvg
+   kernel bzImage
+   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=noconf src_part=auto dest_part=auto auto_reboot=y delais_reboot=90 work=/root/bin/sauve_part.sh ###TFTP_SLITAZ_CMDLINE###
+
+# Label de restauration:
+label tazrst
+   kernel bzImage
+   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=noconf src_part=auto dest_part=auto auto_reboot=y delais_reboot=90 work=/root/bin/restaure_part.sh ###TFTP_SLITAZ_CMDLINE###
+
+label su1
+    kernel bzImage
+    append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text umode=snd work=udpcast2.sh ###TFTP_SLITAZ_CMDLINE###
+
+label su2
+    kernel bzImage
+    append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text umode=rcv work=udpcast2.sh ###TFTP_SLITAZ_CMDLINE###
+
+###SYSRESCCD###label sysrcd
+###SYSRESCCD###   kernel rescuecd
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+
+###SYSRESCCD###label sysrcd1
+###SYSRESCCD###   kernel rescuecd
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait vga=788
+
+###SYSRESCCD###label sysrcd2
+###SYSRESCCD###   kernel altker32
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+
+###SYSRESCCD###label sysrcd64
+###SYSRESCCD###   kernel rescue64
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+
+###SYSRESCCD###   LABEL altker64
+###SYSRESCCD###     kernel altker64
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+
+# UdpCast depuis SystemRescueCd
+###SYSRESCCD###   LABEL nofbu1
+###SYSRESCCD###     kernel rescuecd
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp
+
+###SYSRESCCD###     LABEL nofbu2
+###SYSRESCCD###     kernel rescuecd
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp
+
+label unattended
+    kernel bzImageunattend
+    # Add options (z_user=..., z_path=..., etc.) to this line.
+    append initrd=initrdunattend
+
+label install
+    kernel bzImageunattend
+    # Add options (z_user=..., z_path=..., etc.) to this line.
+    append initrd=initrdunattend
+
+label memtest
+  kernel memtp
+
+label 0
+localboot 0x80
+label a
+localboot 0x00
+label q
+localboot -1
+label disk1
+localboot 0x80
+label disk2
+localboot 0x81

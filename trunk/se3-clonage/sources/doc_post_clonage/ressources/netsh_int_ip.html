@@ -1,0 +1,1508 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+
+
+<HTML DIR="LTR">
+
+
+
+<HEAD>
+
+
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1252">
+
+<META HTTP-EQUIV="MSThemeCompatible" CONTENT="Yes">
+
+
+
+<META NAME="MS-HAID" CONTENT="a_netsh_int_ip">
+
+
+
+<META NAME="MS.LOCALE" CONTENT="FR">
+
+
+
+<META NAME="DESCRIPTION" LOCCONTENT="D&eacute;crit l'utilisation de commandes dans le contexte Netsh Interface IP.">
+
+
+
+<TITLE>Commandes Netsh pour l'interface IP</TITLE>
+
+
+
+<LINK REL="stylesheet" MEDIA="screen" TYPE="text/css" HREF="MS-ITS:ntshared.chm::/coUA.css"> <LINK REL="stylesheet" MEDIA="print" TYPE="text/css" HREF="MS-ITS:ntshared.chm::/coUAprint.css">
+
+<SCRIPT LANGUAGE="JScript" SRC="MS-ITS:ntshared.chm::/shared.js"></SCRIPT>
+
+
+
+</HEAD>
+
+
+
+<BODY> <DIV CLASS="Uabrand"><SPAN CLASS="WebOnly"><IMG SRC="MS-ITS:ntdef.chm::/Uabrand.gif" CLASS="Uabrand" ALT="Image Microsoft Windows"></SPAN></DIV>
+
+
+
+<H1>Commandes Netsh pour l'interface IP</H1>
+
+
+
+<P>Vous pouvez utiliser des commandes dans le contexte Netsh Interface IP pour configurer le protocole TCP/IP (notamment les adresses, les passerelles par d&eacute;faut, les serveurs DNS et les serveurs WINS) et afficher des informations de configuration et des statistiques.</P>
+
+
+
+<P>Vous pouvez ex&eacute;cuter ces commandes &agrave; partir de l'invite de commandes <NOLOC>Windows&nbsp;XP</NOLOC> ou de l'invite de commandes du contexte Netsh Interface IP. Pour que ces commandes fonctionnent &agrave; l'invite de commandes <NOLOC>Windows&nbsp;XP</NOLOC>, vous devez taper <B>netsh interface ip</B> avant de taper les commandes et param&egrave;tres tels qu'ils apparaissent dans la syntaxe ci-dessous. Pour ex&eacute;cuter ces commandes Netsh sur un ordinateur distant fonctionnant sous Windows&nbsp;2000&nbsp;Server, vous devez tout d'abord utiliser Connexion au Bureau &agrave; distance pour vous connecter &agrave; un ordinateur fonctionnant sous Windows&nbsp;2000&nbsp;Server qui ex&eacute;cute Terminal Server. Des diff&eacute;rences fonctionnelles peuvent appara&icirc;tre entre les commandes du contexte Netsh sur Windows&nbsp;2000 et <NOLOC>Windows&nbsp;XP</NOLOC>.</P>
+
+
+
+<P>Pour plus d'informations sur Netsh, consultez <A ID="specLoc" HREF="MS-ITS:ntcmds.chm::/netsh.htm">Utilisation de Netsh</A>.</P>
+
+<P>Pour afficher la syntaxe d'une commande, cliquez sur la commande&nbsp;:</P>
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">set address</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Configure une adresse IP et une passerelle par d&eacute;faut sur une interface sp&eacute;cifi&eacute;e.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>set address</B> [<B>name=</B>]<I>NomInterface</I><WBR> [<B>source=</B>]{<B>dhcp</B> | <B>static</B> [<B>addr=</B>]<I>AdresseIP</I> <WBR>[<B>mask=</B>]<I>MasqueSousR&eacute;seau</I> [<B>gateway=</B>]{<B>none</B> | <I>PasserelleParD&eacute;faut</I><WBR> [[<B>gwmetric=</B>]<I>M&eacute;triquePasserelle</I>]}}</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Requis. Indique le nom de l'interface dont vous souhaitez configurer les informations d'adresse et de passerelle. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+	<DT>[<B>source=</B>]{<B>dhcp</B> | <B>static</B> [<B>addr=</B>]<I>AdresseIP</I> [<B>mask=</B>]<I>MasqueSousR&eacute;seau</I> [<B>gateway=</B>]{<B>none</B> | <I>PasserelleParD&eacute;faut</I> [[<B>gwmetric=</B>]<I>M&eacute;triquePasserelle</I>]}}</DT>
+
+
+
+	<DD>Requis. Sp&eacute;cifie si l'adresse IP &agrave; configurer provient d'un serveur <a ID="wPopUp" HREF="HELP=glossary.hlp TOPIC=gls_dhcp">Dynamic Host Configuration Protocol (DHCP)</a> ou s'il s'agit d'une adresse statique. Si l'adresse est statique, <I>AdresseIP</I> sp&eacute;cifie l'adresse &agrave; configurer et <I>MasqueSousR&eacute;seau</I> sp&eacute;cifie le masque de sous-r&eacute;seau de l'adresse IP en cours de configuration. Si l'adresse est statique, vous devez &eacute;galement sp&eacute;cifier si vous souhaitez conserver la passerelle par d&eacute;faut actuelle (si elle existe) ou si vous voulez en configurer une pour l'adresse. Si vous configurez une passerelle par d&eacute;faut, <I>PasserelleParD&eacute;faut</I> sp&eacute;cifie l'adresse IP de la passerelle par d&eacute;faut &agrave; configurer et <I>M&eacute;triquePasserelle</I> indique la valeur m&eacute;trique de cette passerelle par d&eacute;faut.</DD>
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Vous pouvez utiliser cette commande pour basculer une interface d'une configuration DHCP &agrave; une configuration statique et vice versa. Si l'interface est configur&eacute;e statiquement, les adresses des serveurs DNS et WINS de cette interface doivent &eacute;galement &ecirc;tre configur&eacute;es statiquement.
+
+    </LI>
+
+	<LI> L'omission du param&egrave;tre <I>PasserelleParD&eacute;faut</I> n'efface pas la configuration de la passerelle mais pr&eacute;serve la configuration pr&eacute;c&eacute;dente.
+
+	</LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">add address</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Ajoute une adresse IP et une passerelle par d&eacute;faut &agrave; une interface sp&eacute;cifi&eacute;e et configur&eacute;e avec une adresse IP statique.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>add address</B> [<B>name=</B>]<I>NomInterface</I><WBR> [<B>addr=</B>]<I>AdresseIP</I> [<B>mask=</B>]<I>MasqueSousR&eacute;seau</I> <WBR>[[<B>gateway=</B>] <I>PasserelleParD&eacute;faut</I> [<B>gwmetric=</B>]<I>M&eacute;triquePasserelle</I>] </NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Requis. Indique le nom de l'interface &agrave; laquelle vous souhaitez ajouter les informations d'adresse et de passerelle. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+	<DT>[<B>addr=</B>]<I>AdresseIP</I>  [<B>mask=</B>]<I>MasqueSousR&eacute;seau</I></DT>
+
+
+
+	<DD>Requis. Indique l'adresse IP &agrave; ajouter ainsi que le masque de sous-r&eacute;seau de cette adresse IP.</DD>
+
+
+
+	<DT>[<B>gateway=</B>]<I>PasserelleParD&eacute;faut</I> [<B>gwmetric=</B>]<I>M&eacute;triquePasserelle</I></DT>
+
+
+
+	<DD>Indique l'adresse IP de la passerelle par d&eacute;faut &agrave; ajouter ainsi que la valeur m&eacute;trique de cette passerelle par d&eacute;faut.</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">delete address</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Supprime une adresse IP ou une passerelle par d&eacute;faut sur une interface configur&eacute;e statiquement.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>delete address</B> [<B>name=</B>]<I>NomInterface</I><WBR> [<B>addr=</B>] <I>AdresseIP</I> [[<B>gateway=</B>]{<I>PasserelleParD&eacute;faut</I> | <B>all</B>}] </NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Requis. Indique le nom de l'interface dont vous souhaitez supprimer les informations d'adresse et de passerelle. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+	<DT>[<B>addr=</B>]<I>AdresseIP</I></DT>
+
+
+
+	<DD>Requis. Sp&eacute;cifie l'adresse IP &agrave; supprimer.</DD>
+
+
+
+	<DT>[<B>gateway=</B>]{<I>PasserelleParD&eacute;faut</I> | <B>all</B>}</DT>
+
+
+
+	<DD>Sp&eacute;cifie s'il faut supprimer une seule passerelle par d&eacute;faut ou toutes les passerelles par d&eacute;faut. Si une seule passerelle par d&eacute;faut doit &ecirc;tre supprim&eacute;e, <I>PasserelleParD&eacute;faut</I> sp&eacute;cifie l'adresse IP de la passerelle par d&eacute;faut &agrave; supprimer.</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Cette commande ne va pas supprimer la derni&egrave;re adresse IP sur l'interface.
+
+    </LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show address</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche les informations relatives aux adresses IP statiques et aux passerelles par d&eacute;faut sur une interface sp&eacute;cifi&eacute;e. Utilis&eacute;e sans param&egrave;tres, la commande <B>show address</B> affiche les informations relatives aux adresses pour toutes les interfaces.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show address</B> [[<B>name=</B>]<I>NomInterface</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Indique le nom de l'interface &agrave; propos de laquelle vous souhaitez afficher les informations relatives aux adresses. Le <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Pour les interfaces configur&eacute;es &agrave; l'aide de DHCP, utilisez la commande <B>ipconfig</B> pour afficher les adresses IP assign&eacute;es, les param&egrave;tres de bail et d'autres informations sur DHCP.
+
+    </LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">set dns</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Configure une adresse de serveur DNS pour une interface sp&eacute;cifi&eacute;e.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>set dns</B> [<B>name=</B>]<I>NomInterface</I><wbr> [<B>source=</B>]{<B>dhcp</B> | <B>static</B> <wbr>[<B>addr=</B>]{<I>AdresseDNS</I> | <B>none</B>}}<wbr> [[<B>ddns=</B>]{<B>disabled</B> | <B>enabled</B>}] [[<B>suffix=</B>]{<B>interface</B> | <B>primary</B>}]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Requis. Indique le nom de l'interface dont vous souhaitez d&eacute;finir les informations de type DNS. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+	<DT>[<B>source=</B>]{<B>dhcp</B> | <B>static</B> [<B>addr =</B>]{<I>AdresseDNS</I> | <B>none</B>}}</DT>
+
+
+
+	<DD>Requis. Indique si l'adresse IP du serveur DNS est configur&eacute;e par DHCP ou est statique. Si l'adresse IP est statique, <I>AdresseDNS</I> sp&eacute;cifie l'adresse IP du serveur DNS &agrave; configurer et <B>none</B> indique que la configuration DNS doit &ecirc;tre supprim&eacute;e.</DD>
+
+
+
+	<DT>[<B>ddns=</B>]{<B>disabled</B> | <B>enabled</B>}</DT>
+
+
+
+	<DD>Sp&eacute;cifie si l'ordinateur doit tenter l'inscription de mise &agrave; jour dynamique DNS des adresses IP de cette connexion et du nom complet de l'ordinateur. Le nom complet de l'ordinateur est d&eacute;fini dans l'&eacute;l&eacute;ment <B>Syst&egrave;me</B> du Panneau de configuration, dans l'onglet <B>Nom de l'ordinateur</B>. Le param&egrave;tre <B>enabled</B> indique que la tentative doit avoir lieu. Le param&egrave;tre <B>disabled</B> indique que la tentative ne doit pas avoir lieu.</DD>
+
+
+
+	<DT>[<B>suffix=</B>]{<B>interface</B> | <B>primary</B>}</DT>
+
+
+
+	<DD>Sp&eacute;cifie si l'ordinateur doit tenter la mise &agrave; jour dynamique DNS pour inscrire les adresses IP et le nom de domaine sp&eacute;cifique &agrave; cette connexion, en plus du nom complet de l'ordinateur. Le nom DNS sp&eacute;cifique &agrave; cette connexion r&eacute;sulte de la concat&eacute;nation entre le nom de l'ordinateur (premi&egrave;re partie du nom complet de l'ordinateur) et le suffixe DNS de la connexion. Le param&egrave;tre <B>interface</B> indique qu'il faut inscrire &agrave; la fois le nom complet de l'ordinateur et le nom sp&eacute;cifique &agrave; cette connexion. Le param&egrave;tre <B>primary</B> indique que seul le nom complet de l'ordinateur doit &ecirc;tre inscrit.</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Si l'interface est d&eacute;j&agrave; configur&eacute;e statiquement, le param&egrave;tre <B>static</B> remplace la liste existante des adresses de serveurs DNS par celle qui est sp&eacute;cifi&eacute;e dans la commande.
+
+    </LI>
+
+	<LI>Le param&egrave;tre par d&eacute;faut pour <B>ddns=</B> est <B>enabled</B>.	</LI>
+
+	<LI> Le param&egrave;tre par d&eacute;faut pour <B>suffix=</B> est <B>primary</B>.
+
+	</LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">add dns</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Ajoute un serveur DNS &agrave; une liste de serveurs DNS pour une interface sp&eacute;cifi&eacute;e.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>add dns</B> [<B>name=</B>]<I>NomInterface</I><WBR> [<B>addr=</B>] <I>AdresseDNS</I> [[<B>index=</B>]<I>IndexDNS</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Requis. Indique le nom de l'interface &agrave; laquelle vous souhaitez ajouter des informations de type DNS. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+	<DT>[<B>addr=</B> ]<I>AdresseDNS</I></DT>
+
+
+
+	<DD>Requis. Sp&eacute;cifie l'adresse IP du serveur DNS &agrave; ajouter.</DD>
+
+
+
+	<DT>[<B>index=</B>]<I>IndexDNS</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie la position du serveur DNS ajout&eacute; dans la liste des serveurs DNS pour l'interface.</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Un nombre petit pour le param&egrave;tre <I>IndexDNS</I> correspond &agrave; une plus grande pr&eacute;f&eacute;rence. Si aucun index n'est sp&eacute;cifi&eacute;, le serveur est ajout&eacute; avec le niveau de pr&eacute;f&eacute;rence le plus bas.
+
+    </LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">delete dns</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Supprime un ou tous les serveurs DNS d'une liste de serveurs DNS pour une interface sp&eacute;cifi&eacute;e ou pour toutes les interfaces.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>delete dns</B> [<B>name=</B>]<I>NomInterface</I><WBR> [<B>addr=</B>]{<I>AdresseDNS</I> | <B>all</B>}</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Requis. Indique le nom de l'interface dont vous souhaitez supprimer les informations de type DNS. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+	<DT>[<B>addr=</B>]{<I>AdresseDNS</I> | <B>all</B>}</DT>
+
+
+
+	<DD>Requis. Sp&eacute;cifie si vous voulez supprimer l'adresse d'un serveur DNS ou de tous les serveurs pour toutes les interfaces. Si un seul serveur DNS doit &ecirc;tre supprim&eacute;, <I>AdresseDNS</I> sp&eacute;cifie l'adresse IP du serveur DNS &agrave; supprimer.</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL> </DIV>
+
+
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show dns</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche la configuration DNS d'une interface sp&eacute;cifi&eacute;e. Utilis&eacute;e sans param&egrave;tres, la commande <B>show dns</B> affiche les configurations DNS de toutes les interfaces.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show dns</B> [[<B>name=</B>]<I>NomInterface</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Indique le nom de l'interface dont vous souhaitez afficher la configuration DNS. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL> </DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">set wins</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>D&eacute;finit la configuration du serveur WINS en tant que mode DHCP ou mode statique pour une interface sp&eacute;cifi&eacute;e.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>set wins</B> [<B>name=</B>]<I>NomInterface</I><WBR> [<B>source=</B>]{<B>dhcp</B> | <B>static</B> [<B>addr=</B>]<WBR>{<I>AdresseWINS</I> | <B>none</B> }}</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Requis. Indique le nom de l'interface dont vous souhaitez d&eacute;finir les informations de type WINS. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+
+
+
+
+	<DT>[<B>source=</B>]{<B>dhcp</B> | <B>static</B> [<B>addr=</B>]{<I>AdresseWINS</I> | <B>none</B> }}</DT>
+
+
+
+	<DD>Requis. Indique si l'adresse IP du serveur WINS &agrave; configurer doit &ecirc;tre assign&eacute;e par DHCP ou s'il s'agit d'une adresse statique. Si l'adresse IP est statique, <I>AdresseWINS</I> sp&eacute;cifie l'adresse IP du serveur WINS &agrave; configurer et <B>none</B> indique que la configuration WINS doit &ecirc;tre supprim&eacute;e.</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Si l'interface est d&eacute;j&agrave; configur&eacute;e statiquement, le param&egrave;tre <B>static</B> remplace la liste existante des adresses de serveurs WINS par celle qui est sp&eacute;cifi&eacute;e dans la commande <B>set wins</B>.
+
+    </LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">add wins</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Ajoute un serveur WINS &agrave; une liste de serveurs WINS pour une interface sp&eacute;cifi&eacute;e.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>add wins</B> [<B>name=</B>]<I>NomInterface</I><WBR> [<B>addr=</B>] <I>AdresseWINS</I> [[<B>index=</B>]<I>IndexWINS</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Requis. Indique le nom de l'interface &agrave; laquelle vous souhaitez ajouter des informations de type WINS. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+	<DT>[<B>addr=</B>]<I>AdresseWINS</I></DT>
+
+
+
+	<DD>Requis. Sp&eacute;cifie l'adresse IP du serveur WINS &agrave; ajouter.</DD>
+
+
+
+	<DT>[<B>index=</B>]<I>IndexWINS</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie la position du serveur WINS ajout&eacute; dans la liste des serveurs WINS pour cette interface.</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Un nombre petit pour le param&egrave;tre <I>IndexWINS</I> correspond &agrave; une plus grande pr&eacute;f&eacute;rence. Si aucun index n'est sp&eacute;cifi&eacute;, le serveur est ajout&eacute; avec le niveau de pr&eacute;f&eacute;rence le plus bas.
+
+    </LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">delete wins</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Supprime un ou plusieurs serveurs WINS d'une liste de serveurs WINS pour une interface sp&eacute;cifi&eacute;e ou pour toutes les interfaces.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>delete wins</B> [<B>name=</B>]<I>NomInterface</I><WBR> [<B>addr=</B>]{<I>AdresseWINS</I> | <B>all</B>}</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Requis. Indique le nom de l'interface dont vous souhaitez supprimer un ou plusieurs serveurs WINS. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+	<DT>[<B>addr=</B>]{<I>AdresseWINS</I> | <B>all</B>}</DT>
+
+
+
+	<DD>Requis. Sp&eacute;cifie si vous voulez supprimer uniquement un serveur pour une interface ou tous les serveurs pour toutes les interfaces. Si un seul serveur doit &ecirc;tre supprim&eacute;, <I>AdresseWINS</I> sp&eacute;cifie l'adresse IP du serveur WINS &agrave; supprimer.</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL> </DIV>
+
+
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show wins</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche la configuration WINS d'une interface sp&eacute;cifi&eacute;e. Utilis&eacute;e sans param&egrave;tres, la commande <B>show wins</B> affiche les configurations WINS de toutes les interfaces.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show wins</B> [[<B>name=</B>]<I>NomInterface</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Indique le nom de l'interface dont vous souhaitez afficher les informations de type WINS. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show icmp</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche les statistiques ICMP. Utilis&eacute;e sans param&egrave;tres, la commande <B>show icmp</B> n'affiche les statistiques qu'une seule fois.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show icmp</B> [[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie le taux de rafra&icirc;chissement (nombre de secondes entre chaque rafra&icirc;chissement de l'affichage des statistiques).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+
+
+</DIV>
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show interface</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche les statistiques pour une interface sp&eacute;cifi&eacute;e. Utilis&eacute;e sans param&egrave;tres, la commande <B>show interface</B> n'affiche les statistiques de toutes les interfaces qu'une seule fois.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show interface</B> [[<B>index=</B>]<I>IndexInterface</I>] [[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>index=</B>]<I>IndexInterface</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie l'index d'interface, &agrave; savoir un entier qui identifie l'interface.</DD>
+
+
+
+	<DT>[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie le taux de rafra&icirc;chissement (nombre de secondes entre chaque rafra&icirc;chissement de l'affichage des statistiques).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+
+
+    <LI> Pour obtenir l'index d'une interface, consultez le r&eacute;sultat de la commande <B>show interface</B> utilis&eacute;e sans param&egrave;tres.
+
+    </LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show ipaddress</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche des informations pour une adresse IP sp&eacute;cifi&eacute;e. Utilis&eacute;e sans param&egrave;tres, la commande <B>show ipaddress</B> affiche des informations pour toutes les adresses IP de toutes les interfaces.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show ipaddress</B> [[<B>index=</B>]<I>AdresseIP</I>] [[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>index=</B>]<I>AdresseIP</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie une adresse IP d'une interface.</DD>
+
+
+
+	<DT>[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie le taux de rafra&icirc;chissement (nombre de secondes entre chaque rafra&icirc;chissement de l'affichage des statistiques).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Pour obtenir les adresses IP de toutes les interfaces, consultez le r&eacute;sultat de la commande <B>show ipaddress</B> utilis&eacute;e sans param&egrave;tres.
+
+    </LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show ipnet</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche le contenu du cache ARP (Address Resolution Protocol), qui contient les adresses mat&eacute;rielles des adresses IP r&eacute;solues du tron&ccedil;on suivant. Utilis&eacute;e sans param&egrave;tres, la commande <B>show ipnet</B> n'affiche les informations qu'une seule fois.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show ipnet</B> [[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie le taux de rafra&icirc;chissement (nombre de secondes entre chaque rafra&icirc;chissement de l'affichage des statistiques).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+</DIV>
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show ipstats</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche les statistiques IP. Utilis&eacute;e sans param&egrave;tres, la commande <B>show ipstats</B> n'affiche les statistiques qu'une seule fois.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show ipstats</B> [[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie le taux de rafra&icirc;chissement (nombre de secondes entre chaque rafra&icirc;chissement de l'affichage des statistiques).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show joins</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche les groupes de multidiffusion IP qui ont &eacute;t&eacute; joints pour l'adresse IP sp&eacute;cifi&eacute;e. Utilis&eacute;e sans param&egrave;tres, la commande <B>show joins</B> affiche des informations relatives &agrave; toutes les adresses IP.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show joins</B> [[<B>index=</B>]<I>AdresseIP</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>index=</B>]<I>AdresseIP</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie une adresse IP d'une interface.</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Pour obtenir les adresses IP de toutes les interfaces, consultez le r&eacute;sultat de la commande <B>show ipaddress</B> utilis&eacute;e sans param&egrave;tres.
+
+    </LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show tcpconn</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche des informations relatives &agrave; une connexion TCP sp&eacute;cifi&eacute;e. Utilis&eacute;e sans param&egrave;tres, la commande <B>show tcpconn</B> n'affiche les informations de toutes les connexions TCP qu'une seule fois.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show tcpconn</B> [[<B>index=</B>]{<I>AdresseIPLocale | PortLocal | AdresseIPDistante | PortDistant</I>}]<WBR> [[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+
+
+	<DT>[<B>index=</B>]{<I>AdresseIPLocale</I> | <I>PortLocal</I> | <I>AdresseIPDistante</I> | <I>PortDistant</I>}</DT>
+
+
+
+	<DD>Sp&eacute;cifie la connexion &agrave; propos de laquelle vous souhaitez afficher des informations. Le param&egrave;tre <I>AdresseIPLocale</I> sp&eacute;cifie une adresse IP d'une interface. Le param&egrave;tre <I>PortLocal</I> sp&eacute;cifie un port TCP pour un processus local. Le param&egrave;tre <I>AdresseIPDistante</I> sp&eacute;cifie une adresse IP d'un h&ocirc;te distant. Le param&egrave;tre <I>PortDistant</I> sp&eacute;cifie un port TCP pour un processus distant.</DD>
+
+
+
+
+
+	<DT>[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie le taux de rafra&icirc;chissement (nombre de secondes entre chaque rafra&icirc;chissement de l'affichage des informations).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show tcpstats</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche les statistiques TCP. Utilis&eacute;e sans param&egrave;tres, la commande <B>show tcpstats</B> n'affiche les statistiques qu'une seule fois.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show tcpstats</B> [[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie le taux de rafra&icirc;chissement (nombre de secondes entre chaque rafra&icirc;chissement de l'affichage des statistiques).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show udpconn</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche des informations relatives aux ports UDP utilis&eacute;s pour chaque adresse IP. Utilis&eacute;e sans param&egrave;tres, la commande <B>show udpconn</B> n'affiche les informations relatives aux ports UDP pour toutes les adresses IP qu'une seule fois.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show udpconn</B> [[<B>index=</B>]{<I>AdresseIPLocale</I> | <I>PortLocal</I>}]<WBR> [[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>index=</B>]{<I>AdresseIPLocale</I> | <I>PortLocal</I>}</DT>
+
+
+
+	<DD>Sp&eacute;cifie la connexion &agrave; propos de laquelle vous souhaitez afficher des informations. Le param&egrave;tre <I>AdresseIPLocale</I> sp&eacute;cifie une adresse IP d'une interface. Le param&egrave;tre <I>PortLocal</I> sp&eacute;cifie un port UDP pour un processus local.</DD>
+
+
+
+
+
+	<DT>[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie le taux de rafra&icirc;chissement (nombre de secondes entre chaque rafra&icirc;chissement de l'affichage des statistiques).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show udpstats</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche les statistiques UDP. Utilis&eacute;e sans param&egrave;tres, la commande <B>show udpstats</B> n'affiche les statistiques qu'une seule fois.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show udpstats</B> [[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>rr=</B>]<I>TauxRafra&icirc;chissement</I></DT>
+
+
+
+	<DD>Sp&eacute;cifie le taux de rafra&icirc;chissement (nombre de secondes entre chaque rafra&icirc;chissement de l'affichage des statistiques).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show config</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche l'adresse IP et d'autres informations de configuration pour une interface sp&eacute;cifi&eacute;e. Utilis&eacute;e sans param&egrave;tres, la commande <B>show config</B> affiche des informations de configuration pour toutes les interfaces.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show config</B> [[<B>name=</B>]<I>NomInterface</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Indique le nom de l'interface &agrave; propos de laquelle vous souhaitez afficher des informations de configuration. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">show offload</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche les t&acirc;ches qui peuvent &ecirc;tre effectu&eacute;es par la carte r&eacute;seau pour l'interface sp&eacute;cifi&eacute;e correspondant au mat&eacute;riel r&eacute;seau install&eacute;. Utilis&eacute;e sans param&egrave;tres, la commande <B>show offload</B> affiche des informations de d&eacute;chargement pour toutes les interfaces correspondant au mat&eacute;riel r&eacute;seau install&eacute;.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>show offload</B> [[<B>name=</B>]<I>NomInterface</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Indique le nom de l'interface &agrave; propos de laquelle vous souhaitez afficher des informations de d&eacute;chargement. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">delete arpcache</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Supprime les entr&eacute;es dans le cache ARP (Address Resolution Protocol) pour une interface sp&eacute;cifi&eacute;e. Utilis&eacute;e sans param&egrave;tres, la commande <B>delete arpcache</B> supprime les entr&eacute;es dans les caches ARP de toutes les interfaces.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>delete arpcache</B>  [[<B>name=</B>]<I>NomInterface</I>]</NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+
+
+<DL>
+
+	<DT>[<B>name=</B>]<I>NomInterface</I></DT>
+
+
+
+	<DD>Indique le nom de l'interface dont vous souhaitez supprimer les entr&eacute;es du cache ARP. Le param&egrave;tre <I>NomInterface</I> doit correspondre au nom de l'interface sp&eacute;cifi&eacute; dans Connexions r&eacute;seau. Si <I>NomInterface</I> contient des espaces, placez le texte entre guillemets (par exemple, <B>&quot;</B><I>Nom&nbsp;d'interface</I><B>&quot;</B>).</DD>
+
+
+
+<DT><B>/?</B></DT><DD>Affiche de l'aide &agrave; l'invite de commandes.</DD>
+
+</DL>
+
+
+
+
+
+</DIV>
+
+
+
+
+
+<P><A ID="expand" HREF="#" CLASS="expandToggle">dump</a></P>
+
+
+
+<DIV CLASS="expand">
+
+<P>Affiche la configuration actuelle sous la forme d'une s&eacute;rie de commandes Netsh Interface IP.</P>
+
+
+
+<H3>Syntaxe</H3>
+
+
+
+<P><NOBR><B>dump</B></NOBR></P>
+
+
+
+<H3>Param&egrave;tres</H3>
+
+<P>aucun</P>
+
+
+
+<H3>Remarques</H3>
+
+<UL>
+
+    <LI> Pour cr&eacute;er un fichier de script de configuration, redirigez la sortie de cette commande vers un fichier.
+
+    </LI>
+
+</UL>
+
+
+
+</DIV>
+
+
+
+<H2>Exemple Netsh Interface IP</H2>
+
+
+
+
+
+<P>La commande ci-dessous configure l'interface nomm&eacute;e <B>Connexion au réseau local</B> avec l'adresse IP statique 10.0.5.99, le masque de sous-r&eacute;seau 255.255.255.0 et une passerelle par d&eacute;faut 10.0.5.1&nbsp;:</P>
+
+
+
+<CODE>set address name=&quot;Connexion au réseau local&quot; source=static addr=10.0.5.99 mask=255.255.255.0 gateway=10.0.5.1</CODE>
+
+
+
+<NOLOC><SPAN CLASS="reuse" ID="cmdformat">XOX</span></NOLOC>
+
+</BODY>
+
+</HTML>
+

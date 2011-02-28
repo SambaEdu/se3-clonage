@@ -1,0 +1,14 @@
+20110210:
+- Correctif sur la prise en compte du fichier de correspondances NOM;IP;MAC;WORKGROUP.
+  Il y avait un bug avec les noms de fichiers contenant un 'tiret'.
+  La boite de saisie s'affichait pour remplir le nom.
+- Ajout d'affichages lors de la correction IP.
+
+20101019:
+- Mise à jour pour proposer adminse3 plutôt que admin pour intégrer le domaine
+- Mise à jour du setup.exe pour tenir compte des fichiers passés de .bat en .cmd dans domscripts
+
+20100425:
+Paquet mis à jour pour permettre de fonctionner:
+- en 1.18.6 avec rejoinSE3XP.vbs
+- à partir de 1.50 avec le nouveau dispositif d'intégration

@@ -1,0 +1,102 @@
+body {
+background-color: #FFFF85;
+}
+
+a {
+color: #7C420B;
+}
+
+a:hover {
+color: #C66912;
+}
+
+b a {
+color: #542D08;
+}
+
+blockquote {
+margin-right: 1%;
+}
+
+ul {
+margin-right: 1%;
+}
+
+li {
+margin-right: 0px;
+}
+
+ol {
+margin-right: 1%;
+}
+
+.menu {
+float: left;
+margin: 1em 1%;
+padding: 2em 2%;
+}
+
+/*
+.menu {
+float: left;
+border: 1px solid #000000;
+margin: 1em 1%;
+padding: 1em 1%;
+background-color: #FFFF85;
+}
+
+.content {
+border: 1px solid #000000;
+padding: 1em 1%;
+background-color: white;
+}
+*/
+
+.menu2 {
+width: 98%;
+border: 1px solid #000000;
+padding: 2em 1%;
+background-color: white;
+}
+
+.content {
+border: 1px solid #000000;
+margin-left: 1%;
+padding: 1em 1%;
+background-color: white;
+}
+
+.spacer {
+	clear: both;
+}
+
+.console {
+color: rgb(255, 255, 255);
+background-color: rgb(0, 0, 0);
+}
+
+.console_tape {
+color: rgb(255, 0, 51);
+background-color: rgb(0, 0, 0);
+}
+
+.console_remarque {
+color: rgb(255, 255, 0);
+background-color: rgb(0, 0, 0);
+}
+
+.script { font-family: "Courier New",Courier,mono;
+color: rgb(0, 153, 0);
+background-color: rgb(255, 255, 255);
+}
+
+.touche {
+border: 1px solid rgb(0, 0, 0);
+}
+
+.fondjaune {  background-color: #FFFF66}
+.fondorange {  background-color: #FF9900}
+
+.bordure {
+border: 1px solid rgb(0, 0, 0);
+}

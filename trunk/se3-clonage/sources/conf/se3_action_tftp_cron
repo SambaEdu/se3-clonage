@@ -1,0 +1,3 @@
+*/2 * * * * root /usr/share/se3/sbin/controle_actions_tftp.sh 2>/dev/null
+#*/2 * * * * root /usr/share/se3/scripts/controle_actions_tftp.sh
+

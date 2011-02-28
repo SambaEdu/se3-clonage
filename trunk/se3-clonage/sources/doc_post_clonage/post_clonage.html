@@ -1,0 +1,507 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Solution pre/post-clonage avec NewSID</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
+	<meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
+	<link href="styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="content">
+		<h1 align="center">Solution pre/post-clonage avec NewSID</h1>
+
+		<h2>Introduction</h2>
+		<blockquote>
+			<p>Lorsque l'on clone des postes NT/2K/XP, il faut corriger quelques bricoles sur chaque poste pour assurer un bon fonctionnement en réseau.</p>
+			<ul>
+				<li><p>Si vos postes n'utilisent pas une attribution IP par DHCP, ils ont la même IP lors du premier boot et cela provoque des erreurs.</p></li>
+				<li><p>Ils ont aussi le même nom de machine.</p></li>
+				<li><p>Sur les postes XP, ils ont aussi le même SID (<i>un identifiant de la machine,...</i>).<br>
+				Il faut corriger cela pour des questions de sécurité dans le cadre d'une utilisation hors domaine.<br>
+				Dans le cas d'une utilisation au sein d'un domaine, j'ignore si cela pose un problème.</p></li>
+			</ul>
+			<p><br></p>
+
+			<p>Pour les postes XP, vous pouvez utiliser l'outil Micro$oft SYSPREP pour corriger le nom de machine et le SID lors du premier boot après clonage.<br>
+			L'inconvénient de cet outil, c'est qu'il nécessite l'utilisation d'une clé VLK(?), sans quoi, une fois les machines clonées, il faut saisir sur chaque clone une clé valide (<i>qui corresponde au type d'installation XP pro (toutes les clés ne sont pas interchangeables)</i>).<br>
+			Bref, le risque de galère n'est pas négligeable.</p>
+			<p><br></p>
+
+			<p>Il est également possible d'utiliser l'outil NewSID de SysInternals.<br>
+			Voir <a href="http://www.sysinternals.com">http://www.sysinternals.com</a><br>
+			Cet outil permet également de changer le nom de machine et le SID, mais sans se soucier d'histoires de clés.</p>
+			<p>C'est une solution avec NewSID que j'uilise désormais et que je vais présenter ci-dessous.</p>
+			<p><br></p>
+
+			<p>Pour ce qui est du changement IP,... si vous n'utilisez pas de serveur DHCP, il est possible d'utiliser la commande 'netsh' dans un script pour modifier les paramètres IP après clonage.</p>
+			<p><br></p>
+
+			<p>Pour récapituler, j'utilise:</p>
+			<ul>
+				<li><p>La commande 'netsh' dans un script BATCH pour les changements IP,...</p></li>
+				<li><p>Le programme NewSID de SysInternals (<i>voir la rubrique <a href="#liens">liens</a></i>) pour le changement de nom et de SID.</p></li>
+				<li><p>Auto-it (<i>voir la rubrique <a href="#liens">liens</a></i>) pour lier le tout et pour les boites de dialogue.</p></li>
+			</ul>
+			<p><br></p>
+
+			<p><i>NOTE:</i> A propos de SID...</p>
+			<blockquote>
+				<p>Le SID est un identifiant propre à chaque machine dans un réseau Micro$oft.<br>
+				Qui dit identifiant dit unicité.<br>
+				Deux machines ne doivent pas avoir le même SID sans quoi on n'a plus vraiment affaire à un identifiant.</p>
+				<p>L'identifiant d'un utilisateur se construit avec quelques caractères supplémentaires: un RID<br>
+				Chaque utilisateur a donc un identifiant du type: SID+RID<br>
+				(<i>Ce n'est pas une somme numérique, mais une concaténation</i>)</p>
+				<p>Dans un réseau Micro$oft, les stations ont un SID, le serveur a un SID et le domaine a un SID.</p>
+				<p>Le SID du domaine permet à une station qui a joint le domaine de savoir si elle s'adresse bien au bon serveur lors de ses contacts ultérieurs (<i>si j'ai bien tout compris;o</i>).</p>
+				<p>Le changement de nom de la station ne modifie pas son SID.<br>
+				Or deux utilisateurs distincts créés sur deux clones risquent d'avoir le même identifiant (SID+RID) et ainsi obtenir des droits sur les fichiers, ressources,... de l'autre dans une situation Workgroup (<i>hors domaine Micro$oft/Samba</i>).<br>
+				Cela pose un problème de sécurité sur des partages et sur des supports amovibles formatés en NTFS (<i>si j'ai bien tout compris;o</i>).</p>
+				<p>Dans un domaine, pour ce qui est des identifiants de comptes utilisateurs, ils ne dépendent pas du SID de la machine, mais du SID du domaine (SID du serveur).<br>
+				L'identifiant d'un utilisateur défini sur le domaine est de la forme SID_du_domaine+RID</p>
+			</blockquote>
+			<p><br></p>
+		</blockquote>
+
+		<h2>Démarche</h2>
+		<blockquote>
+			<p>Le principe est le suivant:<br>
+			On met en place avant le clonage tout le nécessaire sur le poste "modèle".<br>
+			Après clonage, en vous connectant en administrateur local, une boite de dialogue s'ouvre pour vous inviter à saisir la nouvelle IP et le nouveau nom de machine.<br>
+			Après validation, des scripts se lancent et amènent la station à rebooter.<br>
+			Lors du login administrateur suivant, le nettoyage est fait pour supprimer ce qui a servi au post-clonage.</p>
+			<p><br></p>
+
+			<p><i>NOTE:</i></p>
+			<blockquote>
+				<p>Le dispositif permet si nécessaire d'intégrer dans la foulée un domaine SambaEdu3.<br>
+				Dans ce cas, on fournit quelques paramètres supplémentaires avant clonage.<br>
+				Et après clonage, il faut compter un reboot de plus puisque le rejoin_se3_XP.vbs se lance là où se termine habituellement l'opération hors situation SE3 (<i>le lancement est automatisé; seul le login administrateur est nécessaire</i>).</p>
+			</blockquote>
+			<p><br></p>
+		</blockquote>
+
+
+		<h2>Sans domaine SambaEdu3</h2>
+		<blockquote>
+			<p>Dans un premier temps, je vais présenter la mise en place du paquet avant clonage dans le cas où l'on ne souhaite pas intégrer un domaine SambaEdu3 dans la foulée.</p>
+			<p><br></p>
+
+			<h2>La mise en place</h2>
+			<blockquote>
+				<p>Il s'agit de désarchiver le paquet fourni (<i>voir <a href="#liens">plus bas</a></i>) dans un dossier quelconque et de lancer le 'setup.exe' qui s'y trouve.<br>
+				Dans le cas où vous avez un logiciel comme PowerArchiver installé, en double-cliquant sur l'archive, le programme vous propose de lancer le 'setup.exe'.</p>
+				<p>L'archive contient les fichiers suivants:<br>
+				<img src="images/post-clonage0a.png" alt="" width="239" height="220"><br>
+				Les fichiers .au3 sont les fichiers source AutoIt (<i>inutiles si vous ne souhaitez pas modifier/améliorer le dispositif</i>).<br>
+				Le dossier 'temp' contient l'ensemble du dispositif mis en oeuvre par le 'setup.exe'.</p>
+				<p><br></p>
+
+				<!--p>post-clonage0b.png<br><img src="images/post-clonage0b.png" alt="" width="121" height="49"></p>
+				<p><br></p>
+
+				<p>post-clonage0c.png<br><img src="images/post-clonage0c.png" alt="" width="144" height="238"></p>
+				<p><br></p-->
+
+				<p>Au lancement de 'setup.exe', la première fenêtre vous invite à définir les paramètres IP communs aux stations qui vont être clonées:<br>
+				<img src="images/post-clonage30b.png" alt="" width="306" height="345"></p>
+				<p>A ce stade, vous pouvez opter pour une configuration en client DHCP (<i>1a</i>) ou en configuration statique (<i>1b</i>).<br>
+				Dans le cas de la configuration statique, vous devez préciser à la fois le masque et la passerelle (<i>vider si il n'y a pas de passerelle</i>), mais ne décochez pas la passerelle sans quoi l'adresse IP ne serait pas modifiée (<i>la commande netsh ne permet pas de modifier l'IP sans modifier/saisir la passerelle associée</i>).</p>
+				<p>Indépendamment de ces choix, vous pouvez aussi modifier (<i>2</i>) le serveur DNS et le serveur WINS (<i>je n'ai prévu qu'un seul serveur de chaque (cela pourra être aisément modifié dans le futur)</i>).<br>
+				Si vous décochez, les paramètres DNS et WINS ne sont pas modifiés.<br>
+				Si vous cochez et videz le champ, le DNS ou WINS est supprimé.</p>
+				<p>Vous pouvez ensuite effectuer une pause après l'affichage de la config IP obtenue (<i>cela implique de l'utilisateur une validation supplémentaire; ce n'était utile que pour du débuggage...</i>).</p>
+				<p>Vous pouvez aussi choisir d'intégrer un domaine SambaEdu3 dans la foulée.<br>
+				Je laisse ce choix de côté pour un autre paragraphe.</p>
+				<p><br></p>
+
+				<p><i>NOTE:</i></p>
+				<blockquote>
+					<p>Dans le cas où vous avez préparé un poste (<i>sans DHCP</i>) avec les bons paramètres IP, ne renseignez que le masque de sous-réseau, la passerelle et laissez cochée la passerelle.<br>
+					Laissez décochés les champs DNS et WINS.</p>
+				</blockquote>
+				<p><br></p>
+
+				<p>Après validation de cette fenêtre, une partie de l'arborescence est mise en place.<br>
+				Une fenêtre DOS s'affiche brièvement pour appliquer des ACL sur le dossier 'C:\temp\clone' et éviter ainsi qu'un utilisateur non administrateur aille y fouiner.</p>
+				<p><br></p>
+
+				<p><a name="corresp_nom_mac_ip_wkgp"></a>Il vous est ensuite proposé de mettre en place un fichier de correspondances de nom de machine, adresse MAC, IP et Workgroup.<br>
+				<img src="images/post-clonage4.png" alt="" width="306" height="165"><br>
+				Si vous répondez Oui, une boite d'Exploration s'ouvre pour aller chercher le fichier.</p>
+
+				<p>L'identifiant du poste est l'adresse MAC de la carte réseau.</p>
+				<p>Si un tel fichier est mis en place, après le clonage, le renommage, changement IP,... seront effectués automatiquement sans saisie de l'administrateur.<br>
+				Si un tel fichier n'est pas proposé, vous serez invité à saisir le nom, l'IP et le Workgroup souhaité lors du redémarrage après clonage.</p>
+				<p>Chaque ligne du fichier (<i>si vous en proposez un</i>) contient les informations suivantes avec le formatage suivant:<br>
+				NOM_DE_MACHINE<font color="red">;</font>ADRESSE_MAC<font color="red">;</font>ADRESSE_IP<font color="red">;</font>WORKGROUP</p>
+				<p>Voici un exemple de fichier:<br>
+				<img src="images/post-clonage6.png" alt="" width="441" height="149"><br>
+				<i>A noter:</i> Le séparateur des champs est le point-virgule.<br>
+				Et le séparateur dans l'adresse MAC est ":".</p>
+				<p><br></p>
+
+				<p>Pour la suite, je ne vais pas mettre en place un tel fichier.</p>
+				<p><br></p>
+
+
+				<p><a name="demarrage_administrateur"></a>La troisième partie de la mise en place débute:<br>
+				Il s'agit de placer l'exécutable 'clone.exe' dans le dossier 'C:\Documents and Settings\<b>XXXXX</b>\Menu démarrer\Programmes\Démarrage\' d'un administrateur de la machine.<br>
+				C'est le compte avec lequel vous devrez vous connecter sur chaque station clonée pour que les corrections IP, nom de machine et SID soient lancées.</p>
+				<p>La fenêtre suivante s'affiche:<br>
+				<img src="images/post-clonage8.png" alt="" width="419" height="166"><br>
+				Elle fournit à peu près les mêmes informations que celles que je viens de proposer.<br>
+				Validez.</p>
+				<p><br></p>
+
+				<p>Dans la fenêtre suivante, choisissez un compte administrateur:<br>
+				<img src="images/post-clonage10.png" alt="" width="324" height="331"><br>
+				Sur cet exemple, je n'ai qu'un compte défini.<br>
+				Il a le statut d'administrateur (<i>ça ne se voit pas sur cet écran</i>).<br>
+				Et il se nomme 'Administrateur'.</p>
+				<p>Après la sélection, validez.</p>
+				<p><br></p>
+
+				<p>La fenêtre de confirmation s'affiche:<br>
+				<img src="images/post-clonage11.png" alt="" width="506" height="175"></p>
+				<p><br></p>
+
+				<p>Après validation, une dernière fenêtre vous indique que tout est en place:<br>
+				<img src="images/post-clonage12.png" alt="" width="306" height="245"></p>
+				<p><br></p>
+
+				<p><a name="autologon"></a>Pour éviter de devoir vous connecter sur chaque station après clonage, vous pouvez mettre en place un Auto-login (<i>il s'agit d'une petite modification dans la base de registre</i>):<br>
+				<img src="images/post-clonage13.png" alt="" width="306" height="245"><br>
+				Cet auto-login sera automatiquement supprimé une fois la tâche de post-clonage effectuée.</p>
+				<p><br></p>
+
+				<p>Lors du Clic sur OK, vous obtenez le message suivant:<br>
+				<img src="images/post-clonage14.png" alt="" width="303" height="113"></p>
+				<p><br></p>
+
+				<p>Vous pouvez dès lors éteindre la machine et procéder au clonage.</p>
+				<p><br></p>
+
+				<p><i>NOTE:</i></p>
+				<blockquote>
+					<p>Les fichiers mis en place le sont:</p>
+					<ul>
+						<li>
+							<p>Dans 'C:\temp\':<br>
+							<img src="images/post-clonage15b.png" alt="" width="127" height="52"><br>
+							Les fichiers à la racine de ce dossier sont ceux qui serviront au nettoyage.</p>
+							<p>Dans le sous-dossier 'C:\temp\clone\', on trouve les paramètres, les BATCH et programmes:</p>
+							<table border="0">
+								<tr>
+									<td>
+										<img src="images/post-clonage16b2.png" alt="" width="145" height="272">
+									</td>
+									<td>
+										<p><font color="red">Préciser l'utilité de chacun des fichiers...</font></p>
+									</td>
+								</tr>
+							</table>
+							<p><br></p>
+						</li>
+						<li>
+							<p>Dans 'C:\Documents and Settings\<b>XXXXX</b>\Menu démarrer\Programmes\Démarrage\', le programme 'clone.exe' qui sera exécuté au login correspondant après clonage sur chaque station (<i>modèle compris (pour le modèle, après clonage, vous pourrez annuler les modifs et procéder au nettoyage en lançant directement le programme 'C:\temp\nettoyage2.exe')</i>).</p>
+						</li>
+					</ul>
+				</blockquote>
+				<p><br></p>
+			</blockquote>
+
+			<h2>Le clonage</h2>
+			<blockquote>
+				<p>Procédez au clonage des stations d'après le modèle à l'aide de l'outil de votre choix.<br>
+				Pour ma part j'utilise généralement UdpCast.<br>
+				Voir <a href="http://www.udpcast.linux.lu/">http://www.udpcast.linux.lu/</a></p>
+				<p><br></p>
+			</blockquote>
+
+			<h2>Après clonage</h2>
+			<blockquote>
+				<p>Après clonage, sur chaque station, connectez-vous sous l'identité de l'utilisateur administrateur dans le 'Menu démarrer\Programmes\Démarrage\' duquel le 'clone.exe' a été mis en place (<i>sauf si vous avez mis en place l'<a href="#autologon">autologon</a></i>).</p>
+				<p>Dans cet exemple, il s'agissait de l'utilisateur 'Administrateur':<br>
+				<img src="images/post-clonage19.png" alt="" width="417" height="267"></p>
+				<p><br></p>
+
+				<p>En fin de login, une fenêtre s'ouvre (<i>il faut parfois un peu de temps pour que W$ ait fini de charger tout ce qui se met en tray-icon,...</i>).<br>
+				<img src="images/post-clonage31.png" alt="" width="305" height="205"><br>
+				Saisissez l'IP, le nom et le Workgroup souhaité:<br>
+				<img src="images/post-clonage32.png" alt="" width="306" height="205"><br>
+				Le nom ne doit comporter que des caractères alphanumériques (<i>et éventuellement le caractère '_'</i>).</p>
+				<p>Validez.<br>
+				C'est tout ce que vous aurez à faire sur chaque clone.</p>
+				<p><i>NOTE:</i> Si le nom du Workgroup est laissé vide, il n'est pas modifié.</p>
+				<p><br></p>
+
+
+				<p>Un premier BATCH se lance (<i>'corrigboot.bat'</i>) pour ramener le délai dans le 'boot.ini' à zéro.<br>
+				Ce fichier est une scorie de mes premiers essais avec Sysprep qui avait aussi l'inconvénient de remettre un délai avant de démarrer XP.<br>
+				Il s'exécute très rapidement et c'est une correction qui me convient; je l'ai donc conservé.</p>
+				<p><br></p>
+
+				<p>Un deuxième BATCH se lance (<i>'modifip4.bat'</i>) pour procéder au changement d'IP,... et aux autres modifications éventuelles sur l'interface réseau:<br>
+				<img src="images/post-clonage33.png" alt="" width="668" height="331"><br>
+				L'opération de changement IP,... est assez longue.<br>
+				Cependant, si vous clonez plusieurs machines, pendant que l'opération se fait, vous pouvez vous occuper d'un autre clone.</p>
+				<p><br></p>
+
+				<p>Sans que vous ayez quoi que ce soit à faire, un troisième et dernier BATCH se lance (<i>'new_sid.bat'</i>) pour procéder au changement de workgroup, de nom de machine et de SID:<br>
+				<img src="images/post-clonage51.png" alt="" width="668" height="331"><br>
+				L'opération est assez longue.<br>
+				Lorsqu'elle se termine, la machine reboote automatiquement.</p>
+				<p><br></p>
+
+				<p><i>NOTE:</i></p>
+				<ul>
+					<li><p>Il est recommandé de se connecter à nouveau une fois avec le même compte administrateur pour que le nettoyage soit effectué.<br>
+					Il n'est cependant pas indispensable en mode hors SambaEdu3.</p></li>
+					<li><p>Si vous aviez spécifié un fichier de correspondances NOM;MAC;IP;WORKGROUP, la saisie des informations ne s'affiche pas.<br>
+					En revanche, une fenêtre affiche quelques secondes les paramètres qui vont être appliqués:<br>
+					<img src="images/post-clonage21.png" alt="" width="170" height="139"><br>
+					Puis les modifications s'exécutent sans intervention.</p></li>
+				</ul>
+				<p><br></p>
+			</blockquote>
+		</blockquote>
+
+		<h2>Avec un domaine SambaEdu3</h2>
+		<blockquote>
+			<p>Dans le cas où vous souhaitez intégrer un domaine SambaEdu3, j'ai prévu un dispositif qui mérite quelques explications.<br>
+			Je vais me contenter ici d'indiquer ce qui diffère de la situation précédente.</p>
+			<p><br></p>
+
+			<h2>La mise en place</h2>
+			<blockquote>
+				<p>Comme dans la situation hors domaine SambaEdu3, il s'agit de lancer le 'setup.exe' après avoir extrait l'archive.</p>
+				<p><br></p>
+
+				<p>Voici la situation initiale:<br>
+				On clone des machines d'après un modèle qui n'est pas dans le domaine SAMBAEDU3 (<i>quitte à la sortir du domaine auparavant</i>).</p>
+				<p><img src="images/post-clonage40.png" alt="" width="306" height="345"><br>
+				Les paramètres sont définis et j'ai coché la case qui-va-bien pour intégrer un domaine SambaEdu3 dans la foulée.</p>
+				<p><br></p>
+
+				<p>Ici aussi, l'étape suivante est celle de la mise en place d'un fichier de correspondances de nom de machine, adresse MAC, IP et Workgroup (<i>voir <a href="#corresp_nom_mac_ip_wkgp">plus haut</a></i>).</p>
+				<p><i>NOTE:</i> Si les correspondances indiquées pour le nom et l'adresse MAC sont en contradiction avec le contenu du fichier 'clients.ini' de SambaEdu3, c'est le contenu de ce dernier fichier qui 'emportera (<i>les modifications propres à SambaEdu3 sont effectuées en dernier</i>).</p>
+				<p><br></p>
+
+				<p>La fenêtre suivante s'ouvre:<br>
+				<img src="images/post-clonage40b.png" alt="" width="306" height="175"><br>
+				Les deux premiers champs sont remplis automatiquement (<i>domaine par défaut et IP du serveur WINS</i>).<br>
+				Il reste à préciser le mot de passe à l'abri des regards indiscrets.</p>
+				<p>Après validation, des fichiers sont générés pour accéder à des partages en tant qu'utilisateur 'admin' de SambaEdu3.<br>
+				Le mot de passe y est en clair.<br>
+				C'est donc une faille de sécurité exploitable de diverses façons (<i>voir <a href="#securite">plus bas</a></i>).</p>
+				<p><br></p>
+
+				<p>Après validation, un premier BATCH se lance pour récupérer le fichier 'clients.ini' s'il existe.<br>
+				<img src="images/post-clonage40c.png" alt="" width="668" height="331"></p>
+				<p>Ce fichier se trouve dans le partage [Progs] dans le dossier 'install\installdll\'.<br>
+				Il contient les correspondances nom de machine/adresse MAC de la carte réseau.<br>
+				Si lors de l'intégration à l'aide du rejoin_se3_XP.vbs l'adresse MAC de la la station est trouvée dans ce fichier, le nom de machine est automatiquement récupéré du 'clients.ini'.</p>
+				<p>Il convient donc de faire en sorte que l'accès ci-dessus soit un succès.<br>
+				Si par exemple la config réseau actuelle est incompatible avec l'accès au partage, le fichier ne sera pas récupéré.<br>
+				Ce n'est pas dramatique, mais lors du post-clonage, vous vous verrez proposer un champ 'Nom de machine' dont il ne sera pas tenu compte si la machine avait déjà rejoint le domaine lors d'un usage précédent.<br>
+				C'est le nom inscrit dans le 'clients.ini' situé dans le partage qui sera finalement imposé (<i>c'est le fonctionnement normal du 'rejoin_se3_XP.vbs'</i>).</p>
+				<p>Lors de cette opération, une version modifiée du 'rejoin_se3_XP.vbs' est également mise en place pour éviter que le VBS vous demande de confirmer.<br>
+				Le script se nomme alors 'rejoin_se3_XP_clone.vbs'.<br>
+				La modification consiste à commenter deux boites de dialogue et à imposer le nom de machine courant comme nom à utiliser si la machine n'était pas déjà dans le 'clients.ini'.<br>
+				Si la mise en place de ce script échoue, la mise en place est tentée à nouveau après le clonage.<br>
+				Dans le pire des cas, c'est le 'rejoin_se3_XP.vbs' qui se lance et vous aurez une ou deux boites de dialogues en plus à valider.</p>
+				<p><br></p>
+
+				<p>Dans le cas où l'on souhaite intégrer un domaine SambaEdu3, il est donc préférable de disposer d'une config IP qui permette d'accéder dès à présent au serveur SambaEdu3.<br>
+				Cela n'a pas d'importance dans le cas où on ne souhaite pas intégrer un domaine SambaEdu3.</p>
+				<p><br></p>
+
+				<p>Si l'accès précédent a réussi, un deuxième BATCH est lancé pour mettre en place sur le Bureau de l'utilisateur 'admin' de SambaEdu3 un raccourci vers le programme de nettoyage.<br>
+				<img src="images/post-clonage40d.png" alt="" width="668" height="331"><br>
+				Si l'accès est un échec, la mise en place sera tentée à nouveau sur chaque station clonée après la reconfiguration IP.</p>
+				<p><br></p>
+
+				<p>Contrairement à la situation hors domaine SambaEdu3, il est très important d'effectuer le nettoyage sur les machines pour des questions de sécurité (<i>voir <a href="#securite">plus bas</a></i>).<br>
+				Si pour une raison ou une autre, le raccourci ne peut pas être mis en place, il est toujours possible (<i>et même recommandé</i>) de lancer le 'C:\temp\nettoye2.exe' (<i>ou de se connecter avec le compte administrateur local dont le 'Menu démarrer\Programmes\Démarrage\' contiendra le 'clone.exe'</i>)</p>
+				<p><br></p>
+
+				<p>Je ne détaille pas davantage la suite des opérations.<br>
+				La fenêtre de choix du compte administrateur local s'ouvre.<br>
+				Voir <a href="#demarrage_administrateur">ci-dessus</a> pour la fin de la mise en place.</p>
+				<p><br></p>
+
+				<p>Les fichiers mis en place dans 'C:\temp\clone\' sont un peu plus nombreux que lorsqu'on n'intègre pas un domaine SambaEdu3 dans la foulée:<br>
+				<img src="images/post-clonage41.png" alt="" width="151" height="392"><br>
+				<font color="red">Préciser l'utilité de chacun des fichiers...</font></p>
+				<p><br></p>
+
+				<p><i>NOTE:</i><a name="securite"></a></p>
+				<blockquote>
+					<p>Le mot de passe de l'utilisateur 'admin' de SambaEdu3 est en clair dans plusieurs fichiers de 'C:\temp\clone\'.<br>
+					Des ACL sont mises en place sur ce dossier pour éviter qu'un utilisateur non-administrateur de la machine aille y fouiner.<br>
+					Ces ACL n'ont d'effet que si votre partition système est formatée en NTFS et non en FAT32.</p>
+					<p>Même si aucun intrus ne dispose du mot de passe d'un compte administrateur de la machine, il est possible d'accéder à ce dossier de diverses façons.<br>
+					Il est notamment possible d'utiliser la mini-distribution Linux 'Offline NT Password and Recovery Kit' pour vider le mot de passe d'un compte administrateur et ainsi ensuite se connecter en administrateur pour aller lire le mot de passe.<br>
+					Il est aussi possible d'accéder aux fichiers directement depuis une distribution Live Linux ou autre en montant la partition NTFS...</p>
+					<p>Il est même possible à un utilisateur de se mettre en client de votre programme de clonage pour cloner une machine de plus sur laquelle il pourra trafiquer sans que vous le voyez (<i>si vous clonez beaucoup de machines, un client de plus passera sûrement inaperçu</i>).</p>
+					<p>Enfin, et sans prétendre à l'exhaustivité, un utilisateur peut sniffer le réseau pendant les accès 'admin' pour récupérer le mot de passe (<i>mais cela reste vrai en dehors de la situation de post-clonage</i>).</p>
+				</blockquote>
+				<p><br></p>
+			</blockquote>
+
+			<h2>Le clonage</h2>
+			<blockquote>
+				<p>Procédez au clonage des stations d'après le modèle à l'aide de l'outil de votre choix.<br>
+				Pour ma part j'utilise généralement UdpCast.<br>
+				Voir <a href="http://www.udpcast.linux.lu/">http://www.udpcast.linux.lu/</a></p>
+				<p><br></p>
+			</blockquote>
+
+			<h2>Après clonage</h2>
+			<blockquote>
+				<p>Après le clonage, vous vous connectez avec le compte administrateur local choisi précédemment sur chacune des stations clonées (<i>sauf si vous avez mis en place l'<a href="#autologon">autologon</a></i>).</p>
+				<p><br></p>
+
+				<p>Si un fichier de correspondances NOM;MAC;IP;WORKGROUP a été mis en place, il s'affiche:<br>
+				<img src="images/post-clonage21.png" alt="" width="170" height="139"></p>
+				<p><br></p>
+
+				<p>Sinon, il y a deux situations (<i>dans les captures ci-dessous, les classes IP e sont pas les mêmes (le serveur SambaEdu3 de test n'était pas le même)</i>):</p>
+				<table border="0">
+					<tr valign="top">
+						<td>
+							<p>Si le fichier 'clients.ini' a été récupéré et si l'adresse MAC de la station courante s'y trouvait, un des deux champs sera rempli automatiquement et non modifiable:<br>
+							<img src="images/post-clonage60a.png" alt="" width="306" height="175"></p>
+						</td>
+						<td>
+							<p>Si la machine n'était pas dans le 'clients.ini', ou si la récupération du 'clients.ini' a échoué, vous obtenez une boite de dialogue avec deux champs à remplir:<br>
+							<img src="images/post-clonage60b.png" alt="" width="306" height="175"></p>
+							<p><i>NOTE:</i> Si le 'clients.ini' n'a pas pu être récupéré et qu'il contient l'adresse MAC correspondant à la machine, la saisie du nom de machine sera outrepassée par le script 'rejoin_se3_XP'<br>(<i>en fait le nom de machine est modifié une première fois par le script 'newsid.bat' et une deuxième fois par le script 'rejoin_se3_XP.vbs'</i>).</p>
+						</td>
+					</tr>
+				</table>
+				<p><br></p>
+
+				<p>C'est tout ce que vous avez à faire jusqu'à ce que la station ait rebooté.<br>
+				Passez à une autre station.</p>
+
+				<p>Voici ce qui se produit:</p>
+
+				<p>Après validation, un premier BATCH (<i>'corrigboot.bat'</i>) corrigeant éventuellement le 'boot.ini' est lancé.<br>
+				Un deuxième BATCH est lancé (<i>'modifip4.bat'</i>) pour procéder aux modifications IP,...<br>
+				<img src="images/post-clonage61.png" alt="" width="668" height="331"></p>
+				<p><br></p>
+
+				<p>Un deuxième BATCH (<i>'new_sid.bat'</i>) se lance ensuite pour effectuer le changement de nom de machine et de SID:<br>
+				<img src="images/post-clonage62.png" alt="" width="668" height="331"><br>
+				Lorsque l'opération se termine, la machine reboote.</p>
+				<p><br></p>
+
+				<p>Après le reboot, il faut à nouveau se connecter avec le compte administrateur local pour procéder à l'intégration du domaine (<i>sauf si vous avez mis en place l'<a href="#autologon">autologon</a></i>).<br>
+				<img src="images/post-clonage64.png" alt="" width="416" height="267"></p>
+				<p><br></p>
+
+				<p>Une fois connecté, vous pouvez passer à une autre machine.<br>
+				Le script d'intégration du domaine va se lancer automatiquement.</p>
+
+				<p>Un lecteur réseau pointant vers le partage [Progs] est créé.<br>
+				Le script 'rejoin_se3_XP_clone.vbs' situé dans le dossier 'install/installdll/' est ensuite lancé:<br>
+				<img src="images/post-clonage66.png" alt="" width="668" height="331"></p>
+				<p><br></p>
+
+				<p><i>NOTE:</i> A ce stade, le(s) fichier(s) contenant le mot de passe de l'utilisateur 'admin' de SambaEdu3 est supprimé (<i>les opérations restantes ne nécessitent plus ce mot de passe</i>) et la corbeille est vidée.<br>
+				L'autologon est également supprimé s'il avait été mis en place.</p>
+				<p><br></p>
+
+				<p>Le VBS se lance:<br>
+				<img src="images/post-clonage67.png" alt="" width="385" height="147"></p>
+				<p><br></p>
+
+				<p>Window$ finit par se refermer:<br>
+				<img src="images/post-clonage69.png" alt="" width="417" height="144"></p>
+				<p><br></p>
+
+				<p>A partir de là, c'est le fonctionnement classique du 'rejoin_se3_XP.vbs':<br>
+				La machine va rebooter <b>deux fois</b> pour effectuer toute la mise en place (<i>jonction au domaine, création d'adminse3, mise en place de la DLL,ajout de l'utilisateur 'admin' à la liste des administrateurs locaux,...</i>)</p>
+
+				<p>Une fois les deux reboot effectués, vous vous connectez en utilisateur 'admin' de SambaEdu3:<br>
+				<img src="images/post-clonage70.png" alt="" width="417" height="296"></p>
+				<p><br></p>
+
+				<p>Une fois connecté, pour des questions de sécurité (<i>voir <a href="#securite">plus haut</a></i>), effectuez le nettoyage:<br>
+				<img src="images/post-clonage71.png" alt="" width="48" height="54"></p>
+				<p><br></p>
+			</blockquote>
+		</blockquote>
+
+		<h2>Scorie</h2>
+		<blockquote>
+			<p>En fin d'opération, ne subsiste sur chaque station que le fichier 'C:\temp\nettoye2.exe'.<br>
+			Vous pouvez le supprimer manuellement, ou le laisser (<i>ce n'est pas très gênant</i>).</p>
+			<p><br></p>
+		</blockquote>
+
+		<!--h2></h2>
+		<blockquote>
+			<p></p>
+			<p><br></p>
+		</blockquote-->
+
+		<h2>La commande NETSH</h2>
+		<blockquote>
+			<p>La commande 'netsh' est ici utilisée pour les changements IP,...<br>
+			Voici l'aide pour les <a href="ressources/netsh_int_ip.html">Commandes Netsh pour l'interface IP</a><br>
+			Cette commande permet bien d'autres opérations encore.</p>
+			<p><br></p>
+
+			<p>De façon générale, vous pouvez accéder à l'Aide de la ligne de commande WinXP par la commande:<br>
+			<span class="console">%windir%\hh.exe ms-its:%windir%\Help\ntcmds.chm::/ntcmds.htm</span><br>
+			Pour plus de commodité, voici un BATCH permettant de lancer l'aide: <a href="ressources/aide_cmd.bat">aide_cmd.bat</a></p>
+			<p><br></p>
+		</blockquote>
+
+		<h2>Licences</h2>
+		<blockquote>
+			<p>Pour ce qui concerne les licences, se reporter à celles de NewSID et d'AutoIt (<i>voir la rubrique <a href="#liens">liens</a></i>).<br>
+			Quant à mes scripts BATCH et .AU3, ils sont librement modifiables, diffusables,...</p>
+			<p><br></p>
+		</blockquote>
+
+		<h2>Téléchargement</h2>
+		<blockquote>
+			<p>Voici le paquet présenté dans cette page: <a href="ressources/paquet_post-clonage_20051008.zip">paquet_post-clonage_20051008.zip</a></p>
+			<p>Et la version corrigée pour tenir compte de la mise à jour du 09/11/2005 du 'rejoin_se3_XP.vbs': <a href="ressources/paquet_post-clonage_20051119.zip">paquet_post-clonage_20051119.zip</a></p>
+			<p>Et une nouvelle version avec des fonctions en plus: <a href="ressources/paquet_post-clonage_20061101.zip">paquet_post-clonage_20061101.zip</a> (<i>voir le changelog</i>)</p>
+			<p>Et une nouvelle version avec encore des fonctions en plus: <a href="ressources/paquet_post-clonage_20061129.zip">paquet_post-clonage_20061129.zip</a> (<i>voir le changelog</i>)</p>
+			<p>Et une nouvelle version permettant de ne pas mettre en place d'ACL sur C:\temp\clone si jamais cela pose un problème: <a href="ressources/paquet_post-clonage_20070131.zip">paquet_post-clonage_20070131.zip</a> (<i>voir le changelog</i>)</p>
+			<p>Et encore une nouvelle version plus souple sur le format de l'adresse MAC dans le fichier de correspondances NOM;MAC;IP;WORKGROUP: <a href="ressources/paquet_post-clonage_20070201.zip">paquet_post-clonage_20070201.zip</a> (<i>voir le changelog</i>)</p>
+			<p>Correction d'un bug sur le mode DHCP: <a href="ressources/paquet_post-clonage_20070323.zip">paquet_post-clonage_20070323.zip</a> (<i>voir le changelog</i>)</p>
+			<p>Ajout de fonctionnalité: <a href="ressources/paquet_post-clonage_20070326.zip">paquet_post-clonage_20070326.zip</a> (<i>voir le changelog</i>)</p>
+			<p>Ajout de la prise en compte de se3-wpkg: <a href="ressources/paquet_post-clonage_20070616.zip">paquet_post-clonage_20070616.zip</a> (<i>voir le changelog</i>)</p>
+			<p>Amélioration de la prise en compte de se3-wpkg: <a href="ressources/paquet_post-clonage_20080120.zip">paquet_post-clonage_20080120.zip</a> (<i>voir le changelog</i>)</p>
+
+			<p>Possibilité de fournir un fichier de correspondance NOM;MAC;IP;WORKGROUP avec IP=DHCP.<br />
+			Correction d'un bug sur le renommage du poste en mode client DHCP: <a href="ressources/paquet_post-clonage_20080714.zip">paquet_post-clonage_20080714.zip</a> (<i>voir le changelog</i>)</p>
+			<p><br></p>
+		</blockquote>
+
+		<h2>A FAIRE</h2>
+		<blockquote>
+			<p>Remettre tout ça au propre et faire un changelog...</p>
+			<p>Voici une amorce de <a href="changelog.html">Changelog</a>.</p>
+			<p><br></p>
+
+			<p>Permettre de personnaliser les IP proposées lors de la mise en place et dans la fenêtre de saisie de l'IP (<i>par défaut, on se voit proposer du 10.127.xxx.xxx</i>).</p>
+			<p><br></p>
+		</blockquote>
+
+		<h2>Liens<a name="liens"></a></h2>
+		<blockquote>
+			<p>NewSID: <a href="http://www.sysinternals.com">http://www.sysinternals.com</a></p>
+			<p>AutoIt: <a href="http://www.autoitscript.com/autoit3/docs/index.html">http://www.autoitscript.com/autoit3/docs/index.html</a></p>
+			<p><br></p>
+		</blockquote>
+	</div>
+</body>
+</html>

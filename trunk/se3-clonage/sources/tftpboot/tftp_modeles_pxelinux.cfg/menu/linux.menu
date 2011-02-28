@@ -1,0 +1,120 @@
+menu title Linux
+
+# Decommenter la ligne ci-dessous pour interdire les modifications de ligne de commande avec TAB et la saisie d'une nouvelle ligne de commande avec ECHAP
+#menu INCLUDE pxelinux.cfg/graphics.conf
+
+LABEL Menu_maintenance
+      MENU LABEL ^Retour au menu Maintenance
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/maintenance.menu
+
+label taz
+    MENU LABEL ^SliTaz
+    kernel bzImage
+    append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal sound=noconf screen=text ###TFTP_SLITAZ_CMDLINE###
+    TEXT HELP
+    Mini-distribution Linux
+    ENDTEXT
+
+label slitaz
+    MENU LABEL ^SliTaz mode graphique
+    kernel bzImage
+    append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal ###TFTP_SLITAZ_CMDLINE###
+    TEXT HELP
+    Mini-distribution Linux en mode graphique
+    ENDTEXT
+
+# Label de sauvegarde:
+label tazsvg
+   MENU LABEL ^SliTaz sauvegarde automatique
+   kernel bzImage
+   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=noconf src_part=auto dest_part=auto auto_reboot=y delais_reboot=90 work=/root/bin/sauve_part.sh ###TFTP_SLITAZ_CMDLINE###
+   TEXT HELP
+   Mini-distribution Linux lancant un script de sauvegarde qui detecte la
+   partition a sauvegarder et la partition destination.
+   ENDTEXT
+
+# Label de restauration:
+label tazrst
+   MENU LABEL ^SliTaz restauration automatique
+   kernel bzImage
+   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=noconf src_part=auto dest_part=auto auto_reboot=y delais_reboot=90 work=/root/bin/restaure_part.sh ###TFTP_SLITAZ_CMDLINE###
+   TEXT HELP
+   Mini-distribution Linux lancant un script de restauration qui detecte la
+   partition source de la sauvegarde et la partition a restaurer.
+   ENDTEXT
+
+# Exemple:
+#label taz2
+#    MENU LABEL ^SliTaz Tests
+#    kernel bzImage
+#    append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal sound=noconf screen=text cle_ssh=http://192.168.52.198:909/tftp/paquet_cles.tar.gz ###TFTP_SLITAZ_CMDLINE###
+
+###SYSRESCCD###label sysrcd
+###SYSRESCCD###   MENU LABEL SystemRescueCd (resolution graphique minimale)
+###SYSRESCCD###   kernel rescuecd
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###   TEXT HELP
+###SYSRESCCD###   Boot standard avec le noyau 32bit, clavier FR (devrait toujours fonctionner)
+###SYSRESCCD###   Vous devriez choisir cette option si vous ne savez pas laquelle utiliser.
+###SYSRESCCD###   ENDTEXT
+
+###SYSRESCCD###label sysrcd1
+###SYSRESCCD###   MENU LABEL SystemRescueCd (800x600)
+###SYSRESCCD###   kernel rescuecd
+###SYSRESCCD###   INITRD initram.igz vga=788 scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait 
+###SYSRESCCD###   TEXT HELP
+###SYSRESCCD###   Boot standard avec le noyau 32bit, clavier FR avec 800x600.
+###SYSRESCCD###   En remplacant vga=788 par vga=791, vous passez en 1024x768
+###SYSRESCCD###   ENDTEXT
+
+###SYSRESCCD###label sysrcd2
+###SYSRESCCD###   MENU LABEL SystemRescueCd avec noyau alternatif altker32
+###SYSRESCCD###   kernel altker32
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###   TEXT HELP
+###SYSRESCCD###   Boot sur le noyau alternatif 32bit avec les options par defaut
+###SYSRESCCD###   (devrait toujours fonctionner).
+###SYSRESCCD###   ENDTEXT
+
+###SYSRESCCD###label sysrcd64
+###SYSRESCCD###   MENU LABEL SystemRescueCd avec noyau 64bit
+###SYSRESCCD###   kernel rescue64
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###   TEXT HELP
+###SYSRESCCD###   Boot sur le noyau 64bit (devrait fonctionner sur CPU 64bit)
+###SYSRESCCD###   Un noyau 64bit est requis si vous voulez utiliser des programmes 64bit
+###SYSRESCCD###   ou chrooter un systeme linux 64bit.
+###SYSRESCCD###   ENDTEXT
+
+###SYSRESCCD###LABEL altker64
+###SYSRESCCD###     MENU LABEL SystemRescueCd avec noyau alternatif altker64
+###SYSRESCCD###     kernel altker64
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###     TEXT HELP
+###SYSRESCCD###     Boot sur le noyau alternatif 64bit avec les options par defaut
+###SYSRESCCD###     (devrait toujours fonctionner).
+###SYSRESCCD###     ENDTEXT
+
+# UdpCast depuis SystemRescueCd
+###SYSRESCCD###LABEL nofbu1
+###SYSRESCCD###     MENU LABEL SystemRescueCd emetteur UdpCast
+###SYSRESCCD###     kernel rescuecd
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp
+###SYSRESCCD###     TEXT HELP
+###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
+###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec
+###SYSRESCCD###     preselection du mode emetteur.
+###SYSRESCCD###     ENDTEXT
+
+###SYSRESCCD###LABEL nofbu2
+###SYSRESCCD###     MENU LABEL SystemRescueCd recepteur UdpCast (poste ecrase)
+###SYSRESCCD###     kernel rescuecd
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp
+###SYSRESCCD###     TEXT HELP
+###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
+###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec
+###SYSRESCCD###     preselection du mode recepteur.
+###SYSRESCCD###     ENDTEXT
+
+

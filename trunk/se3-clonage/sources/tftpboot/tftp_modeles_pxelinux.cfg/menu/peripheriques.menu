@@ -1,0 +1,28 @@
+menu title Peripheriques de boot
+
+# Decommenter la ligne ci-dessous pour interdire les modifications de ligne de commande avec TAB et la saisie d'une nouvelle ligne de commande avec ECHAP
+#menu INCLUDE pxelinux.cfg/graphics.conf
+
+LABEL Menu_maintenance
+      MENU LABEL ^Retour au menu Maintenance
+      KERNEL menu.c32
+      APPEND pxelinux.cfg/maintenance.menu
+
+label a
+    MENU LABEL ^Boot sur disquette
+    localboot 0x00
+
+label q
+    MENU LABEL ^Peripherique de boot suivant
+    localboot -1
+
+label disk1
+    MENU LABEL ^Disque dur 1
+    localboot 0x80
+
+label disk2
+    MENU LABEL ^Disque dur 2
+    localboot 0x81
+
+#label 0
+#localboot 0x80
