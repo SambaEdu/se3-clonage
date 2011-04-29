@@ -32,6 +32,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 
         $msg="";
 	if(isset($_POST['config_tftp'])){
+		//echo "PLOP";
 		//$msg="";
 		$tftp_aff_menu_pxe=isset($_POST['tftp_aff_menu_pxe']) ? $_POST['tftp_aff_menu_pxe'] : NULL;
 		$tftp_pass_menu_pxe=isset($_POST['tftp_pass_menu_pxe']) ? $_POST['tftp_pass_menu_pxe'] : NULL;
@@ -90,13 +91,13 @@ if (is_admin("system_is_admin",$login)=="Y")
 	creation_tftp_tables();
 
 	echo "<h1>".gettext("Configuration TFTP")."</h1>\n";
-if(isset($_POST['action'])){
-           echo "Lancement du t&#233;l&#233;chargement de System Rescue CD....";
-           system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_sysresccd.sh mode=html 2>&1");
+	if(isset($_POST['action'])){
+		echo "Lancement du t&#233;l&#233;chargement de System Rescue CD....";
+		system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_sysresccd.sh mode=html 2>&1");
 
-           echo "<a href=".$_SERVER['PHP_SELF'].">Retour </a>";
-           exit;
-       }
+		echo "<a href=".$_SERVER['PHP_SELF'].">Retour </a>";
+		exit;
+	}
 	if($msg!="") {echo "<div style='text-align:center; color:red'>$msg</div>\n";}
 
 	$se3ip=crob_getParam('se3ip');
@@ -147,8 +148,8 @@ if(isset($_POST['action'])){
 	echo "<i>Exemples&nbsp;:</b> cle_ssh=http://$se3ip:909/tftp/paquet_cles_pub_ssh.tar.gz<br />Il faudra cr&#233;er l'archive paquet_cles_pub_ssh.tar.gz dans /var/www/se3/tftp/ avec les cl&#233;s ssh publiques que vous souhaitez.</td>\n";
 	echo "<td valign='top'>\n";
 	$tftp_slitaz_cmdline=crob_getParam('tftp_slitaz_cmdline');
-	echo "<input type='text' name='tftp_slitaz_cmdline' value='$tftp_slitaz_cmdline' ";
-        echo "<input type=\"hidden\" name=\"config_tftp\" value=\"y\" />\n";
+	echo "<input type='text' name='tftp_slitaz_cmdline' value='$tftp_slitaz_cmdline' />\n";
+	echo "<input type=\"hidden\" name=\"config_tftp\" value=\"y\" />\n";
 	echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Valider les choix\" /></p>\n";
 	echo "</form>\n";
 	echo "</td>\n";

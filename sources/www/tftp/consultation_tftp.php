@@ -312,8 +312,9 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 									//echo " <u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('<center>".preg_replace("/'/","",preg_replace("/'/","",visu_tache($mp_curr[0]["macAddress"],'light')))."</center>')")."\"><img name=\"action_image$loop\" src=\"../elements/images/detail.gif\" /></u>";
 
-									echo " <u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('<center>".preg_replace("/'/","",visu_tache($mp_curr[0]["macAddress"],'light'))."</center>')")."\"><img name=\"action_image$loop\"  src=\"../elements/images/detail.gif\"></u>";
+									//echo " <u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('<center>".preg_replace("/'/","",visu_tache($mp_curr[0]["macAddress"],'light'))."</center>')")."\"><img name=\"action_image$loop\"  src=\"../elements/images/detail.gif\"></u>";
 									// CELA MERDOUILLE QUAND LA TACHE EST UN CLONAGE... JE NE SAISIS PAS POURQUOI...
+									echo " <u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('<center>".preg_replace('/"/','',preg_replace("/'/","",visu_tache($mp_curr[0]["macAddress"],'light')))."</center>')")."\"><img name=\"action_image$loop\"  src=\"../elements/images/detail.gif\"></u>";
 
 									$temoin_action="y";
 
@@ -689,6 +690,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 						echo "<td>";
 						$sql="SELECT * FROM se3_tftp_action WHERE num_op='$lig->num_op' AND type='udpcast_recepteur' ORDER BY name;";
+						//echo "$sql<br />";
 						$res2=mysql_query($sql);
 						if(mysql_num_rows($res2)>0) {
 							$cpt=0;

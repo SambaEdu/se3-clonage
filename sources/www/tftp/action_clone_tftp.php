@@ -74,6 +74,8 @@ if (is_admin("system_is_admin",$login)=="Y")
 	$type_os=isset($_POST['type_os']) ? $_POST['type_os'] : "xp";
 	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescuecd";
 
+	$ntfsclone_udpcast=isset($_POST['ntfsclone_udpcast']) ? $_POST['ntfsclone_udpcast'] : "n";
+
 	echo "<h1>".gettext("Action clonage TFTP")."</h1>\n";
 
 	if(!isset($parc)){
@@ -104,7 +106,9 @@ if (is_admin("system_is_admin",$login)=="Y")
 				echo "<td align='left'>\n";
 			}
 
-			echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\" />".$list_parcs[$loop]["cn"]."</label>\n";
+			echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\"";
+			if(count($list_parcs)==1) {echo " checked";}
+			echo " />".$list_parcs[$loop]["cn"]."</label>\n";
 			echo "<br />\n";
 		}
 
@@ -540,8 +544,11 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 				if($temoin_sysresccd=="y") {
 					// Il faut aussi le noyau et l'initram.igz dans /tftpboot, 
+					echo "<p>";
 					echo "<input type='radio' name='distrib' id='distrib_udpcast' value='udpcast' onchange='affiche_sections_distrib()' checked /><label for='distrib_udpcast'>Utiliser la distribution UdpCast</label><br />\n";
-					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)<br />\n";
+					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)\n";
+					//echo "<br />\n";
+					echo "</p>\n";
 
 
 echo "<div id='div_sysresccd_kernel'>\n";
@@ -559,6 +566,19 @@ echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
 echo "</div>\n";
+
+					echo "<div id='div_ntfsclone'>\n";
+					$srcd_scripts_vers=crob_getParam('srcd_scripts_vers');
+					if(($srcd_scripts_vers!='')&&($srcd_scripts_vers>=20110406)) {
+						echo "<p>";
+						echo "<input type='radio' name='ntfsclone_udpcast' id='ntfsclone_udpcast_n' value='n' checked /><label for='ntfsclone_udpcast_n'> Utiliser udp-sender/udp-receiver seuls</label><br />\n";
+						echo "<input type='radio' name='ntfsclone_udpcast' id='ntfsclone_udpcast_y' value='y' /><label for='ntfsclone_udpcast_y'>Utiliser ntfsclone et udp-sender/udp-receiver</label> (<em style='color:red'>experimental</em>)<br />\n";
+						echo "</p>\n";
+					}
+					else {
+						echo "<input type='hidden' name='ntfsclone_udpcast' id='ntfsclone_udpcast_n' value='n' />\n";
+					}
+					echo "</div>\n";
 
 				}
 				else {
@@ -614,7 +634,7 @@ echo "</div>\n";
 				echo "<input type='checkbox' name='enableDiskmodule' value='yes' checked /> \n";
 				$tab_pilote=array();
 				$chaine_pilote="";
-				$sql="SELECT value FROM se3_tftp_infos WHERE id='$id_emetteur' AND nom='storage_driver';";
+				$sql="SELECT valeur FROM se3_tftp_infos WHERE id='$id_emetteur' AND nom='storage_driver';";
 				$test_driver_emetteur=mysql_query($sql);
 				if(mysql_num_rows($test_driver_emetteur)>0) {
 					$chaine_pilote.="<br />\n";
@@ -622,8 +642,8 @@ echo "</div>\n";
 					$cpt_pilote=0;
 					while($lig_pilote=mysql_fetch_object($test_driver_emetteur)) {
 						if($cpt_pilote>0) {$chaine_pilote.=", ";}
-						$chaine_pilote.=$lig_pilote->value;
-						$tab_pilote[]=strtolower($lig_pilote->value);
+						$chaine_pilote.=$lig_pilote->valeur;
+						$tab_pilote[]=strtolower($lig_pilote->valeur);
 						$cpt_pilote++;
 					}
 				}
@@ -642,7 +662,7 @@ echo "</div>\n";
 				echo "<tr id='tr_netmodule'><td>Pilote réseau: </td><td>\n";
 				$tab_pilote=array();
 				$chaine_pilote="";
-				$sql="SELECT value FROM se3_tftp_infos WHERE id='$id_emetteur' AND nom='network_driver';";
+				$sql="SELECT valeur FROM se3_tftp_infos WHERE id='$id_emetteur' AND nom='network_driver';";
 				$test_driver_emetteur=mysql_query($sql);
 				if(mysql_num_rows($test_driver_emetteur)>0) {
 					$chaine_pilote.="<br />\n";
@@ -650,8 +670,8 @@ echo "</div>\n";
 					$cpt_pilote=0;
 					while($lig_pilote=mysql_fetch_object($test_driver_emetteur)) {
 						if($cpt_pilote>0) {$chaine_pilote.=", ";}
-						$chaine_pilote.=$lig_pilote->value;
-						$tab_pilote[]=strtolower($lig_pilote->value);
+						$chaine_pilote.=$lig_pilote->valeur;
+						$tab_pilote[]=strtolower($lig_pilote->valeur);
 						$cpt_pilote++;
 					}
 				}
@@ -746,11 +766,15 @@ function affiche_sections_distrib() {
 		document.getElementById('div_sysresccd_kernel').style.display='none';
 		document.getElementById('tr_module_disk').style.display='';
 		document.getElementById('tr_netmodule').style.display='';
+
+		document.getElementById('div_ntfsclone').style.display='none';
 	}
 	else {
 		document.getElementById('div_sysresccd_kernel').style.display='';
 		document.getElementById('tr_module_disk').style.display='none';
 		document.getElementById('tr_netmodule').style.display='none';
+
+		document.getElementById('div_ntfsclone').style.display='';
 	}
 }
 
@@ -934,6 +958,8 @@ affiche_message_shutdown_cmd();
 
                 $num_op=get_free_se3_action_tftp_num_op();
 
+				$id_microtime=preg_replace('/[^0-9]/','_',microtime());
+
 				$chemin="/usr/share/se3/scripts";
 
 				if($type_os=='xp') {
@@ -984,7 +1010,12 @@ affiche_message_shutdown_cmd();
 					}
 					else {
 						//$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_emetteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
-						$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_emetteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel'", $retour);
+						if($ntfsclone_udpcast=='y') {
+							$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_emetteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime'", $retour);
+						}
+						else {
+							$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_emetteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel'", $retour);
+						}
 					}
 
 					if(count($retour)>0){
@@ -1096,7 +1127,12 @@ affiche_message_shutdown_cmd();
     					}
 						else {
 							//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
-							$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel'", $retour);
+							if($ntfsclone_udpcast=='y') {
+								$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime'", $retour);
+							}
+							else {
+								$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel'", $retour);
+							}
 						}
 
 						if(count($retour)>0){

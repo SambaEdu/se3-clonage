@@ -79,18 +79,6 @@
 
 		// INSERER UN RAPPORT COMME QUOI L'ACTION EST ABANDONNEE...
 		$creation_table=creation_tftp_tables();
-		/*
-		$sql="CREATE TABLE IF NOT EXISTS se3_tftp_rapports (
-`id` INT( 11 ) NOT NULL ,
-`name` VARCHAR( 255 ) NOT NULL ,
-`mac` VARCHAR( 255 ) NOT NULL ,
-`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`tache` VARCHAR( 255 ) NOT NULL ,
-`statut` VARCHAR( 255 ) NOT NULL ,
-`descriptif` TEXT NOT NULL
-);";
-		$creation_table=mysql_query($sql);
-		*/
 		if(!$creation_table){
 			echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
 		}
@@ -174,18 +162,6 @@
 					$descriptif=trim($descriptif);
 
 					$creation_table=creation_tftp_tables();
-					/*
-					$sql="CREATE TABLE IF NOT EXISTS se3_tftp_rapports (
-`id` INT( 11 ) NOT NULL ,
-`name` VARCHAR( 255 ) NOT NULL ,
-`mac` VARCHAR( 255 ) NOT NULL ,
-`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`tache` VARCHAR( 255 ) NOT NULL ,
-`statut` VARCHAR( 255 ) NOT NULL ,
-`descriptif` TEXT NOT NULL
-);";
-					$creation_table=mysql_query($sql);
-					*/
 					if(!$creation_table){
 						echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
 					}
@@ -301,18 +277,6 @@
 					}
 					$descriptif=trim($descriptif);
 
-					/*
-					$sql="CREATE TABLE IF NOT EXISTS se3_tftp_rapports (
-`id` INT( 11 ) NOT NULL ,
-`name` VARCHAR( 255 ) NOT NULL ,
-`mac` VARCHAR( 255 ) NOT NULL ,
-`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`tache` VARCHAR( 255 ) NOT NULL ,
-`statut` VARCHAR( 255 ) NOT NULL ,
-`descriptif` TEXT NOT NULL
-);";
-					$creation_table=mysql_query($sql);
-					*/
 					$creation_table=creation_tftp_tables();
 					if(!$creation_table){
 						echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
@@ -372,19 +336,6 @@
 								}
 
 								# Insérer dans une table sauvegarde si il s'agit d'une sauvegarde
-								/*
-								$sql="CREATE TABLE IF NOT EXISTS se3_tftp_sauvegardes (
-`id` INT( 11 ) NOT NULL ,
-`name` VARCHAR( 255 ) NOT NULL ,
-`mac` VARCHAR( 255 ) NOT NULL ,
-`partition` VARCHAR( 255 ) NOT NULL ,
-`image` VARCHAR( 255 ) NOT NULL ,
-`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`descriptif` TEXT NOT NULL,
-`partitionnement` TEXT NOT NULL
-);";
-								$creation_table=mysql_query($sql);
-								*/
 								$creation_table=creation_tftp_tables();
 								if(!$creation_table){
 									echo "Erreur lors de la création de la table 'se3_tftp_sauvegardes'\n";
@@ -648,18 +599,6 @@
 
 					// Insertion dans les tables
 
-					/*
-					$sql="CREATE TABLE IF NOT EXISTS se3_tftp_rapports (
-`id` INT( 11 ) NOT NULL ,
-`name` VARCHAR( 255 ) NOT NULL ,
-`mac` VARCHAR( 255 ) NOT NULL ,
-`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`tache` VARCHAR( 255 ) NOT NULL ,
-`statut` VARCHAR( 255 ) NOT NULL ,
-`descriptif` TEXT NOT NULL
-);";
-					$creation_table=mysql_query($sql);
-					*/
 					$creation_table=creation_tftp_tables();
 					if(!$creation_table){
 						echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
@@ -758,19 +697,6 @@
 
 
 							if(count($sauvegardes)>0) {
-								/*
-								$sql="CREATE TABLE IF NOT EXISTS se3_tftp_sauvegardes (
-`id` INT( 11 ) NOT NULL ,
-`name` VARCHAR( 255 ) NOT NULL ,
-`mac` VARCHAR( 255 ) NOT NULL ,
-`partition` VARCHAR( 255 ) NOT NULL ,
-`image` VARCHAR( 255 ) NOT NULL ,
-`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`descriptif` TEXT NOT NULL,
-`partitionnement` TEXT NOT NULL
-);";
-								$creation_table=mysql_query($sql);
-								*/
 								$creation_table=creation_tftp_tables();
 								if(!$creation_table){
 									echo "Erreur lors de la création de la table 'se3_tftp_sauvegardes'\n";
