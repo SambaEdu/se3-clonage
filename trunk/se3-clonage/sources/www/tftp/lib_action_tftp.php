@@ -90,7 +90,7 @@ function decoupe_infos($texte) {
 		for($j=0;$j<count($motif);$j++) {
 			if(preg_match("/^$motif[$j]=/", $tab_txt[$i])) {
 				if($motif[$j]=='udpcparam') {
-					$udpcparam=explode(",",preg_replace("/--/",",",preg_replace("/^udpcparam=/", "", $tab[$i])));
+					$udpcparam=explode(",",preg_replace("/--/",",",preg_replace("/^udpcparam=/", "", $tab_txt[$i])));
 					for($k=0;$k<count($udpcparam);$k++) {
 						if(preg_match("/^max-wait=/", $udpcparam[$k])) {
 							$tab_retour['max-wait']=preg_replace("/^max-wait=/", "", $udpcparam[$k]);
@@ -149,6 +149,9 @@ function search_machines2 ($filter,$branch) {
 
 	global $ldap_server, $ldap_port, $dn;
 	global $error;
+
+	// Initialisation
+	$computers=array();
 
 	// LDAP attributs
 	if ("$branch"=="computers") {

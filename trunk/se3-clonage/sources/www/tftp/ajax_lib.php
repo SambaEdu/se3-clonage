@@ -40,6 +40,9 @@
 		global $smbversion;
 		//echo "\$smbversion=$smbversion<br />";
 
+		// Initialisation
+		$etat_session="";
+
 		if ("$smbversion"=="samba3") {
 			$smbsess=exec ("smbstatus |gawk -F' ' '{print \" \"$5\" \"$4\" \"}' |grep ' $mp_en_cours ' |cut -d' ' -f2 |head -n1");
 			//echo "smbstatus |gawk -F' ' '{print \" \"$5\" \"$4\" \"}' |grep ' $mp_en_cours ' |cut -d' ' -f2 |head -n1";
