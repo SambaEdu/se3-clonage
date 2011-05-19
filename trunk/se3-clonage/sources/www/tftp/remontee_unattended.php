@@ -7,12 +7,12 @@
    
    Modification pour unattended : Olivier Lacroix
    
-   Distribué selon les termes de la licence GPL
+   Distribuï¿½ selon les termes de la licence GPL
 =============================================
 */
 
 // loading libs and init
-include "entete.inc.php";
+//include "entete.inc.php";
 include "ldap.inc.php";
 include "ihm.inc.php";
 //require_once "../dhcp/dhcpd.inc.php";
@@ -21,7 +21,7 @@ include "ihm.inc.php";
 require("lib_action_tftp.php");
 
 //aide
-$_SESSION["pageaide"]="Le_module_Unattended";
+//$_SESSION["pageaide"]="Le_module_Unattended";
 
 //$num_op=$_GET['num_op'];
 $debut=$_GET['debut'];
@@ -29,6 +29,10 @@ $finwin=$_GET['finwin'];
 $fin=$_GET['fin'];
 $succes=$_GET['succes'];
 $mac=$_GET['mac'];
+
+echo "<html>
+<body>
+";
 
 //$umode=$_GET['umode'];
 

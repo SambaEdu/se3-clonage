@@ -1,3 +1,9 @@
+se3-clonage (0.47) lenny; urgency=low
+
+  * correction bug page auth demandée pour le rapport
+
+ -- denis bonnenfant <denis@bureau>  Thu, 19 May 2011 16:28:35 +0200
+
 se3-clonage (0.46) lucid; urgency=low
 
   * correctif export modif plan adressage
