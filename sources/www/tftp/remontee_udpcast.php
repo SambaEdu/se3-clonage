@@ -4,22 +4,19 @@
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
    Stephane Boireau
-   Distribué selon les termes de la licence GPL
+   Distribuï¿½ selon les termes de la licence GPL
 =============================================
 */
 
 // loading libs and init
-include "entete.inc.php";
+//include "entete.inc.php";
 include "ldap.inc.php";
 include "ihm.inc.php";
-//require_once "../dhcp/dhcpd.inc.php";
-//include "printers.inc.php";
-
 require("lib_action_tftp.php");
 
-//aide
-$_SESSION["pageaide"]="Le_module_Clonage_des_stations";
-
+echo "<html>
+<body>
+";
 $num_op=$_GET['num_op'];
 $debut=$_GET['debut'];
 $fin=$_GET['fin'];
