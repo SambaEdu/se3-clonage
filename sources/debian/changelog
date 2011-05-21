@@ -1,8 +1,20 @@
-se3-clonage (0.47) lenny; urgency=low
+se3-clonage (0.49) lucid; urgency=low
 
-  * correction bug page auth demandée pour le rapport
+  * correction bug remonte rapport
 
- -- denis bonnenfant <denis@bureau>  Thu, 19 May 2011 16:28:35 +0200
+ -- root <root@localhost.localdomain>  Sat, 21 May 2011 01:58:00 +0200
+
+se3-clonage (0.48) lucid; urgency=low
+
+  * modifs pour prise en charge ntfsclone
+
+ -- root <root@localhost.localdomain>  Thu,  7 Apr 2011 01:13:27 +0200
+
+se3-clonage (0.47) lucid; urgency=low
+
+  * correctif formulaire et balises
+
+ -- root <root@localhost.localdomain>  Mon,  4 Apr 2011 08:25:52 +0200
 
 se3-clonage (0.46) lucid; urgency=low
 
