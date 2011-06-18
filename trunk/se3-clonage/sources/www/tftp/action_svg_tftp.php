@@ -463,12 +463,12 @@ affiche_sections_distrib();
 					if(mysql_num_rows($res)>0) {
 						while($lig=mysql_fetch_object($res)) {
 							$chaine_tab.="<tr>\n";
-							$chaine_tab.="<th>$lig->id</th>\n";
-							$chaine_tab.="<th>$lig->nom</th>\n";
-							$chaine_tab.="<th>$lig->partition</th>\n";
-							$chaine_tab.="<th>$lig->image</th>\n";
-							$chaine_tab.="<th>".mysql_date_to_fr_date($lig->date)."</th>\n";
-							$chaine_tab.="<th>$lig->descriptif</th>\n";
+							$chaine_tab.="<td>$lig->id</td>\n";
+							$chaine_tab.="<td>$lig->name</td>\n";
+							$chaine_tab.="<td>$lig->partition</td>\n";
+							$chaine_tab.="<td>$lig->image</td>\n";
+							$chaine_tab.="<td>".mysql_date_to_fr_date($lig->date)."</td>\n";
+							$chaine_tab.="<td style='text-align:left'><pre>$lig->descriptif</pre></td>\n";
 							$chaine_tab.="</tr>\n";
 	
 							$temoin_svg_existantes++;
