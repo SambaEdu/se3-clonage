@@ -29,7 +29,7 @@ echo "<script type='text/javascript' src='../includes/prototype.js'></script>\n"
 // CSS pour mes tableaux:
 echo "<link type='text/css' rel='stylesheet' href='tftp.css' />\n";
 
-if (is_admin("system_is_admin",$login)=="Y")
+if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",$login)=="Y"))
 {
 	// Choix des parcs:
 	$parc=isset($_POST['parc']) ? $_POST['parc'] : (isset($_GET['parc']) ? $_GET['parc'] : NULL);
@@ -69,12 +69,25 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	echo "<h1>".gettext("Action sauvegarde TFTP")."</h1>\n";
 
-	if(!isset($parc)){
+	$restriction_parcs="n";
+	if(is_admin("system_is_admin",$login)!="Y") {
+		$restriction_parcs="y";
+		$tab_delegated_parcs=list_delegated_parcs($login);
+		if(count($tab_delegated_parcs)==0) {
+			echo "<p>Aucun parc ne vous a été délégué.</p>\n";
+			include ("pdp.inc.php");
+			die();
+		}
+	}
+
+	//echo "is_machine_in_parc('xpbof', 'parc_xp')=".is_machine_in_parc('xpbof', 'parc_xp')."<br />";
+
+	if(!isset($parc)) {
 
 		echo "<p>Choisissez un ou des parcs:</p>\n";
 
 		$list_parcs=search_machines("objectclass=groupOfNames","parcs");
-		if ( count($list_parcs)==0) {
+		if (count($list_parcs)==0) {
 			echo "<br><br>";
 			echo gettext("Il n'existe aucun parc. Vous devez d'abord créer un parc");
 			include ("pdp.inc.php");
@@ -96,8 +109,10 @@ if (is_admin("system_is_admin",$login)=="Y")
 				echo "<td align='left'>\n";
 			}
 
-			echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\" />".$list_parcs[$loop]["cn"]."</label>\n";
-			echo "<br />\n";
+			if(($restriction_parcs=="n")||(in_array($list_parcs[$loop]["cn"], $tab_delegated_parcs))) {
+				echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\" />".$list_parcs[$loop]["cn"]."</label>\n";
+				echo "<br />\n";
+			}
 		}
 
 		echo "</td>\n";
@@ -111,7 +126,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 		echo "<p><a href='index.php'>Retour à l'index</a>.</p>\n";
 	}
 	else {
-		if(!isset($_POST['parametrage_action'])){
+		if(!isset($_POST['parametrage_action'])) {
 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 			echo "<input type=\"hidden\" name=\"parametrage_action\" value=\"1\" />\n";
@@ -582,6 +597,7 @@ affiche_sections_distrib();
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
 						echo "<span style='color:red;'>La machine d'identifiant $id_machine[$i] n'existe pas dans 'se3_dhcp'.</span><br />\n";
+						$traiter_machine_courante='n';
 					}
 					else {
 						$temoin_erreur="n";
@@ -591,112 +607,125 @@ affiche_sections_distrib();
 						$nom_machine=$lig->name;
 						$ip_machine=$lig->ip;
 
-						echo "Génération pour $nom_machine: ";
-
-						$corrige_mac=strtolower(strtr($mac_machine,":","-"));
-
-						$chemin="/usr/share/se3/scripts";
-
-						$ajout="";
-						$ajout2="";
-						$ajout3="";
-						if(isset($del_old_svg)) {
-							$ajout=" '$del_old_svg'";
-							$ajout2="|del_old_svg=$del_old_svg";
-
-							$ajout3=" 'del_old_svg=$del_old_svg'";
-						}
-
-						if($distrib=='slitaz') {
-							$ajout_kernel="";
-						}
-						else {
-							$ajout_kernel="|kernel=$sysresccd_kernel";
-						}
-
-						if($distrib=='slitaz') {
-							//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'$ajout", $retour);
-							$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot $ajout3'", $retour);
-							echo "/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot $ajout3'<br />";
-    					}
-						else {
-							//echo "\$resultat=exec(\"/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'\", $retour);<br />";
-							//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'$ajout", $retour);
-							$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $ajout3'", $retour);
-						}
-
-						if(count($retour)>0){
-							//echo "<p>";
-							//echo "<span style='color:red;'>Il semble que la génération du fichier ait échoué...</span><br />\n";
-							echo "<span style='color:red;'>ECHEC de la génération du fichier</span><br />\n";
-							for($j=0;$j<count($retour);$j++){
-								echo "$retour[$j]<br />\n";
+						if($restriction_parcs=="y") {
+							$temoin_erreur='y';
+							for($loop=0; $loop<count($tab_delegated_parcs);$loop++) {
+								// La machine est-elle dans un des parcs délégués?
+								if(is_machine_in_parc($nom_machine,$tab_delegated_parcs[$loop])) {$temoin_erreur='n';break;}
 							}
-							$temoin_erreur="y";
-							//echo "</p>\n";
+						}
+
+						if($temoin_erreur=="y") {
+							echo "<p style='color:red'>La machine $nom_machine ne vous est pas déléguée</p>\n";
 						}
 						else {
-							$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine[$i]';";
-							$suppr=mysql_query($sql);
-
-							$timestamp=time();
-							$sql="INSERT INTO se3_tftp_action SET id='$id_machine[$i]',
-																	mac='$mac_machine',
-																	name='$nom_machine',
-																	date='$timestamp',
-																	type='sauvegarde',
-																	num_op='$num_op',
-																	infos='nom_image=$nom_image|src_part=$src_part|dest_part=$dest_part|auto_reboot=$auto_reboot|delais_reboot=${delais_reboot}${ajout_kernel}${ajout2}';";
-							$insert=mysql_query($sql);
-							if(!$insert) {
-								echo "<span style='color:red;'>ECHEC de l'enregistrement dans 'se3_tftp_action'</span><br />\n";
-								$temoin_erreur="y";
+							echo "Génération pour $nom_machine: ";
+	
+							$corrige_mac=strtolower(strtr($mac_machine,":","-"));
+	
+							$chemin="/usr/share/se3/scripts";
+	
+							$ajout="";
+							$ajout2="";
+							$ajout3="";
+							if(isset($del_old_svg)) {
+								$ajout=" '$del_old_svg'";
+								$ajout2="|del_old_svg=$del_old_svg";
+	
+								$ajout3=" 'del_old_svg=$del_old_svg'";
 							}
-
-							// Génération du lanceur de récupération:
-							//$dossier="/var/se3/tmp/tftp/$id_machine[$i]";
-							$dossier="/etc/se3/www-tools/tftp/$id_machine[$i]";
-							if(!file_exists($dossier)) { mkdir($dossier,0700);}
-							$lanceur_recup="$dossier/lanceur_recup_rapport_action_tftp.sh";
-							$fich=fopen($lanceur_recup,"w+");
-							$timestamp_limit=time()+4*3600;
-							//fwrite($fich,"/usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' 'sauvegarde' '$timestamp_limit'");
+	
 							if($distrib=='slitaz') {
-								$mode_sauvegarde="sauvegarde";
+								$ajout_kernel="";
 							}
 							else {
-								$mode_sauvegarde="sauvegarde_sysresccd";
+								$ajout_kernel="|kernel=$sysresccd_kernel";
 							}
-							fwrite($fich,"sudo /usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' '$mode_sauvegarde' '$timestamp_limit'");
-							fclose($fich);
-							chmod($lanceur_recup,0750);
-
-							// Ménage dans les tâches précédentes
-							@exec("sudo /usr/share/se3/scripts/se3_tftp_menage_atq.sh $id_machine[$i]",$retour);
-
-							// Planification de la tâche
-							//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
-							@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-							if($retour) {
-								echo "<span style='color:red;'>ECHEC de la planification de la tâche.</span><br />\n";
-								for($j=0;$j<count($retour);$j++){echo "$retour[$j]<br />\n";}
+	
+							if($distrib=='slitaz') {
+								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'$ajout", $retour);
+								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot $ajout3'", $retour);
+								echo "/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot $ajout3'<br />";
+							}
+							else {
+								//echo "\$resultat=exec(\"/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'\", $retour);<br />";
+								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'$ajout", $retour);
+								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $ajout3'", $retour);
+							}
+	
+							if(count($retour)>0){
+								//echo "<p>";
+								//echo "<span style='color:red;'>Il semble que la génération du fichier ait échoué...</span><br />\n";
+								echo "<span style='color:red;'>ECHEC de la génération du fichier</span><br />\n";
+								for($j=0;$j<count($retour);$j++){
+									echo "$retour[$j]<br />\n";
+								}
 								$temoin_erreur="y";
+								//echo "</p>\n";
 							}
-
-							if($temoin_erreur=="n") {
-								//echo "<span style='color:green;'>OK</span><br />\n";
-								echo "<span style='color:green;'>OK</span>\n";
-								// Application de l'action choisie:
-								echo " <span id='wake_shutdown_or_reboot_$i'></span>";
-
-								echo "<script type='text/javascript'>
-									// <![CDATA[
-									new Ajax.Updater($('wake_shutdown_or_reboot_$i'),'ajax_lib.php?ip=$ip_machine&nom=$nom_machine&mode=wake_shutdown_or_reboot&wake=$wake&shutdown_reboot=$shutdown_reboot',{method: 'get'});
-									//]]>
-								</script>\n";
-
-
-								echo "<br />\n";
+							else {
+								$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine[$i]';";
+								$suppr=mysql_query($sql);
+	
+								$timestamp=time();
+								$sql="INSERT INTO se3_tftp_action SET id='$id_machine[$i]',
+																		mac='$mac_machine',
+																		name='$nom_machine',
+																		date='$timestamp',
+																		type='sauvegarde',
+																		num_op='$num_op',
+																		infos='nom_image=$nom_image|src_part=$src_part|dest_part=$dest_part|auto_reboot=$auto_reboot|delais_reboot=${delais_reboot}${ajout_kernel}${ajout2}';";
+								$insert=mysql_query($sql);
+								if(!$insert) {
+									echo "<span style='color:red;'>ECHEC de l'enregistrement dans 'se3_tftp_action'</span><br />\n";
+									$temoin_erreur="y";
+								}
+	
+								// Génération du lanceur de récupération:
+								//$dossier="/var/se3/tmp/tftp/$id_machine[$i]";
+								$dossier="/etc/se3/www-tools/tftp/$id_machine[$i]";
+								if(!file_exists($dossier)) { mkdir($dossier,0700);}
+								$lanceur_recup="$dossier/lanceur_recup_rapport_action_tftp.sh";
+								$fich=fopen($lanceur_recup,"w+");
+								$timestamp_limit=time()+4*3600;
+								//fwrite($fich,"/usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' 'sauvegarde' '$timestamp_limit'");
+								if($distrib=='slitaz') {
+									$mode_sauvegarde="sauvegarde";
+								}
+								else {
+									$mode_sauvegarde="sauvegarde_sysresccd";
+								}
+								fwrite($fich,"sudo /usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' '$mode_sauvegarde' '$timestamp_limit'");
+								fclose($fich);
+								chmod($lanceur_recup,0750);
+	
+								// Ménage dans les tâches précédentes
+								@exec("sudo /usr/share/se3/scripts/se3_tftp_menage_atq.sh $id_machine[$i]",$retour);
+	
+								// Planification de la tâche
+								//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
+								@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
+								if($retour) {
+									echo "<span style='color:red;'>ECHEC de la planification de la tâche.</span><br />\n";
+									for($j=0;$j<count($retour);$j++){echo "$retour[$j]<br />\n";}
+									$temoin_erreur="y";
+								}
+	
+								if($temoin_erreur=="n") {
+									//echo "<span style='color:green;'>OK</span><br />\n";
+									echo "<span style='color:green;'>OK</span>\n";
+									// Application de l'action choisie:
+									echo " <span id='wake_shutdown_or_reboot_$i'></span>";
+	
+									echo "<script type='text/javascript'>
+										// <![CDATA[
+										new Ajax.Updater($('wake_shutdown_or_reboot_$i'),'ajax_lib.php?ip=$ip_machine&nom=$nom_machine&mode=wake_shutdown_or_reboot&wake=$wake&shutdown_reboot=$shutdown_reboot',{method: 'get'});
+										//]]>
+									</script>\n";
+	
+	
+									echo "<br />\n";
+								}
 							}
 						}
 					}

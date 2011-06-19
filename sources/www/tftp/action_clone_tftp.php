@@ -42,7 +42,7 @@ echo "<script type='text/javascript' src='../includes/prototype.js'></script>\n"
 // CSS pour mes tableaux:
 echo "<link type='text/css' rel='stylesheet' href='tftp.css' />\n";
 
-if (is_admin("system_is_admin",$login)=="Y")
+if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",$login)=="Y"))
 {
 	// Choix des parcs:
 	$parc=isset($_POST['parc']) ? $_POST['parc'] : (isset($_GET['parc']) ? $_GET['parc'] : NULL);
@@ -78,6 +78,17 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	echo "<h1>".gettext("Action clonage TFTP")."</h1>\n";
 
+	$restriction_parcs="n";
+	if(is_admin("system_is_admin",$login)!="Y") {
+		$restriction_parcs="y";
+		$tab_delegated_parcs=list_delegated_parcs($login);
+		if(count($tab_delegated_parcs)==0) {
+			echo "<p>Aucun parc ne vous a été délégué.</p>\n";
+			include ("pdp.inc.php");
+			die();
+		}
+	}
+
 	if(!isset($parc)){
 
 		echo "<p>Choisissez un ou des parcs:</p>\n";
@@ -106,10 +117,12 @@ if (is_admin("system_is_admin",$login)=="Y")
 				echo "<td align='left'>\n";
 			}
 
-			echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\"";
-			if(count($list_parcs)==1) {echo " checked";}
-			echo " />".$list_parcs[$loop]["cn"]."</label>\n";
-			echo "<br />\n";
+			if(($restriction_parcs=="n")||(in_array($list_parcs[$loop]["cn"], $tab_delegated_parcs))) {
+				echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\"";
+				if(count($list_parcs)==1) {echo " checked";}
+				echo " />".$list_parcs[$loop]["cn"]."</label>\n";
+				echo "<br />\n";
+			}
 		}
 
 		echo "</td>\n";
@@ -954,51 +967,66 @@ affiche_message_shutdown_cmd();
 				$ip_machine=$lig->ip;
 				$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 
-				$temoin_erreur="n";
 
-                $num_op=get_free_se3_action_tftp_num_op();
-
-				$id_microtime=preg_replace('/[^0-9]/','_',microtime());
-
-				$chemin="/usr/share/se3/scripts";
-
-				if($type_os=='xp') {
-					// on lance la preparation du poste emetteur
-					$resultat=system("/usr/bin/sudo /usr/share/se3/scripts/integreDomaine.sh clone clone $ip_machine $nom_machine adminse3 $xppass > /dev/null", $retint);
-	
-					if ($retint) {
-						echo "<span style='color:red;'>ECHEC de la preparation du poste</span><br>\n";
-						$temoin_erreur="y";
-					} else {
-						echo "on attend le rapport de fin de la preparation<br>";
-	
-						$sql="SELECT COUNT(*) FROM se3_tftp_rapports WHERE id='$id_emetteur' AND tache='preparation' AND statut='SUCCES' AND date>(now()-100);";
-						$num=0;
-						$incr=0;
-						while ($num==0) { 
-							$count=mysql_query($sql);
-							$num=mysql_result($count, 0);
-							echo ".";
-							sleep(10);
-							if ($incr++==60) { 
-								echo "<br>Probleme : pas de rapport remonte pour la preparation du clonage. Si le poste emetteur n'a pas reboote en adminstrateur local, relancez le clonage, connectez vous en administrateur local et lancez netinst\\shutdown.cmd";
-								$temoin_erreur="y";
-								break;
-							}
-						}
-	
-						if ("$temoin_erreur"=="n"){
-							echo "<br> preparation reussie <br>";
-						}
+				if($restriction_parcs=="y") {
+					$temoin_erreur='y';
+					for($loop=0; $loop<count($tab_delegated_parcs);$loop++) {
+						// La machine est-elle dans un des parcs délégués?
+						if(is_machine_in_parc($nom_machine,$tab_delegated_parcs[$loop])) {$temoin_erreur='n';break;}
 					}
 				}
 
-
-				if($distrib=='slitaz') {
-					$ajout_kernel="";
+				if($temoin_erreur=="y") {
+					echo "<p style='color:red'>La machine $nom_machine ne vous est pas déléguée</p>\n";
 				}
 				else {
-					$ajout_kernel="|kernel=$sysresccd_kernel";
+	
+					$temoin_erreur="n";
+	
+					$num_op=get_free_se3_action_tftp_num_op();
+	
+					$id_microtime=preg_replace('/[^0-9]/','_',microtime());
+	
+					$chemin="/usr/share/se3/scripts";
+	
+					if($type_os=='xp') {
+						// on lance la preparation du poste emetteur
+						$resultat=system("/usr/bin/sudo /usr/share/se3/scripts/integreDomaine.sh clone clone $ip_machine $nom_machine adminse3 $xppass > /dev/null", $retint);
+		
+						if ($retint) {
+							echo "<span style='color:red;'>ECHEC de la preparation du poste</span><br>\n";
+							$temoin_erreur="y";
+						} else {
+							echo "on attend le rapport de fin de la preparation<br>";
+		
+							$sql="SELECT COUNT(*) FROM se3_tftp_rapports WHERE id='$id_emetteur' AND tache='preparation' AND statut='SUCCES' AND date>(now()-100);";
+							$num=0;
+							$incr=0;
+							while ($num==0) { 
+								$count=mysql_query($sql);
+								$num=mysql_result($count, 0);
+								echo ".";
+								sleep(10);
+								if ($incr++==60) { 
+									echo "<br>Probleme : pas de rapport remonte pour la preparation du clonage. Si le poste emetteur n'a pas reboote en adminstrateur local, relancez le clonage, connectez vous en administrateur local et lancez netinst\\shutdown.cmd";
+									$temoin_erreur="y";
+									break;
+								}
+							}
+		
+							if ("$temoin_erreur"=="n"){
+								echo "<br> preparation reussie <br>";
+							}
+						}
+					}
+	
+	
+					if($distrib=='slitaz') {
+						$ajout_kernel="";
+					}
+					else {
+						$ajout_kernel="|kernel=$sysresccd_kernel";
+					}
 				}
 
 				if ("$temoin_erreur"=="n") {
@@ -1115,63 +1143,76 @@ affiche_message_shutdown_cmd();
 						$nom_machine=$lig->name;
 						$ip_machine=$lig->ip;
 
-						echo "Génération pour $nom_machine: ";
+						if($restriction_parcs=="y") {
+							$temoin_erreur='y';
+							for($loop=0; $loop<count($tab_delegated_parcs);$loop++) {
+								// La machine est-elle dans un des parcs délégués?
+								if(is_machine_in_parc($nom_machine,$tab_delegated_parcs[$loop])) {$temoin_erreur='n';break;}
+							}
+						}
 
-						$corrige_mac=strtolower(strtr($mac_machine,":","-"));
-
-						$chemin="/usr/share/se3/scripts";
-						//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op'", $retour);
-						if($distrib=='udpcast') {
-							//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
-							$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface'", $retour);
-    					}
+						if($temoin_erreur=="y") {
+							echo "<p style='color:red'>La machine $nom_machine ne vous est pas déléguée</p>\n";
+						}
 						else {
-							//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
-							if($ntfsclone_udpcast=='y') {
-								$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime'", $retour);
+							echo "Génération pour $nom_machine: ";
+	
+							$corrige_mac=strtolower(strtr($mac_machine,":","-"));
+	
+							$chemin="/usr/share/se3/scripts";
+							//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op'", $retour);
+							if($distrib=='udpcast') {
+								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
+								$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface'", $retour);
 							}
 							else {
-								$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel'", $retour);
+								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
+								if($ntfsclone_udpcast=='y') {
+									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime'", $retour);
+								}
+								else {
+									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel'", $retour);
+								}
 							}
-						}
-
-						if(count($retour)>0){
-							echo "<span style='color:red;'>ECHEC de la génération du fichier</span><br />\n";
-							for($j=0;$j<count($retour);$j++){
-								echo "$retour[$j]<br />\n";
-							}
-							$temoin_erreur="y";
-						}
-						else {
-							$sql="DELETE FROM se3_tftp_action WHERE id='$id_recepteur[$i]';";
-							$suppr=mysql_query($sql);
-
-							$timestamp=time();
-							$sql="INSERT INTO se3_tftp_action SET id='$id_recepteur[$i]',
-																	mac='$mac_machine',
-																	name='$nom_machine',
-																	date='$timestamp',
-																	type='udpcast_recepteur',
-																	num_op='$num_op',
-																	infos='compr=$compr|disk=$disk|port=$port|enableDiskmodule=$enableDiskmodule|diskmodule=$diskmodule|netmodule=$netmodule|auto_reboot=$auto_reboot|udpcparam=${udpcparam}${ajout_kernel}';";
-							$insert=mysql_query($sql);
-							if(!$insert) {
-								echo "<span style='color:red;'>ECHEC de l'enregistrement dans 'se3_tftp_action'</span><br />\n";
+	
+							if(count($retour)>0){
+								echo "<span style='color:red;'>ECHEC de la génération du fichier</span><br />\n";
+								for($j=0;$j<count($retour);$j++){
+									echo "$retour[$j]<br />\n";
+								}
 								$temoin_erreur="y";
 							}
-
-							if($temoin_erreur=="n") {
-								echo "<span style='color:green;'>OK</span>\n";
-								// Application de l'action choisie:
-								echo " <span id='wake_shutdown_or_reboot_$i'></span>";
-
-								echo "<script type='text/javascript'>
-									// <![CDATA[
-									new Ajax.Updater($('wake_shutdown_or_reboot_$i'),'ajax_lib.php?ip=$ip_machine&nom=$nom_machine&mode=wake_shutdown_or_reboot&wake=$wake&shutdown_reboot=$shutdown_reboot',{method: 'get'});
-									//]]>
-								</script>\n";
-
-								echo "<br />\n";
+							else {
+								$sql="DELETE FROM se3_tftp_action WHERE id='$id_recepteur[$i]';";
+								$suppr=mysql_query($sql);
+	
+								$timestamp=time();
+								$sql="INSERT INTO se3_tftp_action SET id='$id_recepteur[$i]',
+																		mac='$mac_machine',
+																		name='$nom_machine',
+																		date='$timestamp',
+																		type='udpcast_recepteur',
+																		num_op='$num_op',
+																		infos='compr=$compr|disk=$disk|port=$port|enableDiskmodule=$enableDiskmodule|diskmodule=$diskmodule|netmodule=$netmodule|auto_reboot=$auto_reboot|udpcparam=${udpcparam}${ajout_kernel}';";
+								$insert=mysql_query($sql);
+								if(!$insert) {
+									echo "<span style='color:red;'>ECHEC de l'enregistrement dans 'se3_tftp_action'</span><br />\n";
+									$temoin_erreur="y";
+								}
+	
+								if($temoin_erreur=="n") {
+									echo "<span style='color:green;'>OK</span>\n";
+									// Application de l'action choisie:
+									echo " <span id='wake_shutdown_or_reboot_$i'></span>";
+	
+									echo "<script type='text/javascript'>
+										// <![CDATA[
+										new Ajax.Updater($('wake_shutdown_or_reboot_$i'),'ajax_lib.php?ip=$ip_machine&nom=$nom_machine&mode=wake_shutdown_or_reboot&wake=$wake&shutdown_reboot=$shutdown_reboot',{method: 'get'});
+										//]]>
+									</script>\n";
+	
+									echo "<br />\n";
+								}
 							}
 						}
 					}

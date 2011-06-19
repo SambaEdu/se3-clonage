@@ -23,9 +23,45 @@ $_SESSION["pageaide"]="Le_module_Clonage_des_stations#Consulter_le_r.C3.A9sultat
 // CSS pour mes tableaux:
 echo "<link type='text/css' rel='stylesheet' href='tftp.css' />\n";
 
-if (is_admin("system_is_admin",$login)=="Y")
-{
+if((is_admin("system_is_admin",$login)!="Y")&&(ldap_get_right("parc_can_clone",$login)!="Y")) {
+	echo "<p style='color:red'>Action non autorisee.</p>";
+	die();
+}
+else {
 	$id_machine=isset($_POST['id_machine']) ? $_POST['id_machine'] : (isset($_GET['id_machine']) ? $_GET['id_machine'] : NULL);
+
+	$restriction_parcs="n";
+	if(is_admin("system_is_admin",$login)!="Y") {
+		$restriction_parcs="y";
+		$tab_delegated_parcs=list_delegated_parcs($login);
+		if(count($tab_delegated_parcs)==0) {
+			echo "<p style='color:red'>Aucun parc ne vous a été délégué.</p>\n";
+			die();
+		}
+
+		$temoin_erreur="y";
+		$nom="";
+
+		$sql="SELECT name FROM se3_dhcp WHERE id='$id_machine';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			$nom=$lig->name;
+
+			for($loop=0;$loop<count($tab_delegated_parcs);$loop++) {
+				// La machine est-elle dans un des parcs délégués?
+				if(is_machine_in_parc($nom,$tab_delegated_parcs[$loop])) {
+					$temoin_erreur='n';
+					break;
+				}
+			}
+		}
+		if($temoin_erreur=="y") {
+			echo "<p style='color:red'>La machine $nom n'est pas dans un de vos parcs delegues.</p>\n";
+			die();
+		}
+
+	}
 
 	$sql="SELECT * FROM se3_tftp_action WHERE id='".$id_machine."';";
 	$res=mysql_query($sql);

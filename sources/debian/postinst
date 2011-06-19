@@ -104,6 +104,15 @@ done
 
 #==============================================================================
 
+# Ajout d'un droit pour que des personnes auxquelles un parc est delegue 'manage' puissent sauvegarder, restaurer, cloner,... sur ce parc
+echo "dn: cn=parc_can_clone,${rightsRdn},${ldap_base_dn}
+objectClass: groupOfNames
+cn: parc_can_clone
+member: uid=admin,${peopleRdn},${ldap_base_dn}
+" | ldapadd -x -D ${adminRdn},${ldap_base_dn} -w ${adminPw}
+
+#==============================================================================
+
 ##### ADD good line in /etc/sudoers.conf if necessary and restart sudo
 TEMOIN_CHGT_SUDO="n"
 # TEST=$(grep "NOPASSWD:SE3CLONAGE" /etc/sudoers)

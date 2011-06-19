@@ -21,9 +21,19 @@
 	//debug_var();
 	$login=isauth();
 
-	if (is_admin("system_is_admin",$login)!="Y") {
+	if((is_admin("system_is_admin",$login)!="Y")&&(ldap_get_right("parc_can_clone",$login)!="Y")) {
 		echo "<p style='color:red'>Action non autorisee.</p>";
 		die();
+	}
+
+	$restriction_parcs="n";
+	if(is_admin("system_is_admin",$login)!="Y") {
+		$restriction_parcs="y";
+		$tab_delegated_parcs=list_delegated_parcs($login);
+		if(count($tab_delegated_parcs)==0) {
+			echo "<p style='color:red'>Aucun parc ne vous a été délégué.</p>\n";
+			die();
+		}
 	}
 
 	//echo "<script type='text/javascript' src='position.js'></script>\n";
@@ -76,12 +86,29 @@
 		global $smbversion;
 		//echo "\$smbversion=$smbversion<br />";
 
+		global $restriction_parcs, $tab_delegated_parcs;
+
 		/*
 		echo "ip=$ip<br />";
 		echo "nom=$nom<br />";
 		echo "wake=$wake<br />";
 		echo "shutdown_reboot=$shutdown_reboot<br />";
 		*/
+
+		if($restriction_parcs=='y') {
+			$temoin_erreur="y";
+			for($loop=0;$loop<count($tab_delegated_parcs);$loop++) {
+				// La machine est-elle dans un des parcs délégués?
+				if(is_machine_in_parc($nom,$tab_delegated_parcs[$loop])) {
+					$temoin_erreur='n';
+					break;
+				}
+			}
+			if($temoin_erreur=="y") {
+				echo "<p style='color:red'>La machine $nom n'est pas dans un de vos parcs delegues.</p>\n";
+				die();
+			}
+		}
 
 		if(fping($ip)) {
 			if($shutdown_reboot=="wait1") {

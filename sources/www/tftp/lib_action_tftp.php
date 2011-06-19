@@ -141,7 +141,7 @@ function search_machines2 ($filter,$branch) {
 
 	Parameters:
 		$filter - Un filtre de recherche permettant l'extraction de l'annuaire des machines
-	$branch - L'ou correspondant à l'ou contenant les machines
+		$branch - L'ou correspondant à l'ou contenant les machines
 
 	Return:
 	Retourne un tableau avec les machines
@@ -507,4 +507,202 @@ function check_sysresccd_files() {
 	return $temoin_sysresccd;
 }
 //====================================================
+function liste_sauvegardes($name,$id="",$mac="",$order_by='date DESC',$limit="") {
+	$tab=array();
+
+	$champs=array('id', 'name', 'mac', 'partition', 'image', 'date', 'descriptif', 'df', 'partitionnement', 'identifiant');
+
+	// Une machine peut changer de nom
+	// Une recherche par MAC ou ID donnera plus de réponses... mais peut-être avec des sauvegardes dans lesquelles la machine avait un autre nom
+	if($mac!="") {
+		$sql="select * from se3_tftp_sauvegardes WHERE mac='$mac' ORDER BY $order_by";
+	}
+	elseif($id!="") {
+		$sql="select * from se3_tftp_sauvegardes WHERE id='$id' ORDER BY $order_by";
+	}
+	else {
+		$sql="select * from se3_tftp_sauvegardes WHERE name='$name' ORDER BY $order_by";
+	}
+	if($limit!="") {$sql.=" LIMIT $limit;";}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$cpt]=array();
+
+			for($loop=0;$loop<count($champs);$loop++) {
+				$champ_courant=$champs[$loop];
+				$tab[$cpt][$champ_courant]=$lig->$champ_courant;
+			}
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+function tableau_liste_sauvegardes($name,$id="",$mac="",$order_by='date DESC',$limit="") {
+	$html="";
+
+	$tab=liste_sauvegardes($name,$id,$mac,$order_by,$limit);
+
+	if(count($tab)==0) {
+		$html="Aucune sauvegarde n'est recens&eacute;e pour <b>$name</b>";
+	}
+	else {
+		if($limit==1) {$html.="La derni&agrave;re sauvegarde&nbsp;:";}
+		elseif($limit>1) {$html.="Les $limit derni&agrave;res sauvegardes&nbsp;:";}
+		$html.="<table class='crob'>\n";
+		$html.="<tr>\n";
+		$html.="<th>Id</th>\n";
+		$html.="<th>Nom</th>\n";
+		$html.="<th>Partition</th>\n";
+		$html.="<th>Sauvegarde</th>\n";
+		$html.="<th>Date</th>\n";
+		$html.="<th>Descriptif</th>\n";
+		$html.="</tr>\n";
+		for($loop=0;$loop<count($tab);$loop++) {
+			$html.="<tr>\n";
+			$html.="<td>".$tab[$loop]['id']."</td>\n";
+			$html.="<td>".$tab[$loop]['name']."</td>\n";
+			$html.="<td>".$tab[$loop]['partition']."</td>\n";
+			$html.="<td>".$tab[$loop]['image']."</td>\n";
+			$html.="<td>".mysql_date_to_fr_date($tab[$loop]['date'])."</td>\n";
+			$html.="<td style='text-align:left'><pre>".$tab[$loop]['descriptif']."</pre></td>\n";
+			$html.="</tr>\n";
+		}
+		$html.="</table>\n";
+	}
+
+	return $html;
+}
+//====================================================
+function liste_rapports($name,$id="",$mac="",$order_by='date DESC',$limit="") {
+	$tab=array();
+
+	$champs=array('id', 'name', 'mac', 'date', 'tache', 'statut', 'descriptif', 'identifiant');
+
+	// Une machine peut changer de nom
+	// Une recherche par MAC ou ID donnera plus de réponses... mais peut-être avec des sauvegardes dans lesquelles la machine avait un autre nom
+	if($mac!="") {
+		$sql="select * from se3_tftp_rapports WHERE mac='$mac' ORDER BY $order_by";
+	}
+	elseif($id!="") {
+		$sql="select * from se3_tftp_rapports WHERE id='$id' ORDER BY $order_by";
+	}
+	else {
+		$sql="select * from se3_tftp_rapports WHERE name='$name' ORDER BY $order_by";
+	}
+	if($limit!="") {$sql.=" LIMIT $limit;";}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$cpt]=array();
+
+			for($loop=0;$loop<count($champs);$loop++) {
+				$champ_courant=$champs[$loop];
+				$tab[$cpt][$champ_courant]=$lig->$champ_courant;
+			}
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+function tableau_liste_rapports($name,$id="",$mac="",$order_by='date DESC', $limit="") {
+	$html="";
+
+	$tab=liste_rapports($name,$id,$mac,$order_by,$limit);
+
+	if(count($tab)==0) {
+		$html="Aucune sauvegarde n'est recens&eacute;e pour <b>$name</b>";
+	}
+	else {
+		if($limit==1) {$html.="Le dernier rapport&nbsp;:";}
+		elseif($limit>1) {$html.="Les $limit derniers rapports&nbsp;:";}
+		$html.="<table class='crob'>\n";
+		$html.="<tr>\n";
+		$html.="<th>Id</th>\n";
+		$html.="<th>Nom</th>\n";
+		$html.="<th>Partition</th>\n";
+		$html.="<th>Sauvegarde</th>\n";
+		$html.="<th>Date</th>\n";
+		$html.="<th>Descriptif</th>\n";
+		$html.="</tr>\n";
+		for($loop=0;$loop<count($tab);$loop++) {
+			$html.="<tr>\n";
+			$html.="<td>".$tab[$loop]['id']."</td>\n";
+			$html.="<td>".$tab[$loop]['name']."</td>\n";
+			$html.="<td>".$tab[$loop]['partition']."</td>\n";
+			$html.="<td>".$tab[$loop]['image']."</td>\n";
+			$html.="<td>".mysql_date_to_fr_date($tab[$loop]['date'])."</td>\n";
+			$html.="<td style='text-align:left'><pre>".$tab[$loop]['descriptif']."</pre></td>\n";
+			$html.="</tr>\n";
+		}
+		$html.="</table>\n";
+	}
+
+	return $html;
+}
+
+function list_delegated_parcs($login) {
+	$tab=array();
+
+	$sql="select * from delegation WHERE login='$login' AND niveau='manage' ORDER BY parc;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			$tab[]=$lig->parc;
+		}
+	}
+
+	return $tab;
+}
+
+/*
+function is_machine_in_parc($machine,$parc) {
+	global $ldap_server, $ldap_port, $dn;
+	global $error;
+
+	$retour="n";
+	$filtre="(&(cn=$parc)(member=cn=$machine,*))";
+	//$filtre="(&(cn=$parc)(member=*$machine*))";
+	$branche="parcs";
+
+	$attribut=array('cn');
+
+	$ds=@ldap_connect($ldap_server,$ldap_port);
+	if($ds){
+		$r=@ldap_bind($ds);// Bind anonyme
+		if($r) {
+			$result=ldap_search($ds,$dn[$branche],"$filtre",$attribut);
+			echo "<p>ldap_search($ds,".$dn[$branche].",\"$filtre\",$attribut);</p>";
+			if ($result){
+				//echo "\$result=$result<br />";
+				$info=@ldap_get_entries($ds,$result);
+				if(($info)&&($info["count"]!=0)){
+					$retour="y";
+				}
+			}
+		}
+	}
+	return $retour;
+}
+*/
+function is_machine_in_parc($machine,$parc) {
+	$retour="n";
+	$mp=gof_members($parc,"parcs",1);
+	$nombre_machine=count($mp);
+	for ($loop=0; $loop < count($mp); $loop++) {
+		if(strtolower($mp[$loop])==strtolower($machine)) {
+			$retour="y";
+			break;
+		}
+	}
+	return $retour;
+}
+
 ?>
