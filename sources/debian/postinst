@@ -105,11 +105,14 @@ done
 #==============================================================================
 
 # Ajout d'un droit pour que des personnes auxquelles un parc est delegue 'manage' puissent sauvegarder, restaurer, cloner,... sur ce parc
-echo "dn: cn=parc_can_clone,${rightsRdn},${ldap_base_dn}
+t=$(ldapsearch -xLLL -b ${rightsRdn},${ldap_base_dn} cn=parc_can_clone)
+if [ -z "$t" ]; then
+	echo "dn: cn=parc_can_clone,${rightsRdn},${ldap_base_dn}
 objectClass: groupOfNames
 cn: parc_can_clone
 member: uid=admin,${peopleRdn},${ldap_base_dn}
 " | ldapadd -x -D ${adminRdn},${ldap_base_dn} -w ${adminPw}
+fi
 
 #==============================================================================
 
