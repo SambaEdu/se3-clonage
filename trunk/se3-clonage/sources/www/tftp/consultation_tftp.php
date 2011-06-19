@@ -26,7 +26,7 @@ $_SESSION["pageaide"]="Le_module_Clonage_des_stations#Consulter_le_r.C3.A9sultat
 // CSS pour mes tableaux:
 echo "<link type='text/css' rel='stylesheet' href='tftp.css' />\n";
 
-if (is_admin("system_is_admin",$login)=="Y")
+if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",$login)=="Y"))
 {
 
 	$mode_rech=isset($_POST['mode_rech']) ? $_POST['mode_rech'] : (isset($_GET['mode_rech']) ? $_GET['mode_rech'] : NULL);
@@ -40,10 +40,47 @@ if (is_admin("system_is_admin",$login)=="Y")
 	$id_machine=isset($_POST['id_machine']) ? $_POST['id_machine'] : (isset($_GET['id_machine']) ? $_GET['id_machine'] : NULL);
 	$num_op=isset($_POST['num_op']) ? $_POST['num_op'] : (isset($_GET['num_op']) ? $_GET['num_op'] : NULL);
 
+
+	$restriction_parcs="n";
+	if(is_admin("system_is_admin",$login)!="Y") {
+		$restriction_parcs="y";
+		$tab_delegated_parcs=list_delegated_parcs($login);
+		if(count($tab_delegated_parcs)==0) {
+			echo "<p>Aucun parc ne vous a été délégué.</p>\n";
+			include ("pdp.inc.php");
+			die();
+		}
+	}
+
+
 	$suppr=isset($_POST['suppr']) ? $_POST['suppr'] : NULL;
 	if(isset($suppr)){
 		for($i=0;$i<count($suppr);$i++){
 			// Suppression du fichier en /tftpboot/pxelinux.cfg/
+
+			$temoin_erreur="y";
+			$nom="";
+	
+			$sql="SELECT name FROM se3_dhcp WHERE id='$suppr[$i]';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$lig=mysql_fetch_object($res);
+				$nom=$lig->name;
+	
+				for($loop=0;$loop<count($tab_delegated_parcs);$loop++) {
+					// La machine est-elle dans un des parcs délégués?
+					if(is_machine_in_parc($nom,$tab_delegated_parcs[$loop])) {
+						$temoin_erreur='n';
+						break;
+					}
+				}
+			}
+			if($temoin_erreur=="y") {
+				echo "<p style='color:red'>La machine $nom n'est pas dans un de vos parcs delegues.</p>\n";
+				die();
+			}
+
+
 			// Récupérer l'adresse MAC:
 			$sql="SELECT mac FROM se3_dhcp WHERE id='$suppr[$i]';";
 			//echo "$sql<br />\n";
@@ -96,6 +133,10 @@ if (is_admin("system_is_admin",$login)=="Y")
 	creation_tftp_tables();
 
 	echo "<h1>".gettext("Consultation TFTP")."</h1>\n";
+
+	if(is_admin("system_is_admin",$login)!="Y") {
+		$mode_rech="parc";
+	}
 
 	if(!isset($mode_rech)){
 		echo "<p>Choisissez le mode de consultation:</p>\n";
@@ -167,8 +208,10 @@ if (is_admin("system_is_admin",$login)=="Y")
 						echo "<td align='left'>\n";
 					}
 
-					echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\" />".$list_parcs[$loop]["cn"]."</label>\n";
-					echo "<br />\n";
+					if(($restriction_parcs=="n")||(in_array($list_parcs[$loop]["cn"], $tab_delegated_parcs))) {
+						echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\" />".$list_parcs[$loop]["cn"]."</label>\n";
+						echo "<br />\n";
+					}
 				}
 
 				echo "</td>\n";
