@@ -103,6 +103,7 @@ done
 [ -e /usr/share/se3/sbin/controle_actions_tftp.sh ] && chmod +x /usr/share/se3/sbin/controle_actions_tftp.sh
 
 #==============================================================================
+. /usr/share/se3/includes/config.inc.sh -l
 
 # Ajout d'un droit pour que des personnes auxquelles un parc est delegue 'manage' puissent sauvegarder, restaurer, cloner,... sur ce parc
 t=$(ldapsearch -xLLL -b ${rightsRdn},${ldap_base_dn} cn=parc_can_clone)
