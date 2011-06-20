@@ -209,7 +209,9 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 					}
 
 					if(($restriction_parcs=="n")||(in_array($list_parcs[$loop]["cn"], $tab_delegated_parcs))) {
-						echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\" />".$list_parcs[$loop]["cn"]."</label>\n";
+						echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\"";
+						//if(count($list_parcs)==1) {echo " checked";}
+						echo " />".$list_parcs[$loop]["cn"]."</label>\n";
 						echo "<br />\n";
 					}
 				}
@@ -219,6 +221,20 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 				echo "</table>\n";
 
 				echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Valider\" /></p>\n";
+
+				echo "<script type='text/javascript'>
+nb_parcs=0;
+id_parc='';
+for(i=0;i<$loop;i++) {
+	if(document.getElementById('parc_'+i)) {
+		nb_parcs++;
+		id_parc='parc_'+i;
+	}
+}
+if(nb_parcs==1) {
+	document.getElementById(id_parc).checked=true;
+}
+</script>\n";
 
 				echo "</form>\n";
 			}
@@ -388,11 +404,13 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 							// Rapports
 							echo "<td width='20%'>\n";
 							if($id_machine!=""){
-								$sql="SELECT * FROM se3_tftp_rapports WHERE id='".$id_machine."';";
+								$sql="SELECT * FROM se3_tftp_rapports WHERE id='".$id_machine."' ORDER BY date DESC;";
 								$res=mysql_query($sql);
 								if(mysql_num_rows($res)>0) {
 									$lig=mysql_fetch_object($res);
 									echo "<a href='visu_rapport.php?id_machine=$id_machine' target='_blank'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Visualiser le(s) rapport(s) existant(s)\" title=\"Visualiser le(s) rapport(s) existant(s)\" /></a>";
+									echo "<br />\n";
+									echo "<span style='font-size: x-small;' title='Dernier rapport: $lig->tache ($lig->statut)'>".mysql_date_to_fr_date($lig->date)."</span>\n";
 								}
 								else {
 									echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Aucun rapport existant\" title=\"Aucun rapport existant\" />";
@@ -407,11 +425,13 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 							// Sauvegardes existantes
 							echo "<td width='20%'>\n";
 							if($id_machine!=""){
-								$sql="SELECT * FROM se3_tftp_sauvegardes WHERE id='".$id_machine."';";
+								$sql="SELECT * FROM se3_tftp_sauvegardes WHERE id='".$id_machine."' ORDER BY date DESC;";
 								$res=mysql_query($sql);
 								if(mysql_num_rows($res)>0) {
 									$lig=mysql_fetch_object($res);
 									echo "<a href='visu_svg.php?id_machine=$id_machine' target='_blank'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Visualiser la(les) sauvegarde(s) existante(s)\" title=\"Visualiser la(les) sauvegarde(s) existante(s)\" /></a>";
+									echo "<br />\n";
+									echo "<span style='font-size: x-small;' title='Dernière sauvegarde: $lig->image'>".mysql_date_to_fr_date($lig->date)."</span>\n";
 								}
 								else {
 									echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Aucune sauvegarde existante\" title=\"Aucune sauvegarde existante\" />";
