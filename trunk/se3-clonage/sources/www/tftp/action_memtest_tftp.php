@@ -98,7 +98,9 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 			}
 
 			if(($restriction_parcs=="n")||(in_array($list_parcs[$loop]["cn"], $tab_delegated_parcs))) {
-				echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\" />".$list_parcs[$loop]["cn"]."</label>\n";
+				echo "<label for='parc_$loop'><input type='checkbox' id='parc_$loop' name='parc[]' value=\"".$list_parcs[$loop]["cn"]."\"";
+				if(count($list_parcs)==1) {echo " checked";}
+				echo " />".$list_parcs[$loop]["cn"]."</label>\n";
 				echo "<br />\n";
 			}
 		}
@@ -110,6 +112,20 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Valider\" /></p>\n";
 
 		echo "</form>\n";
+
+		echo "<script type='text/javascript'>
+nb_parcs=0;
+id_parc='';
+for(i=0;i<$loop;i++) {
+	if(document.getElementById('parc_'+i)) {
+		nb_parcs++;
+		id_parc='parc_'+i;
+	}
+}
+if(nb_parcs==1) {
+	document.getElementById(id_parc).checked=true;
+}
+</script>\n";
 
 		echo "<p><a href='index.php'>Retour à l'index</a>.</p>\n";
 	}

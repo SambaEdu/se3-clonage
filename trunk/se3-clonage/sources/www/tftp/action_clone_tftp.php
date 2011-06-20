@@ -133,6 +133,21 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 
 		echo "</form>\n";
 
+
+		echo "<script type='text/javascript'>
+nb_parcs=0;
+id_parc='';
+for(i=0;i<$loop;i++) {
+	if(document.getElementById('parc_'+i)) {
+		nb_parcs++;
+		id_parc='parc_'+i;
+	}
+}
+if(nb_parcs==1) {
+	document.getElementById(id_parc).checked=true;
+}
+</script>\n";
+
 		echo "<p><a href='index.php'>Retour à l'index</a>.</p>\n";
 	}
 	else {
