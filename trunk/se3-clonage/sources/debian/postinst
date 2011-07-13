@@ -23,7 +23,7 @@ case "$1" in
 
 . /usr/share/se3/includes/config.inc.sh -lmd
 
-mysqlrequest="(mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N"
+mysqlrequest="mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N"
 
 test_exist=`echo "SELECT value FROM params WHERE name='clonage'" | $mysqlrequest`
 if [ "X$test_exist" = "X" ]; then # if empty
