@@ -1,3 +1,9 @@
+se3-clonage (0.51) lucid; urgency=low
+
+  * increment version
+
+ -- root <root@localhost.localdomain>  Wed, 13 Jul 2011 02:17:19 +0200
+
 se3-clonage (0.50) lucid; urgency=low
 
   * ajouts fonctions et delegation possible
