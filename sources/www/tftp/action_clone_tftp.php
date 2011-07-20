@@ -148,7 +148,7 @@ if(nb_parcs==1) {
 }
 </script>\n";
 
-		echo "<p><a href='index.php'>Retour à l'index</a>.</p>\n";
+		echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
 	}
 	else {
 		if(!isset($id_emetteur)) {
@@ -313,14 +313,22 @@ if(nb_parcs==1) {
 
 		}
 		elseif(!isset($id_recepteur)){
-
+                        // Ajout keyser test emetteur bien allume
+                        
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
 			$sql="SELECT * FROM se3_dhcp WHERE id='$id_emetteur';";
 			$res=mysql_query($sql);
 			$lig=mysql_fetch_object($res);
-			echo "<p>Emetteur: $lig->name (<i>id:$id_emetteur</i>)</p>\n";
-			echo "<input type=\"hidden\" name=\"id_emetteur\" value=\"$id_emetteur\" />\n";
+                        echo "<p>Emetteur: $lig->name (<i>id:$id_emetteur</i>)</p>\n";
+                        echo "<input type=\"hidden\" name=\"id_emetteur\" value=\"$id_emetteur\" />\n";
+                        exec("/usr/share/se3/sbin/tcpcheck 2 $lig->ip:445 | grep alive",$arrval,$return_value);
+			if ($return_value == "1") {
+			    echo "<p style='color:red;'>Attention, clonage impossible. La machine $lig->name est injoignable ou proteg&#233;e par un parre feu  :  </p>\n ";
+			    echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
+			    include ("pdp.inc.php");
+			    exit();
+                        }
 
 
 			echo "<p>Choisissez les récepteurs.</p>\n";
