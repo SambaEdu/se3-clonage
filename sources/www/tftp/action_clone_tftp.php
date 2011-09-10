@@ -640,7 +640,6 @@ echo "</div>\n";
 				echo "<label for='compr_none'><input type='radio' name='compr' id='compr_none' value='none' /> Aucune compression</label><br />\n";
 				echo "<label for='compr_gzip'><input type='radio' name='compr' id='compr_gzip' value='gzip' /> Compression GZIP</label><br />\n";
 				echo "<label for='compr_lzop'><input type='radio' name='compr' id='compr_lzop' value='lzop' checked /> Compression LZOP (<i>recommandé</i>)</label><br />\n";
-
 				echo "</td></tr>\n";
 
 				// A FAIRE: Relever les clonage en attente (possible) ou en cours (pas possible en l'état) pour ne pas proposer le même port...
@@ -727,6 +726,17 @@ echo "</div>\n";
 				echo "<input type='checkbox' name='dhcp' value='no' /> Ne pas prendre l'IP via DHCP mais directement depuis le /tftpboot/pxelinux.cfg/01-&lt;MAC&gt;\n";
 				echo "</td></tr>\n";
 
+				if(($temoin_sysresccd=="y")&&(crob_getParam('srcd_scripts_vers')>='20110910')) {
+					echo "<tr id='tr_authorized_keys'>\n";
+					echo "<td>Url authorized_keys&nbsp;: </td>\n";
+					echo "<td><input type='checkbox' name='prendre_en_compte_url_authorized_keys' value='y' /> \n";
+					echo "<input type='text' name='url_authorized_keys' value='".crob_getParam('url_authorized_keys')."' size='40' />\n";
+					echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Un fichier authorized_keys peut &ecirc;tre mis en place pour permettre un acc&egrave;s SSH aux postes clon&eacute;s.')")."\">\n";
+					echo "<img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
+					echo "</td>\n";
+					echo "</tr>\n";
+				}
+
 				echo "<tr><td valign='top'>Rebooter en fin de clonage: </td>\n";
 				echo "<td>\n";
 				echo "<label for='auto_reboot_always'><input type='radio' name='auto_reboot' id='auto_reboot_always' value='always' checked /> Toujours</label><br />\n";
@@ -804,6 +814,7 @@ function affiche_sections_distrib() {
 		document.getElementById('tr_netmodule').style.display='';
 
 		document.getElementById('div_ntfsclone').style.display='none';
+		document.getElementById('tr_authorized_keys').style.display='none';
 	}
 	else {
 		document.getElementById('div_sysresccd_kernel').style.display='';
@@ -811,6 +822,7 @@ function affiche_sections_distrib() {
 		document.getElementById('tr_netmodule').style.display='none';
 
 		document.getElementById('div_ntfsclone').style.display='';
+		document.getElementById('tr_authorized_keys').style.display='';
 	}
 }
 
@@ -832,6 +844,12 @@ affiche_message_shutdown_cmd();
 			}
 			else {
 				echo "<h2>Validation des paramètres du clonage</h2>\n";
+
+				$opt_url_authorized_keys="";
+				if((isset($_POST['prendre_en_compte_url_authorized_keys']))&&(isset($_POST['url_authorized_keys']))&&($_POST['url_authorized_keys']!='')&&(preg_replace('|[A-Za-z0-9/:_\.\-]|','',$_POST['url_authorized_keys'])=='')) {
+					$opt_url_authorized_keys="url_authorized_keys=".$_POST['url_authorized_keys'];
+					crob_setParam('url_authorized_keys',$_POST['url_authorized_keys'],'Url fichier authorized_keys pour acces ssh aux clients TFTP');
+				}
 
 				//===================================
 				// Contrôle des variables:
@@ -1062,10 +1080,10 @@ affiche_message_shutdown_cmd();
 					else {
 						//$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_emetteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
 						if($ntfsclone_udpcast=='y') {
-							$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_emetteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime'", $retour);
+							$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_emetteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime $opt_url_authorized_keys'", $retour);
 						}
 						else {
-							$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_emetteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel'", $retour);
+							$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_emetteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
 						}
 					}
 
@@ -1191,10 +1209,10 @@ affiche_message_shutdown_cmd();
 							else {
 								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
 								if($ntfsclone_udpcast=='y') {
-									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime'", $retour);
+									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime $opt_url_authorized_keys'", $retour);
 								}
 								else {
-									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel'", $retour);
+									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
 								}
 							}
 	
