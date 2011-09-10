@@ -387,6 +387,17 @@ echo "</div>\n";
 				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la première partition Linux (<i>ou à défaut W$ après la partition système</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
 
+				if(($temoin_sysresccd=="y")&&(crob_getParam('srcd_scripts_vers')>='20110910')) {
+					echo "<tr id='tr_authorized_keys'>\n";
+					echo "<td>Url authorized_keys&nbsp;: </td>\n";
+					echo "<td><input type='checkbox' name='prendre_en_compte_url_authorized_keys' value='y' /> \n";
+					echo "<input type='text' name='url_authorized_keys' value='".crob_getParam('url_authorized_keys')."' size='40' />\n";
+					echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Un fichier authorized_keys peut &ecirc;tre mis en place pour permettre un acc&egrave;s SSH au poste restaur&eacute;.')")."\">\n";
+					echo "<img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
+					echo "</td>\n";
+					echo "</tr>\n";
+				}
+
 				echo "<tr><td valign='top'>Rebooter en fin de restauration: </td>\n";
 				echo "<td>\n";
 				echo "<input type='radio' name='auto_reboot' value='y' checked />\n";
@@ -440,9 +451,11 @@ function affiche_sections_distrib() {
 
 	if(distrib=='slitaz') {
 		document.getElementById('div_sysresccd_kernel').style.display='none';
+		document.getElementById('tr_authorized_keys').style.display='none';
 	}
 	else {
 		document.getElementById('div_sysresccd_kernel').style.display='block';
+		document.getElementById('tr_authorized_keys').style.display='';
 	}
 }
 
@@ -507,6 +520,12 @@ affiche_sections_distrib();
 			}
 			else {
 				echo "<h2>Validation des paramètres de la restauration</h2>\n";
+
+				$opt_url_authorized_keys="";
+				if((isset($_POST['prendre_en_compte_url_authorized_keys']))&&(isset($_POST['url_authorized_keys']))&&($_POST['url_authorized_keys']!='')&&(preg_replace('|[A-Za-z0-9/:_\.\-]|','',$_POST['url_authorized_keys'])=='')) {
+					$opt_url_authorized_keys="url_authorized_keys=".$_POST['url_authorized_keys'];
+					crob_setParam('url_authorized_keys',$_POST['url_authorized_keys'],'Url fichier authorized_keys pour acces ssh aux clients TFTP');
+				}
 
 				echo "<p>Rappel des paramètres:</p>\n";
 
@@ -623,7 +642,7 @@ affiche_sections_distrib();
 							}
 							else {
 								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'", $retour);
-								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel'", $retour);
+								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
 							}
 	
 							if(count($retour)>0){
