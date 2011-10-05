@@ -2,7 +2,7 @@
 
 # $Id$
 # Auteur: Stephane Boireau
-# Dernière modification: 06/02/2011
+# Dernière modification: 03/10/2011
 
 # Ajout en visudo:
 # Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh
@@ -312,10 +312,18 @@ label sysrcdsvg
 # APPEND scandelay=1 setkmap=fr autoruns=0 ar_nowait vga=791
 # 
 
-		if [ -z "$nom_image" ]; then
-			echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+		if [ "${dest_part:0:4}" = "smb:" ]; then
+			if [ -z "$nom_image" ]; then
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part2.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+			else
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part2.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+			fi
 		else
-			echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+			if [ -z "$nom_image" ]; then
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+			else
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+			fi
 		fi
 
 		echo "
@@ -1522,6 +1530,110 @@ label srcdu2
 
 		echo "# Choix de boot par défaut:
 default srcdu2
+
+# On boote après 6 secondes:
+timeout 60
+
+# Permet-on à l'utilisateur de choisir l'option de boot?
+# Si on ne permet pas, le timeout n'est pas pris en compte.
+prompt 1
+" >> $fich
+	;;
+
+	"chg_mdp_bootloader_sysresccd")
+
+		mac=$(echo "$*" | sed -e "s| |\n|g"|grep "^mac="|cut -d"=" -f2 | sed -e "s/:/-/g")
+		ip=$(echo "$*" | sed -e "s| |\n|g"|grep "^ip="|cut -d"=" -f2)
+		pc=$(echo "$*" | sed -e "s| |\n|g"|grep "pc="|cut -d"=" -f2)
+
+		options_mdp="change_mdp=auto "
+
+		changer_mdp_linux=$(echo "$*" | sed -e "s| |\n|g"|grep "mdp_linux=")
+		if [ -n "$changer_mdp_linux" ]; then
+			mdp_linux=$(echo "$changer_mdp_linux" |cut -d"=" -f2)
+			options_mdp="$options_mdp mdp_linux=$mdp_linux"
+		fi
+
+		changer_mdp_sauve=$(echo "$*" | sed -e "s| |\n|g"|grep "mdp_sauve=")
+		if [ -n "$changer_mdp_sauve" ]; then
+			mdp_sauve=$(echo "$changer_mdp_sauve" |cut -d"=" -f2)
+			options_mdp="$options_mdp mdp_sauve=$mdp_sauve"
+		fi
+
+		changer_mdp_restaure=$(echo "$*" | sed -e "s| |\n|g"|grep "mdp_restaure=")
+		if [ -n "$changer_mdp_restaure" ]; then
+			mdp_restaure=$(echo "$changer_mdp_restaure" |cut -d"=" -f2)
+			options_mdp="$options_mdp mdp_restaure=$mdp_restaure"
+		fi
+
+		auto_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "auto_reboot="|cut -d"=" -f2)
+
+		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "kernel="|cut -d"=" -f2)
+
+		t_delais_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "delais_reboot=")
+		if [ -n "$t_delais_reboot" ]; then
+			delais_reboot=$(echo "$t_delais_reboot" | cut -d"=" -f2)
+			opt_delais_reboot=" delais_reboot=$delais_reboot"
+		fi
+
+		url_authorized_keys=$(echo "$*" | sed -e "s| |\n|g"|grep "^url_authorized_keys="|cut -d"=" -f2)
+		if [ -n "$url_authorized_keys" ]; then
+			opt_url_authorized_keys=" url_authorized_keys=$url_authorized_keys"
+		else
+			opt_url_authorized_keys=""
+		fi
+
+		if [ "$auto_reboot" != "y" ]; then
+			auto_reboot="n"
+		fi
+
+		# On pourra peut-etre remplacer par une autre machine pour heberger le serveur web requis pour le telechargement... pour alleger la charge pesant sur SE3
+		if [ -e /var/www/se3/includes/config.inc.php ]; then
+			dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
+			dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
+			dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
+			dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
+		else
+			echo "Fichier de conf inaccessible"
+			exit 1
+		fi
+
+		# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
+		se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
+		www_sysrcd_ip=$se3ip
+
+		fich=/tftpboot/pxelinux.cfg/01-$mac
+
+		echo "# Script de boot de la machine $pc
+# MAC=$mac
+# IP= $ip
+# Date de generation du fichier: $timedate
+# Timestamp: $timestamp
+
+# Echappatoires pour booter sur le DD:
+label 0
+   localboot 0x80
+label a
+   localboot 0x00
+label q
+   localboot -1
+label disk1
+   localboot 0x80
+label disk2
+  localboot 0x81
+
+# Label de reception:
+label srcdmdp
+    kernel rescuecd
+    #initrd initram.igz" > $fich
+
+		# A revoir: On peut avoir besoin de altker32,... au lieu de rescuecd
+	
+		echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=change_mdp_boot_loader.sh $options_mdp auto_reboot=$auto_reboot $opt_delais_reboot ${opt_url_authorized_keys}
+		" >> $fich
+
+		echo "# Choix de boot par défaut:
+default srcdmdp
 
 # On boote après 6 secondes:
 timeout 60

@@ -18,7 +18,7 @@ include "printers.inc.php";
 require("lib_action_tftp.php");
 
 //aide
-$_SESSION["pageaide"]="Le_module_Clonage_des_stations#Programmer_une_sauvegarde";
+$_SESSION["pageaide"]="Le_module_Clonage_des_stations#Changer_mdp_boot_loader";
 
 // On active les rapports d'erreurs:
 //error_reporting(E_ALL);
@@ -56,25 +56,28 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	creation_tftp_tables();
 
 	// Paramètres SliTaz:
+	/*
 	$nom_image=isset($_POST['nom_image']) ? $_POST['nom_image'] : (isset($_GET['nom_image']) ? $_GET['nom_image'] : NULL);
 	$src_part=isset($_POST['src_part']) ? $_POST['src_part'] : (isset($_GET['src_part']) ? $_GET['src_part'] : NULL);
 	$dest_part=isset($_POST['dest_part']) ? $_POST['dest_part'] : (isset($_GET['dest_part']) ? $_GET['dest_part'] : NULL);
+	*/
 	$auto_reboot=isset($_POST['auto_reboot']) ? $_POST['auto_reboot'] : (isset($_GET['auto_reboot']) ? $_GET['auto_reboot'] : NULL);
 	$delais_reboot=isset($_POST['delais_reboot']) ? $_POST['delais_reboot'] : (isset($_GET['delais_reboot']) ? $_GET['delais_reboot'] : NULL);
+
+	$changer_mdp_linux=isset($_POST['changer_mdp_linux']) ? $_POST['changer_mdp_linux'] : (isset($_GET['changer_mdp_linux']) ? $_GET['changer_mdp_linux'] : "n");
+	$changer_mdp_sauve=isset($_POST['changer_mdp_sauve']) ? $_POST['changer_mdp_sauve'] : (isset($_GET['changer_mdp_sauve']) ? $_GET['changer_mdp_sauve'] : "n");
+	$changer_mdp_restaure=isset($_POST['changer_mdp_restaure']) ? $_POST['changer_mdp_restaure'] : (isset($_GET['changer_mdp_restaure']) ? $_GET['changer_mdp_restaure'] : "n");
+
+	$mdp_linux=isset($_POST['mdp_linux']) ? $_POST['mdp_linux'] : (isset($_GET['mdp_linux']) ? $_GET['mdp_linux'] : "");
+	$mdp_sauve=isset($_POST['mdp_sauve']) ? $_POST['mdp_sauve'] : (isset($_GET['mdp_sauve']) ? $_GET['mdp_sauve'] : "");
+	$mdp_restaure=isset($_POST['mdp_restaure']) ? $_POST['mdp_restaure'] : (isset($_GET['mdp_restaure']) ? $_GET['mdp_restaure'] : "");
 
 	// Paramètres concernant l'action immédiate sur les machines choisies:
 	$wake=isset($_POST['wake']) ? $_POST['wake'] : (isset($_GET['wake']) ? $_GET['wake'] : "n");
 	$shutdown_reboot=isset($_POST['shutdown_reboot']) ? $_POST['shutdown_reboot'] : (isset($_GET['shutdown_reboot']) ? $_GET['shutdown_reboot'] : NULL);
 
 
-	$type_dest_part=isset($_POST['type_dest_part']) ? $_POST['type_dest_part'] : "partition";
-	$dest_srv=isset($_POST['dest_srv']) ? $_POST['dest_srv'] : "";
-	$dest_partage=isset($_POST['dest_partage']) ? $_POST['dest_partage'] : "";
-	$dest_sous_dossier=isset($_POST['dest_sous_dossier']) ? $_POST['dest_sous_dossier'] : "";
-	$dest_compte=isset($_POST['dest_compte']) ? $_POST['dest_compte'] : "";
-	$dest_mdp=isset($_POST['dest_mdp']) ? $_POST['dest_mdp'] : "";
-
-	echo "<h1>".gettext("Action sauvegarde TFTP")."</h1>\n";
+	echo "<h1>".gettext("Action changement de mot de passe Boot Loader")."</h1>\n";
 
 	$restriction_parcs="n";
 	if(is_admin("system_is_admin",$login)!="Y") {
@@ -89,9 +92,26 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 
 	//echo "is_machine_in_parc('xpbof', 'parc_xp')=".is_machine_in_parc('xpbof', 'parc_xp')."<br />";
 
+	//========================================
+	$temoin_sysresccd=check_sysresccd_files();
+
+	if($temoin_sysresccd!="y") {
+		echo "<p style='color:red'>Le dispositif nécessite l'utilisation de SysRescCD.<br />Voir <a href='config_tftp.php'>Configuration TFTP</a></p>\n";
+		include ("pdp.inc.php");
+		die();
+	}
+
+	$srcd_scripts_vers=crob_getParam('srcd_scripts_vers');
+	if(($srcd_scripts_vers=='')||($srcd_scripts_vers<20111003)) {
+		echo "<p style='color:red'>Le dispositif nécessite des scripts SysRescCD en version supérieure ou égale à 20111003.<br />Voir <a href='config_tftp.php'>Configuration TFTP</a></p>\n";
+		include ("pdp.inc.php");
+		die();
+	}
+	//========================================
+
 	if(!isset($parc)) {
 
-		echo "<p>Choisissez un ou des parcs:</p>\n";
+		echo "<p>Choisissez un ou des parcs&nbsp;:</p>\n";
 
 		$list_parcs=search_machines("objectclass=groupOfNames","parcs");
 		if (count($list_parcs)==0) {
@@ -174,7 +194,7 @@ if(nb_parcs==1) {
 				echo "<th>Config DHCP</th>\n";
 
 				//echo "<th>Sauvegarde</th>\n";
-				echo "<th>Sauvegarde<br />\n";
+				echo "<th>Changer le mot de passe<br />\n";
 				echo "<a href='#' onclick='check_machine($i,\"check\");return false'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Tout cocher\" title=\"Tout cocher\" /></a>\n";
 				echo " / <a href='#' onclick='check_machine($i,\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout décocher\" title=\"Tout décocher\" /></a>\n";
 				echo "</th>\n";
@@ -315,13 +335,13 @@ if(nb_parcs==1) {
 		else {
 			$validation_parametres=isset($_POST['validation_parametres']) ? $_POST['validation_parametres'] : (isset($_GET['validation_parametres']) ? $_GET['validation_parametres'] : NULL);
 			if(!isset($validation_parametres)) {
-				echo "<h2>Paramétrage de la sauvegarde</h2>\n";
+				echo "<h2>Paramétrage du changement de mot de passe</h2>\n";
 
 				$nombre_machines=count($id_machine);
 				if($nombre_machines==0){
-					echo "<p>ERREUR: Il faut choisir au moins une machine.</p>\n";
+					echo "<p>ERREUR&nbsp;: Il faut choisir au moins une machine.</p>\n";
 
-					echo "<p><a href='#' onclick='history.go(-1);'>Retour au choix des machines à sauvegarder</a>.</p>\n";
+					echo "<p><a href='#' onclick='history.go(-1);'>Retour au choix des machines pour lesquelles changer le mot de passe du Boot Loader</a>.</p>\n";
 
 					echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
 					include ("pdp.inc.php");
@@ -349,7 +369,7 @@ if(nb_parcs==1) {
 					}
 				}
 				if(count($id_machine)>1){$s="s";}else{$s="";}
-				echo "<p>Machine$s concernée$s: $chaine</p>\n";
+				echo "<p>Machine$s concernée$s&nbsp;: $chaine</p>\n";
 
 
 				// Date pour le nom de l'image à générer:
@@ -363,13 +383,27 @@ if(nb_parcs==1) {
 
 				$date_se3=$annee_se3.$mois_se3.$jour_se3;
 
-				echo "<p>Choisissez les paramètres de sauvegarde: <br />\n";
+				echo "<p>Choisissez les paramètres de changement de mot de passe Boot Loader&nbsp;: <br />\n";
 
 				$temoin_sysresccd=check_sysresccd_files();
 
+				if($temoin_sysresccd!="y") {
+					echo "<p style='color:red'>Le dispositif nécessite l'utilisation de SysRescCD.<br />Voir <a href='config_tftp.php'>Configuration TFTP</a></p>\n";
+					include ("pdp.inc.php");
+					die();
+				}
+
+				$srcd_scripts_vers=crob_getParam('srcd_scripts_vers');
+				if(($srcd_scripts_vers=='')||($srcd_scripts_vers<20111003)) {
+					echo "<p style='color:red'>Le dispositif nécessite des scripts SysRescCD en version supérieure ou égale à 20111003.<br />Voir <a href='config_tftp.php'>Configuration TFTP</a></p>\n";
+					include ("pdp.inc.php");
+					die();
+				}
+
 				if($temoin_sysresccd=="y") {
 					// Il faut aussi le noyau et l'initram.igz dans /tftpboot, 
-					echo "<input type='radio' name='distrib' id='distrib_slitaz' value='slitaz' onchange='affiche_sections_distrib()' /><label for='distrib_slitaz'>Utiliser la distribution SliTaz</label><br />\n";
+					//echo "<input type='radio' name='distrib' id='distrib_slitaz' value='slitaz' onchange='affiche_sections_distrib()' /><label for='distrib_slitaz'>Utiliser la distribution SliTaz</label><br />\n";
+					echo "<input type='hidden' name='distrib' id='distrib_slitaz' value='slitaz' />\n";
 					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' checked /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)<br />\n";
 
 echo "<div id='div_sysresccd_kernel'>\n";
@@ -394,73 +428,45 @@ echo "</div>\n";
 				}
 
 				echo "<table border='0'>\n";
-				echo "<tr><td>Nom de la sauvegarde: </td><td><input type='text' name='nom_image' value='image_$date_se3' />\n";
-				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Si vous laissez vide, un nom du type image_NOM_PARTITION_DATE_HEURE_MINUTE_SECONDE sera utilisé.')")."\"><img name=\"action_image1\"  src=\"../elements/images/help-info.gif\"></u>\n";
-				echo "</td></tr>\n";
+				echo "<tr>\n";
+				echo "<td>\n";
+				echo "<input type='checkbox' name='changer_mdp_linux' id='changer_mdp_linux' value='y' />\n";
+				//echo "</td>\n";
+				//echo "<td>\n";
+				echo "<label for='changer_mdp_linux'> Changer le mot de passe Linux&nbsp;: </label></td><td><input type='text' name='mdp_linux' id='mdp_linux' value='' />\n";
+				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Si vous laissez vide, le mot de passe Linux sera vidé.')")."\"><img name=\"action_image1\"  src=\"../elements/images/help-info.gif\"></u>\n";
+				echo " <a href='javascript:copier_pass()'><img src='../elements/images/magic.png' width='22' height='24' alt='Recopier le mot de passe pour Sauve et Restaure' title='Recopier le mot de passe pour Sauve et Restaure' /></a>\n";
+				echo "</td>\n";
+				echo "</tr>\n";
 
+				echo "<tr>\n";
+				echo "<td>\n";
+				echo "<input type='checkbox' name='changer_mdp_sauve' id='changer_mdp_sauve' value='y' />\n";
+				//echo "</td>\n";
+				//echo "<td>\n";
+				echo "<label for='changer_mdp_sauve'> Changer le mot de passe Sauve&nbsp;: </label></td><td><input type='text' name='mdp_sauve' id='mdp_sauve' value='' />\n";
+				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Si vous laissez vide, le mot de passe Sauve sera vidé.')")."\"><img name=\"action_image1\"  src=\"../elements/images/help-info.gif\"></u>\n";
+				echo "</td>\n";
+				echo "</tr>\n";
+
+				echo "<tr>\n";
+				echo "<td>\n";
+				echo "<input type='checkbox' name='changer_mdp_restaure' id='changer_mdp_restaure' value='y' />\n";
+				//echo "</td>\n";
+				//echo "<td>\n";
+				echo "<label for='changer_mdp_restaure'> Changer le mot de passe Restaure&nbsp;: </label></td><td><input type='text' name='mdp_restaure' id='mdp_restaure' value='' />\n";
+				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Si vous laissez vide, le mot de passe Restaure sera vidé.')")."\"><img name=\"action_image1\"  src=\"../elements/images/help-info.gif\"></u>\n";
+				echo "</td>\n";
+				echo "</tr>\n";
+				/*
 				echo "<tr><td>Partition à sauvegarder: </td><td><input type='text' name='src_part' value='auto' />\n";
 				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda1, sda1,... selon les cas, ou laissez \'auto\' si la première partition du disque est bien la partition système à sauvegarder.')")."\"><img name=\"action_image2\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
 
-				echo "<tr><td>Partition de stockage: </td><td><input type='text' name='dest_part' value='auto' />\n";
+				echo "<tr><td>Partition de stockage&nbsp;: </td><td><input type='text' name='dest_part' value='auto' />\n";
 				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la première partition Linux (<i>ou à défaut W$ après la partition système</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
-
-				$srcd_scripts_vers=crob_getParam('srcd_scripts_vers');
-				if(($temoin_sysresccd=="y")&&($srcd_scripts_vers!='')&&($srcd_scripts_vers>=20111005)) {
-					echo "<tr><td><input type='radio' name='type_dest_part' id='type_dest_part_partition' value='partition' checked /><label for='type_dest_part_partition'> Partition de stockage: </label></td><td><input type='text' name='dest_part' value='auto' />\n";
-					echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la première partition Linux (<i>ou à défaut W$ après la partition système</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
-					echo "</td></tr>\n";
-
-					echo "<tr id='tr_dest_part_smb'><td style='vertical-align:top'><b>Ou</b><br /><input type='radio' name='type_dest_part' id='type_dest_part_smb' value='smb' /><label for='type_dest_part_smb'> Effectuer une sauvegarde vers un partage Window$/Samba&nbsp;:</label><br />(<i>tous les champs doivent être renseignés<br />si vous optez pour ce choix</i>)</td>\n";
-					echo "<td>\n";
-						echo "<table>\n";
-						echo "<tr>\n";
-						echo "<td>Serveur&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_srv' value='".crob_getParam('se3ip')."' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
-						echo "</tr>\n";
-
-						echo "<tr>\n";
-						echo "<td>Partage&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_partage' value='' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
-						echo "</tr>\n";
-
-						echo "<tr>\n";
-						echo "<td>Sous-dossier&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_sous_dossier' value='' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
-						echo "</tr>\n";
-
-						echo "<tr>\n";
-						echo "<td>Compte&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_compte' value='' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
-						echo "</tr>\n";
-
-						echo "<tr>\n";
-						echo "<td style='vertical-align:top'>Mot de passe&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_mdp' value='' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /><br /><b>Attention&nbsp;:</b> Le mot de passe circule en clair.<br />Evitez d'utiliser un compte comme admin ou adminse3.</td>\n";
-						echo "</tr>\n";
-						echo "</table>\n";
-					echo "</td></tr>\n";
-				}
-				else {
-					echo "<tr><td>Partition de stockage: </td><td><input type='text' name='dest_part' value='auto' />\n";
-					echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la première partition Linux (<i>ou à défaut W$ après la partition système</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
-					echo "</td></tr>\n";
-				}
-
-// Proposer de supprimer Toutes les sauvegardes anterieures (all) ou de plus de N mois
-// Modifier sauve_part.sh pour SysRescCD
-// Modifier pxe_gen_cfg.sh pour prendre en compte del_old_svg
-				echo "<tr><td>Supprimer les sauvegardes antérieures: </td><td><input type='checkbox' name='suppr_old_svg' value='y' />\n";
-				//echo "<br />\n";
-				echo "&nbsp;";
-				echo "<select name='del_old_svg'>\n";
-				echo "<option value='all'>Toutes les sauvegardes antérieures</option>\n";
-				for($loop=1;$loop<=24;$loop++) {
-					echo "<option value='$loop'>Les sauvegardes de plus de $loop mois</option>\n";
-				}
-				echo "</select>\n";
-				echo "</td></tr>\n";
+				*/
 
 				if(($temoin_sysresccd=="y")&&(crob_getParam('srcd_scripts_vers')>='20110910')) {
 					echo "<tr id='tr_authorized_keys'>\n";
@@ -473,23 +479,24 @@ echo "</div>\n";
 					echo "</tr>\n";
 				}
 
-				echo "<tr><td valign='top'>Rebooter en fin de sauvegarde: </td>\n";
+				echo "<tr><td valign='top'>Rebooter en fin de sauvegarde&nbsp;: </td>\n";
 				echo "<td>\n";
-				echo "<input type='radio' name='auto_reboot' value='y' checked />\n";
+				echo "<input type='checkbox' name='auto_reboot' value='y' checked />\n";
 				echo "</td>\n";
 				echo "</tr>\n";
-
-				echo "<tr><td valign='top'>Eteindre en fin de sauvegarde: </td>\n";
+				/*
+				echo "<tr><td valign='top'>Eteindre en fin de sauvegarde&nbsp;: </td>\n";
 				echo "<td>\n";
 				echo "<input type='radio' name='auto_reboot' value='halt' />\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 
-				echo "<tr><td valign='top'>Ne pas rebooter ni éteindre la machine<br />en fin de sauvegarde: </td>\n";
+				echo "<tr><td valign='top'>Ne pas rebooter ni éteindre la machine<br />en fin de sauvegarde&nbsp;: </td>\n";
 				echo "<td>\n";
 				echo "<input type='radio' name='auto_reboot' value='n' />\n";
 				echo "</td>\n";
 				echo "</tr>\n";
+				*/
 
 				echo "<tr><td valign='top'>\n";
 				echo "Délai avant reboot/arrêt:</td>\n";
@@ -499,7 +506,7 @@ echo "</div>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 
-				echo "<tr><td valign='top'>Pour la ou les machines sélectionnées: </td>\n";
+				echo "<tr><td valign='top'>Pour la ou les machines sélectionnées&nbsp;: </td>\n";
 				echo "<td>\n";
 					echo "<table border='0'>\n";
 					echo "<tr><td valign='top'><input type='checkbox' id='wake' name='wake' value='y' checked /> </td><td><label for='wake'>Démarrer les machines par Wake-On-Lan/etherwake<br />si elles sont éteintes.</label></td></tr>\n";
@@ -516,6 +523,24 @@ echo "</div>\n";
 
 
 echo "<script type='text/javascript'>
+function copier_pass() {
+	if((document.getElementById('mdp_linux'))&&(document.getElementById('mdp_sauve'))) {
+		document.getElementById('mdp_sauve').value=document.getElementById('mdp_linux').value;
+	}
+	if((document.getElementById('mdp_linux'))&&(document.getElementById('mdp_restaure'))) {
+		document.getElementById('mdp_restaure').value=document.getElementById('mdp_linux').value;
+	}
+	if(document.getElementById('changer_mdp_linux')) {
+		document.getElementById('changer_mdp_linux').checked=true;
+	}
+	if(document.getElementById('changer_mdp_sauve')) {
+		document.getElementById('changer_mdp_sauve').checked=true;
+	}
+	if(document.getElementById('changer_mdp_restaure')) {
+		document.getElementById('changer_mdp_restaure').checked=true;
+	}
+}
+
 function affiche_sections_distrib() {
 	if(document.getElementById('distrib_sysresccd').checked==true) {
 		distrib='sysresccd';
@@ -527,21 +552,19 @@ function affiche_sections_distrib() {
 	if(distrib=='slitaz') {
 		document.getElementById('div_sysresccd_kernel').style.display='none';
 		document.getElementById('tr_authorized_keys').style.display='none';
-		if(document.getElementById('tr_dest_part_smb')) {document.getElementById('tr_dest_part_smb').style.display='none';}
 	}
 	else {
 		document.getElementById('div_sysresccd_kernel').style.display='block';
 		document.getElementById('tr_authorized_keys').style.display='';
-		if(document.getElementById('tr_dest_part_smb')) {document.getElementById('tr_dest_part_smb').style.display='';}
 	}
 }
 
 affiche_sections_distrib();
 </script>\n";
-
+/*
 				//======================================================
 				$temoin_svg_existantes=0;
-				$chaine_tab="<p>Liste des sauvegardes existantes:</p>\n";
+				$chaine_tab="<p>Liste des sauvegardes existantes&nbsp;:</p>\n";
 				$chaine_tab.="<table class='crob'>\n";
 				$chaine_tab.="<tr>\n";
 				$chaine_tab.="<th>Id</th>\n";
@@ -576,20 +599,22 @@ affiche_sections_distrib();
 					echo $chaine_tab;
 				}
 				//======================================================
-
-				echo "<p><i>NOTES:</i></p>\n";
+*/
+				echo "<p><i>NOTES&nbsp;:</i></p>\n";
 				echo "<ul>\n";
-				echo "<li>Ce choix nécessite une partition de sauvegarde sur la machine.</li>\n";
-				echo "<li><b>Attention:</b > Le délai avant reboot ajouté au temps de l'opération lancée doit dépasser la périodicité du script controle_actions_tftp.sh en crontab.<br />
+				echo "<li>Ce choix nécessite que SysRescCD soit installé sur une partition de la machine.</li>\n";
+/*
+				echo "<li><b>Attention&nbsp;:</b > Le délai avant reboot ajouté au temps de l'opération lancée doit dépasser la périodicité du script controle_actions_tftp.sh en crontab.<br />
 				Ce délai doit aussi permettre de récupérer en http://IP_CLIENT/~hacker/Public/*.txt des informations sur le succès ou l'échec de l'opération.<br />
 				Une tâche cron se charge d'effectuer le 'wget' sur les infos, puis le remplissage d'une table MySQL.<br />
 				La tâche cron est lancée toutes les 60s.</li>\n";
 				echo "<li>Si le nom de sauvegarde fourni correspond à un nom de sauvegarde existante, la sauvegarde précédente est supprimée.</li>\n";
 				echo "<li>Pour que la sauvegarde puisse être entièrement provoquée depuis le serveur, il faut que les postes clients soient configurés pour booter en PXE (<i>ou au moins s'éveiller (wol) en bootant sur le réseau</i>).<br />Dans le cas contraire, vous devrez passer sur les postes et presser F12 pour choisir de booter en PXE.</li>\n";
+*/
 				echo "</ul>\n";
 			}
 			else {
-				echo "<h2>Validation des paramètres de la sauvegarde</h2>\n";
+				echo "<h2>Validation des paramètres de changement de mot de passe Boot Loader</h2>\n";
 				//debug_var();
 
 				$opt_url_authorized_keys="";
@@ -598,14 +623,14 @@ affiche_sections_distrib();
 					crob_setParam('url_authorized_keys',$_POST['url_authorized_keys'],'Url fichier authorized_keys pour acces ssh aux clients TFTP');
 				}
 
-				echo "<p>Rappel des paramètres:</p>\n";
+				echo "<p>Rappel des paramètres&nbsp;:</p>\n";
 
 				$temoin_sysresccd=check_sysresccd_files();
 
 				if($temoin_sysresccd=="y") {
 					echo "<table class='crob'>\n";
 					echo "<tr>\n";
-					echo "<th style='text-align:left;'>Distribution linux à utiliser: </th>\n";
+					echo "<th style='text-align:left;'>Distribution linux à utiliser&nbsp;: </th>\n";
 					echo "<td>\n";
 					echo $distrib;
 					if($distrib=='sysresccd') {
@@ -621,99 +646,66 @@ affiche_sections_distrib();
 				}
 
 				echo "<tr>\n";
-				echo "<th style='text-align:left;'>Nom de l'image: </th>\n";
+				echo "<th style='text-align:left;'>Changement du mot de passe Linux&nbsp;: </th>\n";
 				echo "<td>\n";
-				if($nom_image=="") {echo "Nom généré automatiquement lors de la sauvegarde.";} else {echo $nom_image;}
-				echo "</td>\n";
-				echo "</tr>\n";
-
-				echo "<tr>\n";
-				echo "<th style='text-align:left;'>Partition à sauvegarder: </th>\n";
-				echo "<td>\n";
-				if($src_part=="auto") {echo "Détectée automatiquement lors de la sauvegarde.";} else {echo $src_part;}
-				echo "</td>\n";
-				echo "</tr>\n";
-
-				if($type_dest_part=='partition') {
-					echo "<tr>\n";
-					echo "<th style='text-align:left;'>Partition de stockage de la sauvegarde: </th>\n";
-					echo "<td>\n";
-					if($dest_part=="auto") {echo "Détectée automatiquement lors de la sauvegarde.";} else {echo $dest_part;}
-					echo "</td>\n";
-					echo "</tr>\n";
-				}
-				elseif($type_dest_part=='smb') {
-					echo "<tr>\n";
-					echo "<th style='text-align:left; vertical-align:top;'>Sauvegarde dans un partage Window$/Samba: </th>\n";
-					echo "<td>\n";
-						echo "<table>\n";
-						echo "<tr>\n";
-						echo "<td>Serveur&nbsp;:</td>\n";
-						echo "<td>$dest_srv</td>\n";
-						echo "</tr>\n";
-
-						echo "<tr>\n";
-						echo "<td>Partage&nbsp;:</td>\n";
-						echo "<td>$dest_partage</td>\n";
-						echo "</tr>\n";
-
-						echo "<tr>\n";
-						echo "<td>Sous-dossier&nbsp;:</td>\n";
-						echo "<td>$dest_sous_dossier</td>\n";
-						echo "</tr>\n";
-
-						echo "<tr>\n";
-						echo "<td>Compte&nbsp;:</td>\n";
-						echo "<td>$dest_compte</td>\n";
-						echo "</tr>\n";
-
-						echo "<tr>\n";
-						echo "<td>Mot de passe&nbsp;:</td>\n";
-						echo "<td>XXXXXXXX</td>\n";
-						echo "</tr>\n";
-						echo "</table>\n";
-
-					echo "</td>\n";
-					echo "</tr>\n";
+				if($changer_mdp_linux=="y") {
+					echo "<span style='color:green;'>Oui</span> avec le nouveau mot de passe Linux '$mdp_linux'.";
 				}
 				else {
-					echo "</table>\n";
-					echo "<p style='color:red'>ANOMALIE&nbsp;: Le type de la destination de sauvegarde est inconnu.</p>\n";
-					include ("pdp.inc.php");
-					die();
+					echo "<span style='color:red;'>Non</span>.";
 				}
-
-				if((isset($_POST['suppr_old_svg']))&&($_POST['suppr_old_svg']=='y')) {
-					$del_old_svg=$_POST['del_old_svg'];
-					echo "<tr>\n";
-					echo "<th style='text-align:left;'>Suppression des sauvegardes antérieures: </th>\n";
-					echo "<td>\n";
-					if($del_old_svg=="all") {echo "Toutes les sauvegardes antérieures.";} else {echo "Les sauvegardes de plus de $del_old_svg mois?";}
-					echo "</td>\n";
-					echo "</tr>\n";
-				}
+				echo "</td>\n";
+				echo "</tr>\n";
 
 				echo "<tr>\n";
-				echo "<th style='text-align:left;'>Rebooter en fin de sauvegarde: </th>\n";
+				echo "<th style='text-align:left;'>Changement du mot de passe Sauve&nbsp;: </th>\n";
 				echo "<td>\n";
-				echo $auto_reboot;
+				if($changer_mdp_sauve=="y") {
+					echo "<span style='color:green;'>Oui</span> avec le nouveau mot de passe Sauve '$mdp_linux'.";
+				}
+				else {
+					echo "<span style='color:red;'>Non</span>.";
+				}
+				echo "</td>\n";
+				echo "</tr>\n";
+
+				echo "<tr>\n";
+				echo "<th style='text-align:left;'>Changement du mot de passe Restaure&nbsp;: </th>\n";
+				echo "<td>\n";
+				if($changer_mdp_restaure=="y") {
+					echo "<span style='color:green;'>Oui</span> avec le nouveau mot de passe Restaure '$mdp_restaure'.";
+				}
+				else {
+					echo "<span style='color:red;'>Non</span>.";
+				}
+				echo "</td>\n";
+				echo "</tr>\n";
+
+				echo "<tr>\n";
+				echo "<th style='text-align:left;'>Rebooter en fin de changement de mot de passe&nbsp;: </th>\n";
+				echo "<td>\n";
+				if($auto_reboot=="y") {
+					echo "<span style='color:green;'>Oui</span>.";
+				}
+				else {
+					echo "<span style='color:red;'>Non</span>.";
+				}
 				echo "</td>\n";
 				echo "</tr>\n";
 
 				//if($auto_reboot=='y') {
 				if(($auto_reboot=='y')||($auto_reboot=='halt')) {
 					echo "<tr>\n";
-					echo "<th style='text-align:left;'>Délai avant reboot: </th>\n";
+					echo "<th style='text-align:left;'>Délai avant reboot&nbsp;: </th>\n";
 					echo "<td>\n";
 					echo "$delais_reboot s";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
-
 				echo "</table>\n";
 
 
-				echo "<p>Génération du fichier dans /tftpboot/pxelinux.cfg/ pour la sauvegarde.<br />\n";
+				echo "<p>Génération du fichier dans /tftpboot/pxelinux.cfg/ pour le changement de mot de passe.<br />\n";
 
 				// BOUCLE SUR LA LISTE DES $id_machine[$i]
 
@@ -747,49 +739,35 @@ affiche_sections_distrib();
 							echo "<p style='color:red'>La machine $nom_machine ne vous est pas déléguée</p>\n";
 						}
 						else {
-							echo "Génération pour $nom_machine: ";
+							echo "Génération pour $nom_machine&nbsp;: ";
 	
 							$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 	
 							$chemin="/usr/share/se3/scripts";
-	
-							$ajout="";
-							$ajout2="";
-							$ajout3="";
-							if(isset($del_old_svg)) {
-								$ajout=" '$del_old_svg'";
-								$ajout2="|del_old_svg=$del_old_svg";
-	
-								$ajout3=" 'del_old_svg=$del_old_svg'";
-							}
-	
+
 							if($distrib=='slitaz') {
 								$ajout_kernel="";
 							}
 							else {
 								$ajout_kernel="|kernel=$sysresccd_kernel";
 							}
-	
-							if($distrib=='slitaz') {
-								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'$ajout", $retour);
-								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot $ajout3'", $retour);
-								echo "/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot $ajout3'<br />";
 
-								$info_dest_part=$dest_part;
+							$infos_pxe="";
+							if($changer_mdp_linux=='y') {$infos_pxe.="mdp_linux=$mdp_linux ";}
+							if($changer_mdp_sauve=='y') {$infos_pxe.="mdp_sauve=$mdp_sauve ";}
+							if($changer_mdp_restaure=='y') {$infos_pxe.="mdp_restaure=$mdp_restaure ";}
+
+							if((isset($delais_reboot))&&($delais_reboot!='')) {
+								$infos_pxe.=" delais_reboot=$delais_reboot";
+							}
+
+							if($distrib=='slitaz') {
+								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'chg_mdp_bootloader' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine $infos_pxe auto_reboot=$auto_reboot'", $retour);
+								echo "/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'chg_mdp_bootloader' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine $infos_pxe auto_reboot=$auto_reboot'<br />";
 							}
 							else {
-								//echo "\$resultat=exec(\"/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'\", $retour);<br />";
-								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'$ajout", $retour);
-								if($type_dest_part=='smb') {
-									$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=smb:$dest_compte:$dest_mdp@$dest_srv:$dest_partage:$dest_sous_dossier auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $ajout3 $opt_url_authorized_keys'", $retour);
-
-									$info_dest_part="smb:$dest_compte:XXXXXXXX@$dest_srv:$dest_partage:$dest_sous_dossier";
-								}
-								else {
-									$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $ajout3 $opt_url_authorized_keys'", $retour);
-
-									$info_dest_part=$dest_part;
-								}
+								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'chg_mdp_bootloader_sysresccd' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine $infos_pxe auto_reboot=$auto_reboot kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
+								echo "/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'chg_mdp_bootloader_sysresccd' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine $infos_pxe auto_reboot=$auto_reboot kernel=$sysresccd_kernel $opt_url_authorized_keys'<br />";
 							}
 	
 							if(count($retour)>0){
@@ -806,20 +784,25 @@ affiche_sections_distrib();
 								$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine[$i]';";
 								$suppr=mysql_query($sql);
 	
+								$infos_sql="";
+								if($changer_mdp_linux=='y') {$infos_sql.="mdp_linux=$mdp_linux|";}
+								if($changer_mdp_sauve=='y') {$infos_sql.="mdp_sauve=$mdp_sauve|";}
+								if($changer_mdp_restaure=='y') {$infos_sql.="mdp_restaure=$mdp_restaure|";}
 								$timestamp=time();
 								$sql="INSERT INTO se3_tftp_action SET id='$id_machine[$i]',
 																		mac='$mac_machine',
 																		name='$nom_machine',
 																		date='$timestamp',
-																		type='sauvegarde',
+																		type='chg_mdp_bootloader',
 																		num_op='$num_op',
-																		infos='nom_image=$nom_image|src_part=$src_part|dest_part=$info_dest_part|auto_reboot=$auto_reboot|delais_reboot=${delais_reboot}${ajout_kernel}${ajout2}';";
+																		infos='".$infos_sql."auto_reboot=$auto_reboot|${ajout_kernel}';";
 								$insert=mysql_query($sql);
 								if(!$insert) {
 									echo "<span style='color:red;'>ECHEC de l'enregistrement dans 'se3_tftp_action'</span><br />\n";
 									$temoin_erreur="y";
 								}
-	
+
+/*
 								// Génération du lanceur de récupération:
 								//$dossier="/var/se3/tmp/tftp/$id_machine[$i]";
 								$dossier="/etc/se3/www-tools/tftp/$id_machine[$i]";
@@ -829,18 +812,18 @@ affiche_sections_distrib();
 								$timestamp_limit=time()+4*3600;
 								//fwrite($fich,"/usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' 'sauvegarde' '$timestamp_limit'");
 								if($distrib=='slitaz') {
-									$mode_sauvegarde="sauvegarde";
+									$mode_sauvegarde="chg_mdp_bootloader";
 								}
 								else {
-									$mode_sauvegarde="sauvegarde_sysresccd";
+									$mode_sauvegarde="chg_mdp_bootloader_sysresccd";
 								}
 								fwrite($fich,"sudo /usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' '$mode_sauvegarde' '$timestamp_limit'");
 								fclose($fich);
 								chmod($lanceur_recup,0750);
-	
+
 								// Ménage dans les tâches précédentes
 								@exec("sudo /usr/share/se3/scripts/se3_tftp_menage_atq.sh $id_machine[$i]",$retour);
-	
+
 								// Planification de la tâche
 								//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 								@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
@@ -849,7 +832,7 @@ affiche_sections_distrib();
 									for($j=0;$j<count($retour);$j++){echo "$retour[$j]<br />\n";}
 									$temoin_erreur="y";
 								}
-	
+*/
 								if($temoin_erreur=="n") {
 									//echo "<span style='color:green;'>OK</span><br />\n";
 									echo "<span style='color:green;'>OK</span>\n";
@@ -881,7 +864,7 @@ affiche_sections_distrib();
 					//$fich=fopen("/tftpboot/pxelinux.cfg/01-$lig1->mac","r");
 					$fich=fopen("/tftpboot/pxelinux.cfg/01-$corrige_mac","r");
 					if($fich) {
-						echo "<p>Pour information, voici le contenu du fichier généré:<br />\n";
+						echo "<p>Pour information, voici le contenu du fichier généré&nbsp;:<br />\n";
 						echo "<pre style='border:1px solid black; color:green;'>";
 						while(!feof($fich)) {
 							$ligne=fgets($fich,4096);
@@ -898,6 +881,14 @@ affiche_sections_distrib();
 		}
 		echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
 	}
+
+	echo "<p><em>NOTES&nbsp;:</em></p>
+<ul>
+<li><p>Cette page est destinée à effectuer le changement de mot de passe d'un LILO ou GRUB d'une distribution SysRescCD installée sur des postes.</p></li>
+<li><p>Dans le cas d'un LILO installé, avec des mots de passe supprimés par précaution du lilo.conf, il est indispensable de changer tous les mots de passe (<em>Linux, Sauve et Restaure</em>), sinon c'est XXXXXX qui est pris comme nouveau mot de passe pour ces choix non faits.</p></li>
+<li><p><b>Attention&nbsp;:</b> Les mots de passe circulent <b>en clair</b> sur le réseau le temps du boot des stations.<br />Evitez de choisir des mots de passe utilisés ailleurs pour protéger des données plus sensibles.</p></li>
+</ul>\n";
+
 }
 else {
 	print (gettext("Vous n'avez pas les droits nécessaires pour ouvrir cette page..."));
