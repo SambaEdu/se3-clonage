@@ -74,6 +74,8 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	$dest_compte=isset($_POST['dest_compte']) ? $_POST['dest_compte'] : "";
 	$dest_mdp=isset($_POST['dest_mdp']) ? $_POST['dest_mdp'] : "";
 
+	$type_svg=isset($_POST['type_svg']) ? $_POST['type_svg'] : "partimage";
+
 	echo "<h1>".gettext("Action sauvegarde TFTP")."</h1>\n";
 
 	$restriction_parcs="n";
@@ -314,6 +316,9 @@ if(nb_parcs==1) {
 		}
 		else {
 			$validation_parametres=isset($_POST['validation_parametres']) ? $_POST['validation_parametres'] : (isset($_GET['validation_parametres']) ? $_GET['validation_parametres'] : NULL);
+			//$validation_parametres2=isset($_POST['validation_parametres2']) ? $_POST['validation_parametres2'] : (isset($_GET['validation_parametres2']) ? $_GET['validation_parametres2'] : NULL);
+
+			//if((!isset($validation_parametres))&&(!isset($validation_parametres2))) {
 			if(!isset($validation_parametres)) {
 				echo "<h2>Paramétrage de la sauvegarde</h2>\n";
 
@@ -328,7 +333,7 @@ if(nb_parcs==1) {
 					exit();
 				}
 
-				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"form1\">\n";
 				echo "<input type=\"hidden\" name=\"parametrage_action\" value=\"1\" />\n";
 				// Liste des parcs:
 				for($i=0;$i<count($parc);$i++){
@@ -402,9 +407,11 @@ echo "</div>\n";
 				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda1, sda1,... selon les cas, ou laissez \'auto\' si la première partition du disque est bien la partition système à sauvegarder.')")."\"><img name=\"action_image2\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
 
+				/*
 				echo "<tr><td>Partition de stockage: </td><td><input type='text' name='dest_part' value='auto' />\n";
 				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la première partition Linux (<i>ou à défaut W$ après la partition système</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
+				*/
 
 				$srcd_scripts_vers=crob_getParam('srcd_scripts_vers');
 				if(($temoin_sysresccd=="y")&&($srcd_scripts_vers!='')&&($srcd_scripts_vers>=20111005)) {
@@ -414,32 +421,47 @@ echo "</div>\n";
 
 					echo "<tr id='tr_dest_part_smb'><td style='vertical-align:top'><b>Ou</b><br /><input type='radio' name='type_dest_part' id='type_dest_part_smb' value='smb' /><label for='type_dest_part_smb'> Effectuer une sauvegarde vers un partage Window$/Samba&nbsp;:</label><br />(<i>tous les champs doivent être renseignés<br />si vous optez pour ce choix</i>)</td>\n";
 					echo "<td>\n";
+
+						$svg_default_srv=crob_getParam('svg_default_srv');
+						if($svg_default_srv=='') {$svg_default_srv=crob_getParam('se3ip');}
+						$svg_default_partage=crob_getParam('svg_default_partage');
+						$svg_default_dossier=crob_getParam('svg_default_dossier');
+						$svg_default_compte=crob_getParam('svg_default_compte');
+
 						echo "<table>\n";
 						echo "<tr>\n";
 						echo "<td>Serveur&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_srv' value='".crob_getParam('se3ip')."' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
+
+						echo "<td><input type='text' name='dest_srv' id='dest_srv' value='".$svg_default_srv."' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
 						echo "</tr>\n";
 
 						echo "<tr>\n";
 						echo "<td>Partage&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_partage' value='' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
+						echo "<td><input type='text' name='dest_partage' id='dest_partage' value='$svg_default_partage' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
 						echo "</tr>\n";
 
 						echo "<tr>\n";
 						echo "<td>Sous-dossier&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_sous_dossier' value='' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
+						echo "<td><input type='text' name='dest_sous_dossier' id='dest_sous_dossier' value='$svg_default_dossier' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
 						echo "</tr>\n";
 
 						echo "<tr>\n";
 						echo "<td>Compte&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_compte' value='' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
+						echo "<td><input type='text' name='dest_compte' id='dest_compte' value='$svg_default_compte' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /></td>\n";
 						echo "</tr>\n";
 
 						echo "<tr>\n";
 						echo "<td style='vertical-align:top'>Mot de passe&nbsp;:</td>\n";
-						echo "<td><input type='text' name='dest_mdp' value='' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" /><br /><b>Attention&nbsp;:</b> Le mot de passe circule en clair.<br />Evitez d'utiliser un compte comme admin ou adminse3.</td>\n";
+						echo "<td><input type='text' name='dest_mdp' id='dest_mdp' value='' onchange=\"document.getElementById('type_dest_part_smb').checked=true;\" autocomplete=\"off\" /><br /><b>Attention&nbsp;:</b> Le mot de passe circule en clair.<br />Evitez d'utiliser un compte comme admin ou adminse3.</td>\n";
 						echo "</tr>\n";
 						echo "</table>\n";
+					echo "</td></tr>\n";
+
+					echo "<tr><td style='vertical-align:top'>Type de sauvegarde&nbsp;: </td>\n";
+					echo "<td>\n";
+					echo "<input type='radio' name='type_svg' id='type_svg_partimage' value='partimage' checked /><label for='type_svg_partimage'> partimage</label><br />\n";
+					echo "<input type='radio' name='type_svg' id='type_svg_ntfsclone' value='ntfsclone' /><label for='type_svg_ntfsclone'> ntfsclone</label><br />\n";
+					echo "<input type='radio' name='type_svg' id='type_svg_fsarchiver' value='fsarchiver' /><label for='type_svg_fsarchiver'> fsarchiver</label><br />\n";
 					echo "</td></tr>\n";
 				}
 				else {
@@ -511,11 +533,21 @@ echo "</div>\n";
 
 				echo "</table>\n";
 
-				echo "<p align='center'><input type=\"submit\" name=\"validation_parametres\" value=\"Valider\" /></p>\n";
+				echo "<input type=\"hidden\" name=\"validation_parametres\" value=\"y\" />\n";
+
+				echo "<p id='bouton_submit' style='text-align:center; display:none;'><input type=\"button\" name=\"bouton_validation_parametres2\" value=\"Valider\" onclick=\"check_smb_et_valide_formulaire('Un ou des champs ne sont pas remplis. Etes-vous s&ucirc;r de vouloir poursuivre ?');\" /></p>\n";
+
+				echo "<noscript>";
+				echo "<p align='center'><input type=\"submit\" name=\"bouton_validation_parametres\" value=\"Valider\" /></p>\n";
+				echo "</noscript>";
+
 				echo "</form>\n";
 
 
 echo "<script type='text/javascript'>
+// Si javascript est actif, on de-cache le bouton_submit:
+if(document.getElementById('bouton_submit')) {document.getElementById('bouton_submit').style.display='';}
+
 function affiche_sections_distrib() {
 	if(document.getElementById('distrib_sysresccd').checked==true) {
 		distrib='sysresccd';
@@ -537,6 +569,41 @@ function affiche_sections_distrib() {
 }
 
 affiche_sections_distrib();
+
+function check_smb_et_valide_formulaire(themessage) {
+	if(document.getElementById('type_dest_part_smb')) {
+		if(document.getElementById('type_dest_part_smb').checked==true) {
+			// On vérifie si les champs sont non vides
+			dest_srv=''
+			dest_partage=''
+			dest_sous_dossier=''
+			dest_compte=''
+			dest_mdp=''
+			if(document.getElementById('dest_srv')) {dest_srv=document.getElementById('dest_srv').value;}
+			if(document.getElementById('dest_partage')) {dest_partage=document.getElementById('dest_partage').value;}
+			if(document.getElementById('dest_sous_dossier')) {dest_sous_dossier=document.getElementById('dest_sous_dossier').value;}
+			if(document.getElementById('dest_compte')) {dest_compte=document.getElementById('dest_compte').value;}
+			if(document.getElementById('dest_mdp')) {dest_mdp=document.getElementById('dest_mdp').value;}
+
+			if((dest_srv!='')&&(dest_partage!='')&&(dest_sous_dossier!='')&&(dest_compte!='')&&(dest_mdp!='')) {
+				document.form1.submit();
+			}
+			else {
+				var is_confirmed = confirm(themessage);
+				if(is_confirmed){
+					document.form1.submit();
+				}
+			}
+		}
+		else {
+			document.form1.submit();
+		}
+	}
+	else {
+		document.form1.submit();
+	}
+}
+
 </script>\n";
 
 				//======================================================
@@ -643,6 +710,11 @@ affiche_sections_distrib();
 					echo "</tr>\n";
 				}
 				elseif($type_dest_part=='smb') {
+					if($dest_srv!='') {crob_setParam('svg_default_srv',$_POST['dest_srv'],'Serveur samba par défaut de destination des sauvegardes (TFTP)');}
+					if($dest_partage!='') {crob_setParam('svg_default_partage',$_POST['dest_partage'],'Partage samba par défaut de destination des sauvegardes (TFTP)');}
+					if($dest_sous_dossier!='') {crob_setParam('svg_default_dossier',$_POST['dest_sous_dossier'],'Sous-dossier par défaut de destination des sauvegardes (TFTP)');}
+					if($dest_compte!='') {crob_setParam('svg_default_compte',$_POST['dest_compte'],'Compte par défaut pour le montage de la destination des sauvegardes (TFTP)');}
+
 					echo "<tr>\n";
 					echo "<th style='text-align:left; vertical-align:top;'>Sauvegarde dans un partage Window$/Samba: </th>\n";
 					echo "<td>\n";
@@ -682,6 +754,11 @@ affiche_sections_distrib();
 					include ("pdp.inc.php");
 					die();
 				}
+
+				echo "<tr>\n";
+				echo "<th style='text-align:left;'>Type de sauvegarde: </th>\n";
+				echo "<td>$type_svg</td>\n";
+				echo "</tr>\n";
 
 				if((isset($_POST['suppr_old_svg']))&&($_POST['suppr_old_svg']=='y')) {
 					$del_old_svg=$_POST['del_old_svg'];
@@ -781,12 +858,12 @@ affiche_sections_distrib();
 								//echo "\$resultat=exec(\"/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'\", $retour);<br />";
 								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'$ajout", $retour);
 								if($type_dest_part=='smb') {
-									$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=smb:$dest_compte:$dest_mdp@$dest_srv:$dest_partage:$dest_sous_dossier auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $ajout3 $opt_url_authorized_keys'", $retour);
+									$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=smb:$dest_compte:$dest_mdp@$dest_srv:$dest_partage:$dest_sous_dossier type_svg=$type_svg auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $ajout3 $opt_url_authorized_keys'", $retour);
 
 									$info_dest_part="smb:$dest_compte:XXXXXXXX@$dest_srv:$dest_partage:$dest_sous_dossier";
 								}
 								else {
-									$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $ajout3 $opt_url_authorized_keys'", $retour);
+									$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part type_svg=$type_svg auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $ajout3 $opt_url_authorized_keys'", $retour);
 
 									$info_dest_part=$dest_part;
 								}

@@ -2,7 +2,7 @@
 
 # $Id$
 # Auteur: Stephane Boireau
-# Dernière modification: 03/10/2011
+# Dernière modification: 08/10/2011
 
 # Ajout en visudo:
 # Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh
@@ -244,6 +244,15 @@ prompt 1
 		delais_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "delais_reboot="|cut -d"=" -f2)
 		del_old_svg=$(echo "$*" | sed -e "s| |\n|g"|grep "del_old_svg="|cut -d"=" -f2)
 
+		type_svg=$(echo "$*" | sed -e "s| |\n|g"|grep "type_svg="|cut -d"=" -f2)
+		if [ -z "$type_svg" ]; then
+			type_svg="partimage"
+		else
+			if [ "$type_svg" != "partimage" -a "$type_svg" != "ntfsclone" -a "$type_svg" != "fsarchiver" ]; then
+				type_svg="partimage"
+			fi
+		fi
+
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "^kernel="|cut -d"=" -f2)
 
 		url_authorized_keys=$(echo "$*" | sed -e "s| |\n|g"|grep "^url_authorized_keys="|cut -d"=" -f2)
@@ -314,15 +323,15 @@ label sysrcdsvg
 
 		if [ "${dest_part:0:4}" = "smb:" ]; then
 			if [ -z "$nom_image" ]; then
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part2.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part.sh ${opt_url_authorized_keys} type_svg=$type_svg ${ajout}" >> $fich
 			else
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part2.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part.sh ${opt_url_authorized_keys} type_svg=$type_svg ${ajout}" >> $fich
 			fi
 		else
 			if [ -z "$nom_image" ]; then
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} type_svg=$type_svg ${ajout}" >> $fich
 			else
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} ${ajout}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} type_svg=$type_svg ${ajout}" >> $fich
 			fi
 		fi
 
@@ -357,6 +366,15 @@ prompt 1
 		dest_part=$(echo "$*" | sed -e "s| |\n|g"|grep "dest_part="|cut -d"=" -f2)
 		auto_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "auto_reboot="|cut -d"=" -f2)
 		delais_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "delais_reboot="|cut -d"=" -f2)
+
+		#type_svg=$(echo "$*" | sed -e "s| |\n|g"|grep "type_svg="|cut -d"=" -f2)
+		#if [ -z "$type_svg" ]; then
+		#	type_svg="partimage"
+		#else
+		#	if [ "$type_svg" != "partimage" -a "$type_svg" != "ntfsclone" -a "$type_svg" != "fsarchiver" ]; then
+		#		type_svg="partimage"
+		#	fi
+		#fi
 
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "^kernel="|cut -d"=" -f2)
 
@@ -416,10 +434,22 @@ label sysrcdrst
     kernel rescuecd
     #initrd initram.igz" > $fich
 
-		if [ -z "$nom_image" ]; then
-			echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh ${opt_url_authorized_keys}" >> $fich
+		if [ "${src_part:0:4}" = "smb:" ]; then
+			if [ -z "$nom_image" ]; then
+				#echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac type_svg=$type_svg ${opt_url_authorized_keys}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac ${opt_url_authorized_keys}" >> $fich
+			else
+				#echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac type_svg=$type_svg ${opt_url_authorized_keys}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac ${opt_url_authorized_keys}" >> $fich
+			fi
 		else
-			echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh ${opt_url_authorized_keys}" >> $fich
+			if [ -z "$nom_image" ]; then
+				#echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh type_svg=$type_svg ${opt_url_authorized_keys}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh ${opt_url_authorized_keys}" >> $fich
+			else
+				#echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh type_svg=$type_svg ${opt_url_authorized_keys}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh ${opt_url_authorized_keys}" >> $fich
+			fi
 		fi
 
 		echo "

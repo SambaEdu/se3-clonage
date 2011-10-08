@@ -55,6 +55,14 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	$wake=isset($_POST['wake']) ? $_POST['wake'] : (isset($_GET['wake']) ? $_GET['wake'] : "n");
 	$shutdown_reboot=isset($_POST['shutdown_reboot']) ? $_POST['shutdown_reboot'] : (isset($_GET['shutdown_reboot']) ? $_GET['shutdown_reboot'] : NULL);
 
+	$type_src_part=isset($_POST['type_src_part']) ? $_POST['type_src_part'] : "partition";
+	$src_srv=isset($_POST['src_srv']) ? $_POST['src_srv'] : "";
+	$src_partage=isset($_POST['src_partage']) ? $_POST['src_partage'] : "";
+	$src_sous_dossier=isset($_POST['src_sous_dossier']) ? $_POST['src_sous_dossier'] : "";
+	$src_compte=isset($_POST['src_compte']) ? $_POST['src_compte'] : "";
+	$src_mdp=isset($_POST['src_mdp']) ? $_POST['src_mdp'] : "";
+
+	$type_svg=isset($_POST['type_svg']) ? $_POST['type_svg'] : "partimage";
 
 	echo "<h1>".gettext("Action restauration TFTP")."</h1>\n";
 
@@ -308,7 +316,7 @@ if(nb_parcs==1) {
 					exit();
 				}
 
-				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"form1\">\n";
 				echo "<input type=\"hidden\" name=\"parametrage_action\" value=\"1\" />\n";
 				// Liste des parcs:
 				for($i=0;$i<count($parc);$i++){
@@ -383,9 +391,76 @@ echo "</div>\n";
 				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda1, sda1,... selon les cas, ou laissez \'auto\' si la première partition du disque est bien la partition système à restaurer.')")."\"><img name=\"action_image2\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
 
+				/*
 				echo "<tr><td>Partition de stockage de l'image: </td><td><input type='text' name='src_part' value='auto' />\n";
 				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la première partition Linux (<i>ou à défaut W$ après la partition système</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
+				*/
+
+				$srcd_scripts_vers=crob_getParam('srcd_scripts_vers');
+				if(($temoin_sysresccd=="y")&&($srcd_scripts_vers!='')&&($srcd_scripts_vers>=20111008)) {
+					echo "<tr><td><input type='radio' name='type_src_part' id='type_src_part_partition' value='partition' checked /><label for='type_src_part_partition'> Partition de stockage de l'image: </label></td><td><input type='text' name='src_part' value='auto' />\n";
+					echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la première partition Linux (<i>ou à défaut W$ après la partition système</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
+					echo "</td></tr>\n";
+
+					echo "<tr id='tr_src_part_smb'><td style='vertical-align:top'><b>Ou</b><br /><input type='radio' name='type_src_part' id='type_src_part_smb' value='smb' /><label for='type_src_part_smb'> Effectuer une restauration depuis un partage Window$/Samba&nbsp;:</label><br />(<i>tous les champs doivent être renseignés<br />si vous optez pour ce choix</i>)</td>\n";
+					echo "<td>\n";
+					echo "<br />\n";
+
+					$svg_default_srv=crob_getParam('svg_default_srv');
+					if($svg_default_srv=='') {$svg_default_srv=crob_getParam('se3ip');}
+					$svg_default_partage=crob_getParam('svg_default_partage');
+					$svg_default_dossier=crob_getParam('svg_default_dossier');
+					$svg_default_compte=crob_getParam('svg_default_compte');
+
+						echo "<table>\n";
+						echo "<tr>\n";
+						echo "<td>Serveur&nbsp;:</td>\n";
+						echo "<td><input type='text' name='src_srv' id='src_srv' value='".$svg_default_srv."' onchange=\"document.getElementById('type_src_part_smb').checked=true;\" /></td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+						echo "<td>Partage&nbsp;:</td>\n";
+						echo "<td><input type='text' name='src_partage' id='src_partage' value='$svg_default_partage' onchange=\"document.getElementById('type_src_part_smb').checked=true;\" /></td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+						echo "<td style='vertical-align:top;'>Sous-dossier&nbsp;:</td>\n";
+						echo "<td>\n";
+						echo "<input type='text' name='src_sous_dossier' id='src_sous_dossier' value='$svg_default_dossier' onchange=\"document.getElementById('type_src_part_smb').checked=true;\" />\n";
+						echo "<br />\n";
+						echo "Si un sous-dossier &lt;ADRESSE_MAC&gt; du dossier proposé ici existe, la sauvegarde y sera d'abord recherchée, avant de se rabattre sur le sous-dossier proposé lui-même si un tel dossier n'existe pas.\n";
+						echo "</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+						echo "<td>Compte&nbsp;:</td>\n";
+						echo "<td><input type='text' name='src_compte' id='src_compte' value='$svg_default_compte' onchange=\"document.getElementById('type_src_part_smb').checked=true;\" /></td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+						echo "<td style='vertical-align:top'>Mot de passe&nbsp;:</td>\n";
+						echo "<td><input type='text' name='src_mdp' id='src_mdp' value='' onchange=\"document.getElementById('type_src_part_smb').checked=true;\" autocomplete=\"off\" /><br /><b>Attention&nbsp;:</b> Le mot de passe circule en clair.<br />Evitez d'utiliser un compte comme admin ou adminse3.</td>\n";
+						echo "</tr>\n";
+						echo "</table>\n";
+					echo "</td></tr>\n";
+
+					/*
+					// Le type de sauvegarde est indentifié par le script d'après le nom de l'image
+					echo "<tr><td style='vertical-align:top'>Type de sauvegarde&nbsp;: </td>\n";
+					echo "<td>\n";
+					echo "<input type='radio' name='type_svg' id='type_svg_partimage' value='partimage' checked /><label for='type_svg_partimage'> partimage</label><br />\n";
+					echo "<input type='radio' name='type_svg' id='type_svg_ntfsclone' value='ntfsclone' /><label for='type_svg_ntfsclone'> ntfsclone</label><br />\n";
+					echo "<input type='radio' name='type_svg' id='type_svg_fsarchiver' value='fsarchiver' /><label for='type_svg_fsarchiver'> fsarchiver</label><br />\n";
+					echo "</td></tr>\n";
+					*/
+				}
+				else {
+					echo "<tr><td>Partition de stockage: </td><td><input type='text' name='src_part' value='auto' />\n";
+					echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la première partition Linux (<i>ou à défaut W$ après la partition système</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
+					echo "</td></tr>\n";
+				}
+
 
 				if(($temoin_sysresccd=="y")&&(crob_getParam('srcd_scripts_vers')>='20110910')) {
 					echo "<tr id='tr_authorized_keys'>\n";
@@ -436,10 +511,20 @@ echo "</div>\n";
 
 				echo "</table>\n";
 
-				echo "<p align='center'><input type=\"submit\" name=\"validation_parametres\" value=\"Valider\" /></p>\n";
+				echo "<input type=\"hidden\" name=\"validation_parametres\" value=\"y\" />\n";
+
+				echo "<p id='bouton_submit' style='text-align:center; display:none;'><input type=\"button\" name=\"bouton_validation_parametres2\" value=\"Valider\" onclick=\"check_smb_et_valide_formulaire('Un ou des champs ne sont pas remplis. Etes-vous s&ucirc;r de vouloir poursuivre ?');\" /></p>\n";
+
+				echo "<noscript>";
+				echo "<p align='center'><input type=\"submit\" name=\"bouton_validation_parametres\" value=\"Valider\" /></p>\n";
+				echo "</noscript>";
+
 				echo "</form>\n";
 
 echo "<script type='text/javascript'>
+// Si javascript est actif, on de-cache le bouton_submit:
+if(document.getElementById('bouton_submit')) {document.getElementById('bouton_submit').style.display='';}
+
 function affiche_sections_distrib() {
 	if(document.getElementById('distrib_sysresccd').checked==true) {
 		distrib='sysresccd';
@@ -452,14 +537,50 @@ function affiche_sections_distrib() {
 	if(distrib=='slitaz') {
 		document.getElementById('div_sysresccd_kernel').style.display='none';
 		document.getElementById('tr_authorized_keys').style.display='none';
+		if(document.getElementById('tr_src_part_smb')) {document.getElementById('tr_src_part_smb').style.display='none';}
 	}
 	else {
 		document.getElementById('div_sysresccd_kernel').style.display='block';
 		document.getElementById('tr_authorized_keys').style.display='';
+		if(document.getElementById('tr_src_part_smb')) {document.getElementById('tr_src_part_smb').style.display='';}
 	}
 }
 
 affiche_sections_distrib();
+
+function check_smb_et_valide_formulaire(themessage) {
+	if(document.getElementById('type_src_part_smb')) {
+		if(document.getElementById('type_src_part_smb').checked==true) {
+			// On vérifie si les champs sont non vides
+			src_srv=''
+			src_partage=''
+			src_sous_dossier=''
+			src_compte=''
+			src_mdp=''
+			if(document.getElementById('src_srv')) {src_srv=document.getElementById('src_srv').value;}
+			if(document.getElementById('src_partage')) {src_partage=document.getElementById('src_partage').value;}
+			if(document.getElementById('src_sous_dossier')) {src_sous_dossier=document.getElementById('src_sous_dossier').value;}
+			if(document.getElementById('src_compte')) {src_compte=document.getElementById('src_compte').value;}
+			if(document.getElementById('src_mdp')) {src_mdp=document.getElementById('src_mdp').value;}
+
+			if((src_srv!='')&&(src_partage!='')&&(src_sous_dossier!='')&&(src_compte!='')&&(src_mdp!='')) {
+				document.form1.submit();
+			}
+			else {
+				var is_confirmed = confirm(themessage);
+				if(is_confirmed){
+					document.form1.submit();
+				}
+			}
+		}
+		else {
+			document.form1.submit();
+		}
+	}
+	else {
+		document.form1.submit();
+	}
+}
 </script>\n";
 
 
@@ -563,12 +684,66 @@ affiche_sections_distrib();
 				echo "</td>\n";
 				echo "</tr>\n";
 
+				if($type_src_part=='partition') {
+					echo "<tr>\n";
+					echo "<th style='text-align:left;'>Partition de stockage de la sauvegarde: </th>\n";
+					echo "<td>\n";
+					if($src_part=="auto") {echo "Détectée automatiquement lors de la restauration.";} else {echo $src_part;}
+					echo "</td>\n";
+					echo "</tr>\n";
+				}
+				elseif($type_src_part=='smb') {
+					if($src_srv!='') {crob_setParam('svg_default_srv',$_POST['src_srv'],'Serveur samba par défaut de destination des sauvegardes (TFTP)');}
+					if($src_partage!='') {crob_setParam('svg_default_partage',$_POST['src_partage'],'Partage samba par défaut de destination des sauvegardes (TFTP)');}
+					if($src_sous_dossier!='') {crob_setParam('svg_default_dossier',$_POST['src_sous_dossier'],'Sous-dossier par défaut de destination des sauvegardes (TFTP)');}
+					if($src_compte!='') {crob_setParam('svg_default_compte',$_POST['src_compte'],'Compte par défaut pour le montage de la destination des sauvegardes (TFTP)');}
+
+					echo "<tr>\n";
+					echo "<th style='text-align:left; vertical-align:top;'>Sauvegarde dans un partage Window$/Samba: </th>\n";
+					echo "<td>\n";
+						echo "<table>\n";
+						echo "<tr>\n";
+						echo "<td>Serveur&nbsp;:</td>\n";
+						echo "<td>$src_srv</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+						echo "<td>Partage&nbsp;:</td>\n";
+						echo "<td>$src_partage</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+						echo "<td>Sous-dossier&nbsp;:</td>\n";
+						echo "<td>$src_sous_dossier</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+						echo "<td>Compte&nbsp;:</td>\n";
+						echo "<td>$src_compte</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
+						echo "<td>Mot de passe&nbsp;:</td>\n";
+						echo "<td>XXXXXXXX</td>\n";
+						echo "</tr>\n";
+						echo "</table>\n";
+
+					echo "</td>\n";
+					echo "</tr>\n";
+				}
+				else {
+					echo "</table>\n";
+					echo "<p style='color:red'>ANOMALIE&nbsp;: Le type de la destination de sauvegarde est inconnu.</p>\n";
+					include ("pdp.inc.php");
+					die();
+				}
+
+				/*
 				echo "<tr>\n";
-				echo "<th style='text-align:left;'>Partition de stockage de la sauvegarde: </th>\n";
-				echo "<td>\n";
-				if($src_part=="auto") {echo "Détectée automatiquement lors de la restauration.";} else {echo $src_part;}
-				echo "</td>\n";
+				echo "<th style='text-align:left;'>Type de sauvegarde: </th>\n";
+				echo "<td>$type_svg</td>\n";
 				echo "</tr>\n";
+				*/
 
 				echo "<tr>\n";
 				echo "<th style='text-align:left;'>Rebooter en fin de restauration: </th>\n";
@@ -639,10 +814,25 @@ affiche_sections_distrib();
 							if($distrib=='slitaz') {
 								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'restaure' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'", $retour);
 								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot'", $retour);
+
+								$info_src_part=$src_part;
 							}
 							else {
 								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'", $retour);
-								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
+								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
+
+								if($type_src_part=='smb') {
+									//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=smb:$src_compte:$src_mdp@$src_srv:$src_partage:$src_sous_dossier dest_part=$dest_part type_svg=$type_svg auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
+									$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=smb:$src_compte:$src_mdp@$src_srv:$src_partage:$src_sous_dossier dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
+
+									$info_src_part="smb:$src_compte:XXXXXXXX@$src_srv:$src_partage:$src_sous_dossier";
+								}
+								else {
+									//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part type_svg=$type_svg auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
+									$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_restaure' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
+
+									$info_src_part=$src_part;
+								}
 							}
 	
 							if(count($retour)>0){
@@ -663,7 +853,7 @@ affiche_sections_distrib();
 																		date='$timestamp',
 																		type='restauration',
 																		num_op='$num_op',
-																		infos='nom_image=$nom_image|src_part=$src_part|dest_part=$dest_part|auto_reboot=$auto_reboot|delais_reboot=${delais_reboot}$ajout_kernel';";
+																		infos='nom_image=$nom_image|src_part=$info_src_part|dest_part=$dest_part|auto_reboot=$auto_reboot|delais_reboot=${delais_reboot}$ajout_kernel';";
 								$insert=mysql_query($sql);
 								if(!$insert) {
 									echo "<span style='color:red;'>ECHEC de l'enregistrement dans 'se3_tftp_action'</span><br />\n";
