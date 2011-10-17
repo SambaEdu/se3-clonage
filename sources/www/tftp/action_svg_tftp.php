@@ -846,7 +846,7 @@ function check_smb_et_valide_formulaire(themessage) {
 							else {
 								$ajout_kernel="|kernel=$sysresccd_kernel";
 							}
-	
+
 							if($distrib=='slitaz') {
 								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' '$corrige_mac' '$ip_machine' '$nom_machine' '$nom_image' '$src_part' '$dest_part' '$auto_reboot' '$delais_reboot'$ajout", $retour);
 								$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sauve' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine nom_image=$nom_image src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot $ajout3'", $retour);

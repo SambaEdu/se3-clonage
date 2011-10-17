@@ -1165,7 +1165,11 @@ affiche_message_shutdown_cmd();
 				echo "<p>Génération des fichiers dans /tftpboot/pxelinux.cfg/ pour les récepteurs.<br />\n";
 				//$udpcparam="--start-timeout=".$start_timeout;
 				$sec_start_timeout=$start_timeout*60;
-				$udpcparam="--start-timeout=".$sec_start_timeout;
+				//$udpcparam="--start-timeout=".$sec_start_timeout;
+
+				//$sec_max_wait=$max_wait*60;
+				$udpcparam="--start-timeout=".$sec_start_timeout." --max-wait=".$sec_max_wait;
+				$udpcparam_temp=strtr($udpcparam," ","_"); // Pour passer la récupération de variable dans pxe_gen_cfg.sh, l'espace dans le contenu de la variable pose un pb. On remplace par un _ et on fait la correction inverse dans pxe_gen_cfg.sh
 
 				// BOUCLE SUR LA LISTE DES $id_recepteur[$i]
 
@@ -1204,15 +1208,15 @@ affiche_message_shutdown_cmd();
 							//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op'", $retour);
 							if($distrib=='udpcast') {
 								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
-								$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface'", $retour);
+								$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface'", $retour);
 							}
 							else {
 								//$resultat=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
 								if($ntfsclone_udpcast=='y') {
-									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime $opt_url_authorized_keys'", $retour);
+									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_ntfsclone_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel id_microtime=$id_microtime $opt_url_authorized_keys'", $retour);
 								}
 								else {
-									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
+									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_recepteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface kernel=$sysresccd_kernel $opt_url_authorized_keys'", $retour);
 								}
 							}
 	

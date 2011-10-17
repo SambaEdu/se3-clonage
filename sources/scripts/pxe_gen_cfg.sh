@@ -10,6 +10,26 @@
 timestamp=$(date +%s)
 timedate=$(date "+%Y-%m-%d %H:%M:%S")
 
+#===========================================
+if [ -e /var/www/se3/includes/config.inc.php ]; then
+	dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
+	dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
+	dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
+	dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
+else
+	echo "Fichier de conf inaccessible"
+	exit 1
+fi
+
+tftp_slitaz_cmdline=$(echo "SELECT value FROM params WHERE name='tftp_slitaz_cmdline';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
+
+# On pourra peut-etre remplacer par une autre machine pour heberger le serveur web requis pour le telechargement... pour alleger la charge pesant sur SE3
+
+# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
+se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
+www_sysrcd_ip=$se3ip
+#===========================================
+
 case $1 in
 	"sauve")
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
@@ -74,6 +94,7 @@ case $1 in
 			fi
 		fi
 
+
 		echo "# Script de boot de la machine $pc
 # MAC=$mac
 # IP= $ip
@@ -102,9 +123,9 @@ label tazsvg
    kernel bzImage" > $fich
 
 		if [ -z "$nom_image" ]; then
-			echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=no src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot ${ajout} work=/root/bin/sauve_part.sh ${chaine_modules}" >> $fich
+			echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=no src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot ${ajout} work=/root/bin/sauve_part.sh ${chaine_modules} ${tftp_slitaz_cmdline}" >> $fich
 		else
-			echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=no src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot ${ajout} work=/root/bin/sauve_part.sh ${chaine_modules}" >> $fich
+			echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=no src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot ${ajout} work=/root/bin/sauve_part.sh ${chaine_modules} ${tftp_slitaz_cmdline}" >> $fich
 		fi
 
 		echo "
@@ -205,9 +226,9 @@ label tazrst
    kernel bzImage" > $fich
 
 		if [ -z "$nom_image" ]; then
-			echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=no src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=/root/bin/restaure_part.sh ${chaine_modules}" >> $fich
+			echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=no src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=/root/bin/restaure_part.sh ${chaine_modules} ${tftp_slitaz_cmdline}" >> $fich
 		else
-			echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=no src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=/root/bin/restaure_part.sh ${chaine_modules}" >> $fich
+			echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text sound=no src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=/root/bin/restaure_part.sh ${chaine_modules} ${tftp_slitaz_cmdline}" >> $fich
 		fi
 
 		echo "
@@ -276,20 +297,6 @@ prompt 1
 			ajout=" del_old_svg=$del_old_svg"
 		fi
 
-		if [ -e /var/www/se3/includes/config.inc.php ]; then
-			dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
-		else
-			echo "Fichier de conf inaccessible"
-			exit 1
-		fi
-
-		# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
-		se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
-		www_sysrcd_ip=$se3ip
-
 		fich=/tftpboot/pxelinux.cfg/01-$mac
 
 		echo "# Script de boot de la machine $pc
@@ -323,15 +330,15 @@ label sysrcdsvg
 
 		if [ "${dest_part:0:4}" = "smb:" ]; then
 			if [ -z "$nom_image" ]; then
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part.sh ${opt_url_authorized_keys} type_svg=$type_svg ${ajout}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part.sh ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} type_svg=$type_svg ${ajout}" >> $fich
 			else
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part.sh ${opt_url_authorized_keys} type_svg=$type_svg ${ajout}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part/$mac nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot nom_machine=$pc mac_machine=$mac work=sauve_part.sh ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} type_svg=$type_svg ${ajout}" >> $fich
 			fi
 		else
 			if [ -z "$nom_image" ]; then
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} type_svg=$type_svg ${ajout}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} type_svg=$type_svg ${ajout}" >> $fich
 			else
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} type_svg=$type_svg ${ajout}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=sauve_part.sh ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} type_svg=$type_svg ${ajout}" >> $fich
 			fi
 		fi
 
@@ -395,20 +402,6 @@ prompt 1
 			delais_reboot=60
 		fi
 
-		if [ -e /var/www/se3/includes/config.inc.php ]; then
-			dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
-		else
-			echo "Fichier de conf inaccessible"
-			exit 1
-		fi
-
-		# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
-		se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
-		www_sysrcd_ip=$se3ip
-
 		fich=/tftpboot/pxelinux.cfg/01-$mac
 
 		echo "# Script de boot de la machine $pc
@@ -437,18 +430,18 @@ label sysrcdrst
 		if [ "${src_part:0:4}" = "smb:" ]; then
 			if [ -z "$nom_image" ]; then
 				#echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac type_svg=$type_svg ${opt_url_authorized_keys}" >> $fich
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac ${opt_url_authorized_keys}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac ${opt_url_authorized_keys} ${tftp_slitaz_cmdline}" >> $fich
 			else
 				#echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac type_svg=$type_svg ${opt_url_authorized_keys}" >> $fich
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac ${opt_url_authorized_keys}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh nom_machine=$pc mac_machine=$mac ${opt_url_authorized_keys} ${tftp_slitaz_cmdline}" >> $fich
 			fi
 		else
 			if [ -z "$nom_image" ]; then
 				#echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh type_svg=$type_svg ${opt_url_authorized_keys}" >> $fich
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh ${opt_url_authorized_keys}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh ${opt_url_authorized_keys} ${tftp_slitaz_cmdline}" >> $fich
 			else
 				#echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh type_svg=$type_svg ${opt_url_authorized_keys}" >> $fich
-				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh ${opt_url_authorized_keys}" >> $fich
+				echo "   append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp src_part=$src_part dest_part=$dest_part nom_image=$nom_image auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=restaure_part.sh ${opt_url_authorized_keys} ${tftp_slitaz_cmdline}" >> $fich
 			fi
 		fi
 
@@ -767,22 +760,6 @@ prompt 1
 			auto_reboot="never"
 		fi
 
-		# On pourra peut-etre remplacer par une autre machine pour heberger le serveur web requis pour le telechargement... pour alleger la charge pesant sur SE3
-
-		if [ -e /var/www/se3/includes/config.inc.php ]; then
-			dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
-		else
-			echo "Fichier de conf inaccessible"
-			exit 1
-		fi
-
-		# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
-		se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
-		www_sysrcd_ip=$se3ip
-
 		fich=/tftpboot/pxelinux.cfg/01-$mac
 
 		echo "# Script de boot de la machine $pc
@@ -816,10 +793,10 @@ label srcdu1
 
 		if [ "$dhcp" != "no" ]; then
 			if [ ! -z "$diskmodule" ]; then
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=udpcast3.sh compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=udpcast3.sh compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			else
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=udpcast3.sh compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=udpcast3.sh compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			fi
 		else
@@ -827,10 +804,10 @@ label srcdu1
 
 			#ethx=ip
 			if [ ! -z "$diskmodule" ]; then
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait work=udpcast3.sh ip=$ip netmask=$netmask compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait work=udpcast3.sh ip=$ip netmask=$netmask compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			else
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait work=udpcast3.sh ip=$ip netmask=$netmask compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait work=udpcast3.sh ip=$ip netmask=$netmask compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			fi
 		fi
@@ -916,21 +893,6 @@ prompt 1
 			auto_reboot="never"
 		fi
 
-		# On pourra peut-etre remplacer par une autre machine pour heberger le serveur web requis pour le telechargement... pour alleger la charge pesant sur SE3
-		if [ -e /var/www/se3/includes/config.inc.php ]; then
-			dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
-		else
-			echo "Fichier de conf inaccessible"
-			exit 1
-		fi
-
-		# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
-		se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
-		www_sysrcd_ip=$se3ip
-
 		fich=/tftpboot/pxelinux.cfg/01-$mac
 
 		echo "# Script de boot de la machine $pc
@@ -960,21 +922,21 @@ label srcdu2
 		if [ "$dhcp" != "no" ]; then
 			if [ ! -z "$diskmodule" ]; then
 				#echo "    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule udpcparam=\"$udpcparam\"
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=udpcast3.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=udpcast3.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			else
 				#echo "    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule udpcparam=\"$udpcparam\"
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=udpcast3.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=udpcast3.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			fi
 		else
 			netmask=$(/sbin/ifconfig ${dhcp_iface} |/bin/grep "inet " |/usr/bin/cut -d":" -f4 |/usr/bin/cut -d' '  -f1)
 
 			if [ ! -z "$diskmodule" ]; then
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait ip=$ip netmask=$netmask work=udpcast3.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait ip=$ip netmask=$netmask work=udpcast3.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			else
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait ip=$ip netmask=$netmask work=udpcast3.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait ip=$ip netmask=$netmask work=udpcast3.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			fi
 		fi
@@ -1073,7 +1035,7 @@ label taz
 label tazrap
    kernel bzImage" > $fich
 
-		echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal sound=no screen=text auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=/root/bin/rapport.sh ${chaine_modules}" >> $fich
+		echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal sound=no screen=text auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=/root/bin/rapport.sh ${chaine_modules} ${tftp_slitaz_cmdline}" >> $fich
 
 		echo "
 # Choix de boot par défaut:
@@ -1123,20 +1085,6 @@ prompt 1
 			opt_url_authorized_keys=""
 		fi
 
-		if [ -e /var/www/se3/includes/config.inc.php ]; then
-			dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
-		else
-			echo "Fichier de conf inaccessible"
-			exit 1
-		fi
-
-		# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
-		se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
-		www_sysrcd_ip=$se3ip
-
 		fich=/tftpboot/pxelinux.cfg/01-$mac
 
 		echo "# Script de boot de la machine $pc
@@ -1162,7 +1110,7 @@ label sysrcdrap
     kernel $kernel
     #initrd initram.igz" > $fich
 
-		echo "append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=rapport.sh ${opt_url_authorized_keys}" >> $fich
+		echo "append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=rapport.sh ${opt_url_authorized_keys} ${tftp_slitaz_cmdline}" >> $fich
 
 		echo "
 # Choix de boot par défaut:
@@ -1338,22 +1286,6 @@ prompt 1
 			auto_reboot="never"
 		fi
 
-		# On pourra peut-etre remplacer par une autre machine pour heberger le serveur web requis pour le telechargement... pour alleger la charge pesant sur SE3
-
-		if [ -e /var/www/se3/includes/config.inc.php ]; then
-			dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
-		else
-			echo "Fichier de conf inaccessible"
-			exit 1
-		fi
-
-		# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
-		se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
-		www_sysrcd_ip=$se3ip
-
 		mkdir -p "/var/www/clonage"
 		echo $ip >> /var/www/clonage/serveur_ntfsclone_udpcast_${num_op}_${id_microtime}.txt
 		chown www-data:www-data /var/www/clonage/serveur_ntfsclone_udpcast_${num_op}_${id_microtime}.txt
@@ -1391,10 +1323,10 @@ label srcdu1
 
 		if [ "$dhcp" != "no" ]; then
 			if [ ! -z "$diskmodule" ]; then
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=ntfsclone_udpcast.sh compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=ntfsclone_udpcast.sh compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			else
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=ntfsclone_udpcast.sh compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=ntfsclone_udpcast.sh compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			fi
 		else
@@ -1402,10 +1334,10 @@ label srcdu1
 
 			#ethx=ip
 			if [ ! -z "$diskmodule" ]; then
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait work=ntfsclone_udpcast.sh ip=$ip netmask=$netmask compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait work=ntfsclone_udpcast.sh ip=$ip netmask=$netmask compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			else
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait work=ntfsclone_udpcast.sh ip=$ip netmask=$netmask compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait work=ntfsclone_udpcast.sh ip=$ip netmask=$netmask compr=$compr port=$port umode=snd disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			fi
 		fi
@@ -1491,21 +1423,6 @@ prompt 1
 			auto_reboot="never"
 		fi
 
-		# On pourra peut-etre remplacer par une autre machine pour heberger le serveur web requis pour le telechargement... pour alleger la charge pesant sur SE3
-		if [ -e /var/www/se3/includes/config.inc.php ]; then
-			dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
-		else
-			echo "Fichier de conf inaccessible"
-			exit 1
-		fi
-
-		# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
-		se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
-		www_sysrcd_ip=$se3ip
-
 		mkdir -p "/var/www/clonage"
 		echo $ip >> /var/www/clonage/liste_clients_ntfsclone_udpcast_${num_op}_${id_microtime}.txt
 		chown www-data:www-data /var/www/clonage/liste_clients_ntfsclone_udpcast_${num_op}_${id_microtime}.txt
@@ -1539,21 +1456,21 @@ label srcdu2
 		if [ "$dhcp" != "no" ]; then
 			if [ ! -z "$diskmodule" ]; then
 				#echo "    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule udpcparam=\"$udpcparam\"
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=ntfsclone_udpcast.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=ntfsclone_udpcast.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			else
 				#echo "    append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule udpcparam=\"$udpcparam\"
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=ntfsclone_udpcast.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=ntfsclone_udpcast.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			fi
 		else
 			netmask=$(/sbin/ifconfig ${dhcp_iface} |/bin/grep "inet " |/usr/bin/cut -d":" -f4 |/usr/bin/cut -d' '  -f1)
 
 			if [ ! -z "$diskmodule" ]; then
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait ip=$ip netmask=$netmask work=ntfsclone_udpcast.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait ip=$ip netmask=$netmask work=ntfsclone_udpcast.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			else
-				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait ip=$ip netmask=$netmask work=ntfsclone_udpcast.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} udpcparam=\"$udpcparam\"
+				echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait ip=$ip netmask=$netmask work=ntfsclone_udpcast.sh compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule netmodule=$netmodule remontee_info=y page_remontee=${urlse3}/tftp/remontee_udpcast.php mac=$mac num_op=${num_op} se3ip=$se3ip id_microtime=${id_microtime} ${opt_url_authorized_keys} ${tftp_slitaz_cmdline} udpcparam=\"$udpcparam\"
 	" >> $fich
 			fi
 		fi
@@ -1617,21 +1534,6 @@ prompt 1
 			auto_reboot="n"
 		fi
 
-		# On pourra peut-etre remplacer par une autre machine pour heberger le serveur web requis pour le telechargement... pour alleger la charge pesant sur SE3
-		if [ -e /var/www/se3/includes/config.inc.php ]; then
-			dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
-			dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
-		else
-			echo "Fichier de conf inaccessible"
-			exit 1
-		fi
-
-		# A FAIRE: Pouvoir mettre le sysrcd.dat sur un autre serveur web
-		se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
-		www_sysrcd_ip=$se3ip
-
 		fich=/tftpboot/pxelinux.cfg/01-$mac
 
 		echo "# Script de boot de la machine $pc
@@ -1659,7 +1561,7 @@ label srcdmdp
 
 		# A revoir: On peut avoir besoin de altker32,... au lieu de rescuecd
 	
-		echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=change_mdp_boot_loader.sh $options_mdp auto_reboot=$auto_reboot $opt_delais_reboot ${opt_url_authorized_keys}
+		echo "    append initrd=initram.igz scandelay=5 setkmap=fr netboot=http://$www_sysrcd_ip/sysresccd/sysrcd.dat autoruns=2 ar_source=http://$www_sysrcd_ip/sysresccd/ ar_nowait dodhcp work=change_mdp_boot_loader.sh $options_mdp auto_reboot=$auto_reboot $opt_delais_reboot ${opt_url_authorized_keys} ${tftp_slitaz_cmdline}
 		" >> $fich
 
 		echo "# Choix de boot par défaut:
