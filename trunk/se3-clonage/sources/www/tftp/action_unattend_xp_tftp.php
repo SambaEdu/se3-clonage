@@ -1254,11 +1254,11 @@ local_admins=\"\"\r\n");
 							fwrite($fu,"format_cmd=\"format /y /z:seriously /q /u /a /v: c:\"\r\n");
 						}
 						elseif($fdisk_cmds==1) {
-							fwrite($fu,"fdisk_cmds=\"echo On ne modifie pas les partitions\"\r\n");
+							fwrite($fu,";fdisk_cmds=\"echo On ne modifie pas les partitions; installation sur la premiere partition principale\"\r\n");
 							fwrite($fu,"format_cmd=\"format /y /z:seriously /q /u /a /v: c:\"\r\n");
 						}
 						elseif($fdisk_cmds==2) {
-							fwrite($fu,"fdisk_cmds=\"echo On ne modifie pas les partitions\"\r\n");
+							fwrite($fu,";fdisk_cmds=\"echo On ne modifie pas les partitions; installation sur la deuxieme partition principale\"\r\n");
 							fwrite($fu,"format_cmd=\"format /y /z:seriously /q /u /a /v: d:\"\r\n");
 						}
 		
