@@ -39,6 +39,14 @@ $tab_diskmodule=array('ahci','ata_piix','sata_inic162x','sata_mv','sata_nv','sat
 // Bibliothèque prototype Ajax pour afficher en décalé l'état des machines:
 echo "<script type='text/javascript' src='../includes/prototype.js'></script>\n";
 
+/*
+echo "<script type='text/javascript'>
+Event.observe(window, 'load', function() {
+   Event.observe(document, 'keydown', func_KeyDown);
+});
+</script>\n";
+*/
+
 // CSS pour mes tableaux:
 echo "<link type='text/css' rel='stylesheet' href='tftp.css' />\n";
 
@@ -63,6 +71,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	$netmodule=isset($_POST['netmodule']) ? $_POST['netmodule'] : (isset($_GET['netmodule']) ? $_GET['netmodule'] : NULL);
 	$min_receivers=isset($_POST['min_receivers']) ? $_POST['min_receivers'] : (isset($_GET['min_receivers']) ? $_GET['min_receivers'] : NULL);
 	$max_wait=isset($_POST['max_wait']) ? $_POST['max_wait'] : (isset($_GET['max_wait']) ? $_GET['max_wait'] : NULL);
+	$min_wait=isset($_POST['min_wait']) ? $_POST['min_wait'] : (isset($_GET['min_wait']) ? $_GET['min_wait'] : NULL);
 	$start_timeout=isset($_POST['start_timeout']) ? $_POST['start_timeout'] : (isset($_GET['start_timeout']) ? $_GET['start_timeout'] : NULL);
 	$auto_reboot=isset($_POST['auto_reboot']) ? $_POST['auto_reboot'] : (isset($_GET['auto_reboot']) ? $_GET['auto_reboot'] : NULL);
 
@@ -540,7 +549,7 @@ if(nb_parcs==1) {
 
 
 
-				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+				echo "<form method=\"post\" name=\"form_param\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 				// Liste des parcs:
 				for($i=0;$i<count($parc);$i++){
 					echo "<input type=\"hidden\" name=\"parc[]\" value=\"$parc[$i]\" />\n";
@@ -581,8 +590,8 @@ if(nb_parcs==1) {
 				if($temoin_sysresccd=="y") {
 					// Il faut aussi le noyau et l'initram.igz dans /tftpboot, 
 					echo "<p>";
-					echo "<input type='radio' name='distrib' id='distrib_udpcast' value='udpcast' onchange='affiche_sections_distrib()' checked /><label for='distrib_udpcast'>Utiliser la distribution UdpCast</label><br />\n";
-					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)\n";
+					echo "<input type='radio' name='distrib' id='distrib_udpcast' value='udpcast' onchange='affiche_sections_distrib()' /><label for='distrib_udpcast'>Utiliser la distribution UdpCast</label><br />\n";
+					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' checked /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)\n";
 					//echo "<br />\n";
 					echo "</p>\n";
 
@@ -759,18 +768,28 @@ echo "</div>\n";
 
 				echo "<tr><td colspan='2' style='background-color: silver;'>Paramètres spécifiques à l'émetteur</td></tr>\n";
 
-				echo "<tr><td valign='top'>Nombre (<i>max</i>) de clients à attendre: </td>\n";
+				echo "<tr><td valign='top'>Nombre (<i>min</i>) de clients à attendre: </td>\n";
 				echo "<td>\n";
-				echo "<input type='text' name='min_receivers' value='".count($id_recepteur)."' size='3' />\n";
+				echo "<input type='text' name='min_receivers' id='min_receivers' value='".count($id_recepteur)."' size='3' onkeydown=\"clavier_2('min_receivers',event,1,100);\" autocomplete=\"off\" />\n";
 				echo "<br />\n";
-				echo "Lorsque le compte est atteint, le clonage démarre aussitôt.";
+				echo "Vous pouvez par exemple annoncer 10 récepteurs minimum alors que vous souhaitez en cloner 12.<br />";
+				echo "Dans ce cas, vous acceptez que deux récepteurs manquent dans le clonage, mais pas plus.<br />";
+				echo "<br />\n";
+				echo "Lorsque le compte est atteint, le clonage démarre aussitôt le délais ci-dessous écoulé.<br />";
 				echo "</td></tr>\n";
 				/*
 				echo "<tr><td valign='top'><b>Ou</b></td><td>(<i>mettre 0 ou vide pour l'option à ne pas retenir;<br />si aucun des deux champs n'est vidé l'option ci-dessus l'emporte</i>)</td></tr>\n";
 				*/
+				echo "<tr><td valign='top'>Délais minimum avant le démarrage:</td>\n";
+				echo "<td valign='bottom'>\n";
+				echo "<input type='text' id='min_wait' name='min_wait' value='10' size='3' onkeydown=\"clavier_2('min_wait',event,1,60);\" autocomplete=\"off\" /> minutes.\n";
+				echo "<br />\n";
+				echo "Si vous fixez un nombre de récepteurs inférieur au nombre max de clients pouvant être clonés, ce délais permettra d'attendre les récepteurs au-delà pendant cette durée.\n";
+				echo "</td></tr>\n";
+
 				echo "<tr><td valign='top'>Si un ou des clients<br />font défaut,<br />démarrer après: </td>\n";
 				echo "<td valign='bottom'>\n";
-				echo "<input type='text' name='max_wait' value='10' size='3' /> minutes.\n";
+				echo "<input type='text' id='max_wait' name='max_wait' value='15' size='4' onkeydown=\"clavier_2('max_wait',event,1,60);\" autocomplete=\"off\" /> minutes.\n";
 				echo "<br />\n";
 				echo "Néanmoins, le clonage ne démarre que si un client au moins est présent.\n";
 				echo "</td></tr>\n";
@@ -779,9 +798,10 @@ echo "</div>\n";
 
 				echo "<tr><td valign='top'>Abandonner après: </td>\n";
 				echo "<td>\n";
-				echo "<input type='text' name='start_timeout' value='15' size='3' /> minutes si le clonage ne démarre pas.\n";
+				//echo "<input type='text' id='start_timeout' name='start_timeout' value='20' size='3' onkeydown=\"clavier_2(this.id,event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne démarre pas.\n";
+				echo "<input type='text' id='start_timeout' name='start_timeout' value='20' size='3' onkeydown=\"clavier_2('start_timeout',event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne démarre pas.\n";
 				echo "<br />\n";
-				echo "Veillez à ce que le timeout soit supérieur à la valeur 'max-wait' spécifiée pour l'émetteur (<i>pour démarrer quand même si un des récepteurs fait défaut</i>).\n";
+				echo "Veillez à ce que le timeout soit supérieur à la valeur 'max-wait' spécifiée pour l'émetteur.\n";
 				echo "</td></tr>\n";
 
 				/*
@@ -792,13 +812,29 @@ echo "</div>\n";
 
 				echo "</table>\n";
 
-				echo "<p align='center'><input type=\"submit\" name=\"validation_parametres\" value=\"Valider\" /></p>\n";
+				echo "<input type='hidden' name='validation_parametres' value='y' />\n";
+				echo "<noscript><p align='center'><input type=\"submit\" name=\"bouton_submit_validation_parametres\" value=\"Valider 2\" /></p></noscript>\n";
+				echo "<p align='center'><input type=\"button\" name=\"bouton_validation_parametres\" value=\"Valider\" onclick=\"verif_et_valide_form()\" /></p>\n";
 
 				echo "<p id='p_message_shutdown_cmd' align='center' style='color:red;'> Attention ! si l'emetteur ne reboote pas tout seul en administrateur local, ouvrez une session administrateur local et lancez c:\\netinst\\shutdown.cmd </p>\n"; 
 				echo "</form>\n";
 
 
 echo "<script type='text/javascript'>
+function verif_et_valide_form() {
+	if(document.getElementById('min_wait').value>document.getElementById('max_wait').value) {
+		alert('La valeur minimale d attente de l emetteur ne devrait pas etre inferieure a la valeur maximale d attente.')
+	}
+	else {
+		if(document.getElementById('start_timeout').value<document.getElementById('max_wait').value) {
+			alert('La valeur max d attente de l emetteur ne devrait pas etre superieure a la valeur maximale d attente des recepteurs.')
+		}
+		else {
+			document.form_param.submit();
+		}
+	}
+}
+
 function affiche_sections_distrib() {
 	if(document.getElementById('distrib_sysresccd').checked==true) {
 		distrib='sysresccd';
@@ -838,6 +874,56 @@ function affiche_message_shutdown_cmd() {
 }
 
 affiche_message_shutdown_cmd();
+
+function clavier_2(n,e,vmin,vmax){
+	//alert(n);
+	// Fonction destinée à incrémenter/décrémenter le champ courant entre 0 et 255 (pour des composantes de couleurs)
+	// Modifié pour aller de vmin à vmax
+	touche= e.keyCode ;
+	//alert('touche='+touche);
+	if (touche == '40') {
+		valeur=document.getElementById(n).value;
+		if(valeur>vmin){
+			valeur--;
+			document.getElementById(n).value=valeur;
+		}
+	}
+	else{
+		if (touche == '38') {
+			valeur=document.getElementById(n).value;
+			if(valeur<vmax){
+				valeur++;
+				document.getElementById(n).value=valeur;
+			}
+		}
+		else{
+			if(touche == '34'){
+				valeur=document.getElementById(n).value;
+				if(valeur>vmin+10){
+					valeur=valeur-10;
+				}
+				else{
+					valeur=vmin;
+				}
+				document.getElementById(n).value=valeur;
+			}
+			else{
+				if(touche == '33'){
+					valeur=document.getElementById(n).value;
+					if(valeur<vmax-10){
+						//valeur=valeur+10;
+						//valeur+=10;
+						valeur=eval(valeur)+10;
+					}
+					else{
+						valeur=vmax;
+					}
+					document.getElementById(n).value=valeur;
+				}
+			}
+		}
+	}
+}
 
 </script>\n";
 
@@ -1000,7 +1086,8 @@ affiche_message_shutdown_cmd();
 				*/
 
 				$sec_max_wait=$max_wait*60;
-				$udpcparam="--max-wait=".$sec_max_wait." --min-receivers=".$min_receivers;
+				$sec_min_wait=$min_wait*60;
+				$udpcparam="--max-wait=".$sec_max_wait." --min-wait=".$sec_min_wait." --min-receivers=".$min_receivers;
 				$udpcparam_temp=strtr($udpcparam," ","_"); // Pour passer la récupération de variable dans pxe_gen_cfg.sh, l'espace dans le contenu de la variable pose un pb. On remplace par un _ et on fait la correction inverse dans pxe_gen_cfg.sh
 
 				$mac_machine=$lig->mac;
@@ -1168,7 +1255,8 @@ affiche_message_shutdown_cmd();
 				//$udpcparam="--start-timeout=".$sec_start_timeout;
 
 				//$sec_max_wait=$max_wait*60;
-				$udpcparam="--start-timeout=".$sec_start_timeout." --max-wait=".$sec_max_wait;
+				//$udpcparam="--start-timeout=".$sec_start_timeout." --max-wait=".$sec_max_wait." --min-wait=".$sec_min_wait;
+				$udpcparam="--start-timeout=".$sec_start_timeout;
 				$udpcparam_temp=strtr($udpcparam," ","_"); // Pour passer la récupération de variable dans pxe_gen_cfg.sh, l'espace dans le contenu de la variable pose un pb. On remplace par un _ et on fait la correction inverse dans pxe_gen_cfg.sh
 
 				// BOUCLE SUR LA LISTE DES $id_recepteur[$i]
