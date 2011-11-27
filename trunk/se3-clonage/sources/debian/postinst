@@ -85,7 +85,7 @@ if [ -z "$test_champ" ]; then
 	test_champ=`echo "SELECT 1=1 FROM params WHERE name='123456789012345678901234567890';" | $mysqlrequest`
 	if [ -z "$test_champ" ]; then
 		echo "ALTER TABLE params CHANGE name name VARCHAR( 30 );" | $mysqlrequest
-	else
+#	else
 		# Menage
 	fi
 	echo "DELETE FROM params WHERE name='123456789012345678901234567890';"| $mysqlrequest
