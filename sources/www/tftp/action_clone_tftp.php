@@ -70,20 +70,42 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	$diskmodule=isset($_POST['diskmodule']) ? $_POST['diskmodule'] : (isset($_GET['diskmodule']) ? $_GET['diskmodule'] : NULL);
 	$netmodule=isset($_POST['netmodule']) ? $_POST['netmodule'] : (isset($_GET['netmodule']) ? $_GET['netmodule'] : NULL);
 	$min_receivers=isset($_POST['min_receivers']) ? $_POST['min_receivers'] : (isset($_GET['min_receivers']) ? $_GET['min_receivers'] : NULL);
+
 	$max_wait=isset($_POST['max_wait']) ? $_POST['max_wait'] : (isset($_GET['max_wait']) ? $_GET['max_wait'] : NULL);
 	$min_wait=isset($_POST['min_wait']) ? $_POST['min_wait'] : (isset($_GET['min_wait']) ? $_GET['min_wait'] : NULL);
 	$start_timeout=isset($_POST['start_timeout']) ? $_POST['start_timeout'] : (isset($_GET['start_timeout']) ? $_GET['start_timeout'] : NULL);
+
 	$auto_reboot=isset($_POST['auto_reboot']) ? $_POST['auto_reboot'] : (isset($_GET['auto_reboot']) ? $_GET['auto_reboot'] : NULL);
 
 	// Paramètres concernant l'action immédiate sur les machines choisies:
 	$wake=isset($_POST['wake']) ? $_POST['wake'] : (isset($_GET['wake']) ? $_GET['wake'] : "n");
 	$shutdown_reboot=isset($_POST['shutdown_reboot']) ? $_POST['shutdown_reboot'] : (isset($_GET['shutdown_reboot']) ? $_GET['shutdown_reboot'] : NULL);
 
-	$distrib=isset($_POST['distrib']) ? $_POST['distrib'] : "udpcast";
+
+	$pref_distrib_clonage=crob_getParam('pref_distrib_clonage');
+	if(($pref_distrib_clonage=='udpcast')||($pref_distrib_clonage=='sysresccd')) {$valeur_par_defaut=$pref_distrib_clonage;}
+	else {$valeur_par_defaut="udpcast";}
+	$distrib=isset($_POST['distrib']) ? $_POST['distrib'] : $valeur_par_defaut;
+
 	$type_os=isset($_POST['type_os']) ? $_POST['type_os'] : "xp";
 	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescuecd";
 
-	$ntfsclone_udpcast=isset($_POST['ntfsclone_udpcast']) ? $_POST['ntfsclone_udpcast'] : "n";
+
+	$pref_ntfsclone_udpcast=crob_getParam('pref_ntfsclone_udpcast');
+	if(($pref_ntfsclone_udpcast=='y')||($pref_ntfsclone_udpcast=='n')) {$valeur_par_defaut=$pref_ntfsclone_udpcast;}
+	else {$valeur_par_defaut="n";}
+	$ntfsclone_udpcast=isset($_POST['ntfsclone_udpcast']) ? $_POST['ntfsclone_udpcast'] : $valeur_par_defaut;
+
+	$pref_clonage_compression=crob_getParam('pref_clonage_compression');
+	if(($pref_clonage_compression=='')||(!in_array($pref_clonage_compression,array('none','gzip','lzop')))) {$pref_clonage_compression='lzop';}
+
+	$pref_clonage_max_wait=crob_getParam('pref_clonage_max_wait');
+	if($pref_clonage_max_wait=='') {$pref_clonage_max_wait=15;}
+	$pref_clonage_min_wait=crob_getParam('pref_clonage_min_wait');
+	if($pref_clonage_min_wait=='') {$pref_clonage_min_wait=10;}
+	$pref_clonage_start_timeout=crob_getParam('pref_clonage_start_timeout');
+	if($pref_clonage_start_timeout=='') {$pref_clonage_start_timeout=20;}
+
 
 	echo "<h1>".gettext("Action clonage TFTP")."</h1>\n";
 
@@ -590,8 +612,12 @@ if(nb_parcs==1) {
 				if($temoin_sysresccd=="y") {
 					// Il faut aussi le noyau et l'initram.igz dans /tftpboot, 
 					echo "<p>";
-					echo "<input type='radio' name='distrib' id='distrib_udpcast' value='udpcast' onchange='affiche_sections_distrib()' /><label for='distrib_udpcast'>Utiliser la distribution UdpCast</label><br />\n";
-					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' checked /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)\n";
+					echo "<input type='radio' name='distrib' id='distrib_udpcast' value='udpcast' onchange='affiche_sections_distrib()' ";
+					if($pref_distrib_clonage!="sysresccd") {echo "checked ";}
+					echo "/><label for='distrib_udpcast'>Utiliser la distribution UdpCast</label><br />\n";
+					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' ";
+					if($pref_distrib_clonage=="sysresccd") {echo "checked ";}
+					echo "/><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)\n";
 					//echo "<br />\n";
 					echo "</p>\n";
 
@@ -616,8 +642,12 @@ echo "</div>\n";
 					$srcd_scripts_vers=crob_getParam('srcd_scripts_vers');
 					if(($srcd_scripts_vers!='')&&($srcd_scripts_vers>=20110406)) {
 						echo "<p>";
-						echo "<input type='radio' name='ntfsclone_udpcast' id='ntfsclone_udpcast_n' value='n' checked /><label for='ntfsclone_udpcast_n'> Utiliser udp-sender/udp-receiver seuls</label><br />\n";
-						echo "<input type='radio' name='ntfsclone_udpcast' id='ntfsclone_udpcast_y' value='y' /><label for='ntfsclone_udpcast_y'>Utiliser ntfsclone et udp-sender/udp-receiver</label> (<em style='color:red'>experimental</em>)<br />\n";
+						echo "<input type='radio' name='ntfsclone_udpcast' id='ntfsclone_udpcast_n' value='n' ";
+						if($pref_ntfsclone_udpcast!="y") {echo "checked ";}
+						echo "/><label for='ntfsclone_udpcast_n'> Utiliser udp-sender/udp-receiver seuls</label><br />\n";
+						echo "<input type='radio' name='ntfsclone_udpcast' id='ntfsclone_udpcast_y' value='y' ";
+						if($pref_ntfsclone_udpcast=="y") {echo "checked ";}
+						echo "/><label for='ntfsclone_udpcast_y'>Utiliser ntfsclone et udp-sender/udp-receiver</label> (<em style='color:red'>experimental</em>)<br />\n";
 						echo "</p>\n";
 					}
 					else {
@@ -646,9 +676,15 @@ echo "</div>\n";
 				echo "</td></tr>\n";
 
 				echo "<tr><td valign='top'>Compression: </td><td>";
-				echo "<label for='compr_none'><input type='radio' name='compr' id='compr_none' value='none' /> Aucune compression</label><br />\n";
-				echo "<label for='compr_gzip'><input type='radio' name='compr' id='compr_gzip' value='gzip' /> Compression GZIP</label><br />\n";
-				echo "<label for='compr_lzop'><input type='radio' name='compr' id='compr_lzop' value='lzop' checked /> Compression LZOP (<i>recommandé</i>)</label><br />\n";
+				echo "<label for='compr_none'><input type='radio' name='compr' id='compr_none' value='none' ";
+				if($pref_clonage_compression=='none') {echo "checked ";}
+				echo "/> Aucune compression</label><br />\n";
+				echo "<label for='compr_gzip'><input type='radio' name='compr' id='compr_gzip' value='gzip' ";
+				if($pref_clonage_compression=='gzip') {echo "checked ";}
+				echo "/> Compression GZIP</label><br />\n";
+				echo "<label for='compr_lzop'><input type='radio' name='compr' id='compr_lzop' value='lzop' ";
+				if($pref_clonage_compression=='lzop') {echo "checked ";}
+				echo "/> Compression LZOP (<i>recommandé</i>)</label><br />\n";
 				echo "</td></tr>\n";
 
 				// A FAIRE: Relever les clonage en attente (possible) ou en cours (pas possible en l'état) pour ne pas proposer le même port...
@@ -770,7 +806,7 @@ echo "</div>\n";
 
 				echo "<tr><td valign='top'>Nombre (<i>min</i>) de clients à attendre: </td>\n";
 				echo "<td>\n";
-				echo "<input type='text' name='min_receivers' id='min_receivers' value='".count($id_recepteur)."' size='3' onkeydown=\"clavier_2('min_receivers',event,1,100);\" autocomplete=\"off\" />\n";
+				echo "<input type='text' name='min_receivers' id='min_receivers' value='".count($id_recepteur)."' size='3' onkeydown=\"clavier_up_down_increment('min_receivers',event,1,100);\" autocomplete=\"off\" />\n";
 				echo "<br />\n";
 				echo "Vous pouvez par exemple annoncer 10 récepteurs minimum alors que vous souhaitez en cloner 12.<br />";
 				echo "Dans ce cas, vous acceptez que deux récepteurs manquent dans le clonage, mais pas plus.<br />";
@@ -782,14 +818,14 @@ echo "</div>\n";
 				*/
 				echo "<tr><td valign='top'>Délais minimum avant le démarrage:</td>\n";
 				echo "<td valign='bottom'>\n";
-				echo "<input type='text' id='min_wait' name='min_wait' value='10' size='3' onkeydown=\"clavier_2('min_wait',event,1,60);\" autocomplete=\"off\" /> minutes.\n";
+				echo "<input type='text' id='min_wait' name='min_wait' value='$pref_clonage_min_wait' size='3' onkeydown=\"clavier_up_down_increment('min_wait',event,1,60);\" autocomplete=\"off\" /> minutes.\n";
 				echo "<br />\n";
 				echo "Si vous fixez un nombre de récepteurs inférieur au nombre max de clients pouvant être clonés, ce délais permettra d'attendre les récepteurs au-delà pendant cette durée.\n";
 				echo "</td></tr>\n";
 
 				echo "<tr><td valign='top'>Si un ou des clients<br />font défaut,<br />démarrer après: </td>\n";
 				echo "<td valign='bottom'>\n";
-				echo "<input type='text' id='max_wait' name='max_wait' value='15' size='4' onkeydown=\"clavier_2('max_wait',event,1,60);\" autocomplete=\"off\" /> minutes.\n";
+				echo "<input type='text' id='max_wait' name='max_wait' value='$pref_clonage_max_wait' size='4' onkeydown=\"clavier_up_down_increment('max_wait',event,1,60);\" autocomplete=\"off\" /> minutes.\n";
 				echo "<br />\n";
 				echo "Néanmoins, le clonage ne démarre que si un client au moins est présent.\n";
 				echo "</td></tr>\n";
@@ -798,8 +834,8 @@ echo "</div>\n";
 
 				echo "<tr><td valign='top'>Abandonner après: </td>\n";
 				echo "<td>\n";
-				//echo "<input type='text' id='start_timeout' name='start_timeout' value='20' size='3' onkeydown=\"clavier_2(this.id,event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne démarre pas.\n";
-				echo "<input type='text' id='start_timeout' name='start_timeout' value='20' size='3' onkeydown=\"clavier_2('start_timeout',event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne démarre pas.\n";
+				//echo "<input type='text' id='start_timeout' name='start_timeout' value='20' size='3' onkeydown=\"clavier_up_down_increment(this.id,event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne démarre pas.\n";
+				echo "<input type='text' id='start_timeout' name='start_timeout' value='$pref_clonage_start_timeout' size='3' onkeydown=\"clavier_up_down_increment('start_timeout',event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne démarre pas.\n";
 				echo "<br />\n";
 				echo "Veillez à ce que le timeout soit supérieur à la valeur 'max-wait' spécifiée pour l'émetteur.\n";
 				echo "</td></tr>\n";
@@ -822,11 +858,12 @@ echo "</div>\n";
 
 echo "<script type='text/javascript'>
 function verif_et_valide_form() {
-	if(document.getElementById('min_wait').value>document.getElementById('max_wait').value) {
+	if(eval(document.getElementById('min_wait').value)>eval(document.getElementById('max_wait').value)) {
 		alert('La valeur minimale d attente de l emetteur ne devrait pas etre inferieure a la valeur maximale d attente.')
 	}
 	else {
-		if(document.getElementById('start_timeout').value<document.getElementById('max_wait').value) {
+		//alert('max_wait='+document.getElementById('max_wait').value+' et start_timeout='+document.getElementById('start_timeout').value)
+		if(eval(document.getElementById('start_timeout').value)<eval(document.getElementById('max_wait').value)) {
 			alert('La valeur max d attente de l emetteur ne devrait pas etre superieure a la valeur maximale d attente des recepteurs.')
 		}
 		else {
@@ -875,7 +912,7 @@ function affiche_message_shutdown_cmd() {
 
 affiche_message_shutdown_cmd();
 
-function clavier_2(n,e,vmin,vmax){
+function clavier_up_down_increment(n,e,vmin,vmax){
 	//alert(n);
 	// Fonction destinée à incrémenter/décrémenter le champ courant entre 0 et 255 (pour des composantes de couleurs)
 	// Modifié pour aller de vmin à vmax
@@ -953,6 +990,13 @@ function clavier_2(n,e,vmin,vmax){
 
 				if(($auto_reboot!="always")&&($auto_reboot!="success")){$auto_reboot="never";}
 				//===================================
+
+				$sauvegarde_pref=crob_setParam('pref_distrib_clonage', $distrib, 'Distrib preferee pour le clonage');
+				$sauvegarde_pref=crob_setParam('pref_ntfsclone_udpcast', $ntfsclone_udpcast, 'Utilisation de ntfsclone+udpcast pour le clonage');
+				$sauvegarde_pref=crob_setParam('pref_clonage_max_wait', $max_wait, 'Clonage: Valeur max d attente du serveur');
+				$sauvegarde_pref=crob_setParam('pref_clonage_min_wait', $min_wait, 'Clonage: Valeur min d attente du serveur');
+				$sauvegarde_pref=crob_setParam('pref_clonage_start_timeout', $start_timeout, 'Clonage: Valeur max d attente des recepteurs');
+				$sauvegarde_pref=crob_setParam('pref_clonage_compression', $compr, 'Clonage: Mode de compression prefere');
 
 				echo "<p>Rappel des paramètres:</p>\n";
 

@@ -139,7 +139,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 	echo "<td valign='top'>\n";
 	$tftp_delais_boot_pxe=crob_getParam('tftp_delais_boot_pxe');
 	if($tftp_delais_boot_pxe=="") {$tftp_delais_boot_pxe=8;}
-	echo "<input type='text' name='tftp_delais_boot_pxe' value='$tftp_delais_boot_pxe' />\n";
+	echo "<input type='text' name='tftp_delais_boot_pxe' id='tftp_delais_boot_pxe' value='$tftp_delais_boot_pxe' onkeydown=\"clavier_up_down_increment('tftp_delais_boot_pxe',event,1,100);\" autocomplete=\"off\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -227,6 +227,57 @@ if (is_admin("system_is_admin",$login)=="Y")
 	}
 
 	maj_affichage_options();
+
+	function clavier_up_down_increment(n,e,vmin,vmax){
+		//alert(n);
+		// Fonction destinée à incrémenter/décrémenter le champ courant entre 0 et 255 (pour des composantes de couleurs)
+		// Modifié pour aller de vmin à vmax
+		touche= e.keyCode ;
+		//alert('touche='+touche);
+		if (touche == '40') {
+			valeur=document.getElementById(n).value;
+			if(valeur>vmin){
+				valeur--;
+				document.getElementById(n).value=valeur;
+			}
+		}
+		else{
+			if (touche == '38') {
+				valeur=document.getElementById(n).value;
+				if(valeur<vmax){
+					valeur++;
+					document.getElementById(n).value=valeur;
+				}
+			}
+			else{
+				if(touche == '34'){
+					valeur=document.getElementById(n).value;
+					if(valeur>vmin+10){
+						valeur=valeur-10;
+					}
+					else{
+						valeur=vmin;
+					}
+					document.getElementById(n).value=valeur;
+				}
+				else{
+					if(touche == '33'){
+						valeur=document.getElementById(n).value;
+						if(valeur<vmax-10){
+							//valeur=valeur+10;
+							//valeur+=10;
+							valeur=eval(valeur)+10;
+						}
+						else{
+							valeur=vmax;
+						}
+						document.getElementById(n).value=valeur;
+					}
+				}
+			}
+		}
+	}
+
 </script>\n";
 
 }

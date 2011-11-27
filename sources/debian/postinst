@@ -78,6 +78,19 @@ identifiant int(11) NOT NULL auto_increment,
 PRIMARY KEY  (identifiant)
 );" |$mysqlrequest
 
+# Test du nombre de caracteres du champ name de se3db.params
+test_champ=`echo "SELECT 1=1 FROM params WHERE name='123456789012345678901234567890';" | $mysqlrequest`
+if [ -z "$test_champ" ]; then
+	echo "INSERT INTO params SET name='123456789012345678901234567890', value='test de la longueur du champ';"| $mysqlrequest
+	test_champ=`echo "SELECT 1=1 FROM params WHERE name='123456789012345678901234567890';" | $mysqlrequest`
+	if [ -z "$test_champ" ]; then
+		echo "ALTER TABLE params CHANGE name name VARCHAR( 30 );" | $mysqlrequest
+	else
+		# Menage
+	fi
+	echo "DELETE FROM params WHERE name='123456789012345678901234567890';"| $mysqlrequest
+fi
+
 #==============================================================================
 
 # on rend executable les script sudo et sbin
