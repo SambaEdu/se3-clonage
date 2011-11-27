@@ -12,12 +12,14 @@
 		"Programmer un rapport", "tftp/action_rapport_tftp.php","parc_can_clone",3,
 		"Programmer un memtest", "tftp/action_memtest_tftp.php","parc_can_clone",3
 		));
+		
 	if ($menu_unattended=="1") {
-		$liens1=array_merge($liens1,array(array("Programmer une install XP", "tftp/action_unattend_xp_tftp.php","system_is_admin",3)));
+		array_push ($liens1[0], "Programmer une install XP", "tftp/action_unattend_xp_tftp.php","system_is_admin",3);
         }
 	if ($menu_seven=="1") {
-		$liens1=array_merge($liens1,array(array("Programmer une install XP", "tftp/action_seven_tftp.php","system_is_admin",3)));
+		array_push ($liens1[0], "Programmer une install seven", "tftp/action_seven_tftp.php","system_is_admin",3);
 	}
+	$liens=array_merge($liens,$liens1);
 
-$liens=array_merge($liens,$liens1);
+
 ?>
