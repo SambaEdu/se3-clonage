@@ -1170,6 +1170,96 @@ timeout 60
 prompt 1
 " >> $fich
 	;;
+	"seven64")
+		mac=$(echo "$2" | sed -e "s/:/-/g")
+		ip=$3
+		pc=$4
+
+		# on regenere unattend.csv
+		/usr/share/se3/scripts/unattended_generate.sh -u > /dev/null
+
+		fich=/tftpboot/pxelinux.cfg/01-$mac
+
+		echo "# Script de boot de la machine $pc
+# MAC=$mac
+# IP= $ip
+# Date de generation du fichier: $timedate
+# Timestamp: $timestamp
+
+# Echappatoires pour booter sur le DD:
+label 0
+   localboot 0x80
+label a
+   localboot 0x00
+label q
+   localboot -1
+label disk1
+   localboot 0x80
+label disk2
+  localboot 0x81
+
+# Label d'install seven:
+label seven64
+    kernel seven64/wdsnbp.0
+label seven32
+    kernel seven32/wdsnbp.0
+
+
+# Choix de boot par défaut:
+default seven64
+
+# On boote après 6 secondes:
+timeout 60
+
+# Permet-on à l'utilisateur de choisir l'option de boot?
+# Si on ne permet pas, le timeout n'est pas pris en compte.
+prompt 1
+" >> $fich
+	"seven32")
+		mac=$(echo "$2" | sed -e "s/:/-/g")
+		ip=$3
+		pc=$4
+
+		# on regenere unattend.csv
+		/usr/share/se3/scripts/unattended_generate.sh -u > /dev/null
+
+		fich=/tftpboot/pxelinux.cfg/01-$mac
+
+		echo "# Script de boot de la machine $pc
+# MAC=$mac
+# IP= $ip
+# Date de generation du fichier: $timedate
+# Timestamp: $timestamp
+
+# Echappatoires pour booter sur le DD:
+label 0
+   localboot 0x80
+label a
+   localboot 0x00
+label q
+   localboot -1
+label disk1
+   localboot 0x80
+label disk2
+  localboot 0x81
+
+# Label d'install seven:
+label seven32
+    kernel seven32/wdsnbp.0
+label seven64
+    kernel seven64/wdsnbp.0
+
+# Choix de boot par défaut:
+default seven32
+
+# On boote après 6 secondes:
+timeout 60
+
+# Permet-on à l'utilisateur de choisir l'option de boot?
+# Si on ne permet pas, le timeout n'est pas pris en compte.
+prompt 1
+" >> $fich
+	;;
 	"memtest")
 
 		mac=$(echo "$2" | sed -e "s/:/-/g")
