@@ -71,6 +71,25 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		}
 	}
 
+
+	$temoin_fichiers_requis="y";
+	$chemin_tftpboot="/tftpboot";
+	$tab_udpcast_file=array("bzImage", "rootfs.gz");
+	for($loop=0;$loop<count($tab_udpcast_file);$loop++) {
+		if(!file_exists($chemin_tftpboot."/".$tab_udpcast_file[$loop])) {
+			echo "<span style='color:red'>".$chemin_tftpboot."/".$tab_udpcast_file[$loop]." est absent.</span><br />\n";
+			echo "Effectuez le telechargement SliTaz en <a href='config_tftp.php'>Configurer le module TFTP</a><br />\n";
+			$temoin_fichiers_requis="n";
+		}
+	}
+
+	if($temoin_fichiers_requis=="n") {
+		echo "<p style='color:red'>ABANDON&nbsp;: Un ou des fichiers requis sont manquants.</p>\n";
+		include ("pdp.inc.php");
+		die();
+	}
+
+
 	if(!isset($parc)){
 		echo "<p>Cette page doit vous permettre de programmer une récupération d'informations sur les machines choisies pour connaître les partitions, les sauvegardes présentes,...</p>\n";
 

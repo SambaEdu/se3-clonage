@@ -38,7 +38,10 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 
 	$parametrage_action=isset($_POST['parametrage_action']) ? $_POST['parametrage_action'] : (isset($_GET['parametrage_action']) ? $_GET['parametrage_action'] : NULL);
 
-	$distrib=isset($_POST['distrib']) ? $_POST['distrib'] : "slitaz";
+	$pref_distrib_svgrest=crob_getParam('pref_distrib_svgrest');
+	if(($pref_distrib_svgrest=='slitaz')||($pref_distrib_svgrest=='sysresccd')) {$valeur_par_defaut=$pref_distrib_svgrest;}
+	else {$valeur_par_defaut="slitaz";}
+	$distrib=isset($_POST['distrib']) ? $_POST['distrib'] : $valeur_par_defaut;
 	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescuecd";
 
 	/*
@@ -90,6 +93,23 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	}
 
 	//echo "is_machine_in_parc('xpbof', 'parc_xp')=".is_machine_in_parc('xpbof', 'parc_xp')."<br />";
+
+	$temoin_fichiers_requis="y";
+	$chemin_tftpboot="/tftpboot";
+	$tab_udpcast_file=array("bzImage", "rootfs.gz");
+	for($loop=0;$loop<count($tab_udpcast_file);$loop++) {
+		if(!file_exists($chemin_tftpboot."/".$tab_udpcast_file[$loop])) {
+			echo "<span style='color:red'>".$chemin_tftpboot."/".$tab_udpcast_file[$loop]." est absent.</span><br />\n";
+			echo "Effectuez le telechargement SliTaz en <a href='config_tftp.php'>Configurer le module TFTP</a><br />\n";
+			$temoin_fichiers_requis="n";
+		}
+	}
+
+	if($temoin_fichiers_requis=="n") {
+		echo "<p style='color:red'>ABANDON&nbsp;: Un ou des fichiers requis sont manquants.</p>\n";
+		include ("pdp.inc.php");
+		die();
+	}
 
 	if(!isset($parc)) {
 
@@ -374,8 +394,12 @@ if(nb_parcs==1) {
 
 				if($temoin_sysresccd=="y") {
 					// Il faut aussi le noyau et l'initram.igz dans /tftpboot, 
-					echo "<input type='radio' name='distrib' id='distrib_slitaz' value='slitaz' onchange='affiche_sections_distrib()' /><label for='distrib_slitaz'>Utiliser la distribution SliTaz</label><br />\n";
-					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' checked /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)<br />\n";
+					echo "<input type='radio' name='distrib' id='distrib_slitaz' value='slitaz' onchange='affiche_sections_distrib()' ";
+					if($pref_distrib_svgrest!="sysresccd") {echo "checked ";}
+					echo "/><label for='distrib_slitaz'>Utiliser la distribution SliTaz</label><br />\n";
+					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' ";
+					if($pref_distrib_svgrest=="sysresccd") {echo "checked ";}
+					echo "/><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)<br />\n";
 
 echo "<div id='div_sysresccd_kernel'>\n";
 echo "<table border='0'>\n";
@@ -666,6 +690,8 @@ function check_smb_et_valide_formulaire(themessage) {
 				}
 
 				echo "<p>Rappel des paramètres:</p>\n";
+
+				$sauvegarde_pref=crob_setParam('pref_distrib_svgrest', $distrib, 'Distrib preferee pour les sauvegardes et restaurations');
 
 				$temoin_sysresccd=check_sysresccd_files();
 

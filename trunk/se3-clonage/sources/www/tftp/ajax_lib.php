@@ -31,7 +31,7 @@ if (is_admin("system_is_admin", $login) != "Y") {
 	$restriction_parcs = "y";
 	$tab_delegated_parcs = list_delegated_parcs($login);
 	if (count($tab_delegated_parcs) == 0) {
-		echo "<p style='color:red'>Aucun parc ne vous a �t� d�l�gu�.</p>\n";
+		echo "<p style='color:red'>Aucun parc ne vous a ete delegue.</p>\n";
 		die();
 	}
 }
@@ -53,6 +53,16 @@ if ($_GET['mode'] == 'ping_ip') {
 	wake_shutdown_or_reboot($_GET['ip'], $_GET['nom'], $_GET['wake'], $_GET['shutdown_reboot']);
 } elseif ($_GET['mode'] == 'check_versions_sysresccd') {
 	$resultat2 = exec("/usr/bin/sudo /usr/share/se3/scripts/se3_get_sysresccd.sh 'check_version'", $retour);
+	foreach ($retour as $key => $value) {
+		echo $value;
+	}
+} elseif ($_GET['mode'] == 'check_versions_udpcast') {
+	$resultat2 = exec("/usr/bin/sudo /usr/share/se3/scripts/se3_get_udpcast.sh 'check_version'", $retour);
+	foreach ($retour as $key => $value) {
+		echo $value;
+	}
+} elseif ($_GET['mode'] == 'check_versions_slitaz') {
+	$resultat2 = exec("/usr/bin/sudo /usr/share/se3/scripts/se3_get_slitaz.sh 'check_version'", $retour);
 	foreach ($retour as $key => $value) {
 		echo $value;
 	}
