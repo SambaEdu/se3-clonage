@@ -223,7 +223,7 @@ if [ "$temoin_sysrcd" = "y" ]; then
 			else
 				echo "<span style='color:red'>"
 			fi
-			echo "ANOMALIE: La somme MD5 ne coincide pas: $md5_en_ligne en ligne et md5_telech telecharge."
+			echo "ANOMALIE: La somme MD5 ne coincide pas: $md5_en_ligne en ligne et $md5_telech telecharge."
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLTXT"
 			else
@@ -330,7 +330,7 @@ if [ "$temoin_autorun2" = "y" ]; then
 			else
 				echo "<span style='color:red'>"
 			fi
-			echo "ANOMALIE: La somme MD5 ne coincide pas: $md5_en_ligne en ligne et md5_telech telecharge."
+			echo "ANOMALIE: La somme MD5 ne coincide pas: $md5_en_ligne en ligne et $md5_telech telecharge."
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLTXT"
 			else
@@ -444,7 +444,7 @@ if [ "$temoin_scripts" = "y" ]; then
 			else
 				echo "<span style='color:red'>"
 			fi
-			echo "ANOMALIE: La somme MD5 ne coincide pas: $md5_en_ligne en ligne et md5_telech telecharge."
+			echo "ANOMALIE: La somme MD5 ne coincide pas: $md5_en_ligne en ligne et $md5_telech telecharge."
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLTXT"
 			else

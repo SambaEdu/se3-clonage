@@ -92,9 +92,21 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	echo "<h1>".gettext("Configuration TFTP")."</h1>\n";
 	if(isset($_POST['action'])){
-		echo "Lancement du t&#233;l&#233;chargement de System Rescue CD....";
-		system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_sysresccd.sh mode=html 2>&1");
-
+		if($_POST['action']=='download_sysresccd') {
+			echo "Lancement du t&#233;l&#233;chargement de System Rescue CD...";
+			system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_sysresccd.sh mode=html 2>&1");
+		}
+		elseif($_POST['action']=='download_slitaz') {
+			echo "Lancement du t&#233;l&#233;chargement de SliTaz...";
+			system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_slitaz.sh mode=html 2>&1");
+		}
+		elseif($_POST['action']=='download_udpcast') {
+			echo "Lancement du t&#233;l&#233;chargement de Udpcast...";
+			system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_udpcast.sh mode=html 2>&1");
+		}
+		else {
+			echo "<span style='color:red'>Choix de telechargement invalide.</span><br />";
+		}
 		echo "<a href=".$_SERVER['PHP_SELF'].">Retour </a>";
 		exit;
 	}
@@ -156,32 +168,26 @@ if (is_admin("system_is_admin",$login)=="Y")
 	echo "</tr>\n";
 	echo "</table>\n";
 
-        echo "<br /><br />";
-        //echo "<table class='crob'>\n";
-        echo "<table class='crob' width=\"100%\">\n";
-        echo "<tr>\n";
-        echo "<th>Mise en place de System rescue CD</th>\n";
-//        echo "<th></th>";
-        echo "</tr>\n";
+	echo "<br /><br />";
 
-        echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
-        echo "<input type='hidden' name='action' value='download' ";
-        echo "<tr><td>T&#233;l&#233;charger system rescue cd (~274Mo) afin de l'utiliser à la place de slistaz / udpcast.<br> Avantage : en g&#233;n&#233;ral system rescue cd fonctionne sur davantage de mat&#233;riels recents.<br>\n";
-        echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Lancer le T&#233;l&#233;chargement\" /></p>\n";
-//        echo "<td>";
-        echo "</td>\n";
+	//========================================================================
 
-        echo "</tr>\n";
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+	//echo "<fieldset>\n";
 
+	echo "<table class='crob' width=\"100%\">\n";
+	echo "<tr>\n";
+	echo "<th>Mise en place de System rescue CD</th>\n";
+	echo "</tr>\n";
 
-	echo "</table>\n";
-
+	echo "<tr>\n";
+	echo "<td>\n";
 	$version_srcd_en_place=crob_getParam('srcd_version');
 	$version_autorun2_en_place=crob_getParam('srcd_autorun2_vers');
 	$version_scripts_en_place=crob_getParam('srcd_scripts_vers');
 	if($version_srcd_en_place!='') {
 		echo "<div align='center'>\n";
-		echo "<div id='div_versions'><p>Version de SystemRescueCD en place&nbsp;:</p>
+		echo "<div id='div_versions_sysresccd'><p>Version de SystemRescueCD en place&nbsp;:</p>
 <table class='crob'>
 <tr>
 	<th>&nbsp;</th>
@@ -204,14 +210,178 @@ if (is_admin("system_is_admin",$login)=="Y")
 		echo "<script type='text/javascript'>
 		// <![CDATA[
 		function check_versions_sysresccd() {
-			new Ajax.Updater($('div_versions'),'ajax_lib.php?mode=check_versions_sysresccd',{method: 'get'});
+			new Ajax.Updater($('div_versions_sysresccd'),'ajax_lib.php?mode=check_versions_sysresccd',{method: 'get'});
 		}
 		//]]>
 	</script>\n";
 		echo "<p><a href='#' onclick='check_versions_sysresccd();return false;'>Tester la présence de mises à jour</a></p>\n";
 		echo "</div>\n";
 	}
+	else {
+		echo "<p style='text-align:center; color:red'>SystemRescueCD est absent ou la version en place n'est pas enregistree/versionnee dans la base.</p>";
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
 
+	echo "<tr><td>";
+	echo "<input type='hidden' name='action' value='download_sysresccd' />";
+	echo "T&#233;l&#233;charger system rescue cd (~274Mo) afin de l'utiliser à la place de slistaz / udpcast.<br> Avantage : en g&#233;n&#233;ral system rescue cd fonctionne sur davantage de mat&#233;riels recents.<br>\n";
+	echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Lancer le T&#233;l&#233;chargement\" /></p>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "</table>\n";
+
+	//echo "</fieldset>\n";
+	echo "</form>\n";
+
+	//========================================================================
+
+	echo "<br /><br />";
+
+	//========================================================================
+
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+	//echo "<fieldset>\n";
+
+	echo "<table class='crob' width=\"100%\">\n";
+	echo "<tr>\n";
+	echo "<th>Mise en place de Udpcast</th>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>\n";
+	$udpcast_noyo_version=crob_getParam('udpcast_noyo_version');
+	if(!file_exists('/tftpboot/vmlu26')) {$udpcast_noyo_version.=" <span style='color:red'>Absent???</span>";}
+	$udpcast_initrd_version=crob_getParam('udpcast_initrd_version');
+	if(!file_exists('/tftpboot/udprd')) {$udpcast_initrd_version.=" <span style='color:red'>Absent???</span>";}
+	$udpcast_noyo_old_version=crob_getParam('udpcast_noyo_old_version');
+	if(!file_exists('/tftpboot/vmlu26.old')) {$udpcast_noyo_old_version.=" <span style='color:red'>Absent???</span>";}
+	$udpcast_initrd_old_version=crob_getParam('udpcast_initrd_old_version');
+	if(!file_exists('/tftpboot/udprd.old')) {$udpcast_initrd_old_version.=" <span style='color:red'>Absent???</span>";}
+
+	if($udpcast_noyo_version!='') {
+		echo "<div align='center'>\n";
+		echo "<div id='div_versions_udpcast'><p>Version de Udpcast en place&nbsp;:</p>
+<table class='crob'>
+<tr>
+	<th>&nbsp;</th>
+	<th>Sur votre SE3</th>
+</tr>
+<tr>
+	<th>Noyau</th>
+	<td>$udpcast_noyo_version</td>
+</tr>
+<tr>
+	<th>Initrd</th>
+	<td>$udpcast_initrd_version</td>
+</tr>
+<tr>
+	<th>Ancien noyau</th>
+	<td>$udpcast_noyo_old_version</td>
+</tr>
+<tr>
+	<th>Ancien initrd</th>
+	<td>$udpcast_initrd_old_version</td>
+</tr>
+</table></div>\n";
+
+		echo "<script type='text/javascript'>
+		// <![CDATA[
+		function check_versions_udpcast() {
+			new Ajax.Updater($('div_versions_udpcast'),'ajax_lib.php?mode=check_versions_udpcast',{method: 'get'});
+		}
+		//]]>
+	</script>\n";
+		echo "<p><a href='#' onclick='check_versions_udpcast();return false;'>Tester la présence de mises à jour</a></p>\n";
+		echo "</div>\n";
+	}
+	else {
+		echo "<p style='text-align:center; color:red'>Udpcast est absent ou la version en place n'est pas enregistree/versionnee dans la base.</p>";
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr><td>";
+	echo "<input type='hidden' name='action' value='download_udpcast' />";
+	echo "T&#233;l&#233;charger udpcast.<br>\n";
+	echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Lancer le T&#233;l&#233;chargement\" /></p>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "</table>\n";
+
+	//echo "</fieldset>\n";
+	echo "</form>\n";
+
+	//========================================================================
+
+	echo "<br /><br />";
+
+	//========================================================================
+
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+	//echo "<fieldset>\n";
+
+	echo "<table class='crob' width=\"100%\">\n";
+	echo "<tr>\n";
+	echo "<th>Mise en place de SliTaz</th>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>\n";
+	$slitaz_noyo_version=crob_getParam('slitaz_noyo_version');
+	if(!file_exists('/tftpboot/bzImage')) {$slitaz_noyo_version.=" <span style='color:red'>Absent???</span>";}
+	$slitaz_roofs_version=crob_getParam('slitaz_roofs_version');
+	if(!file_exists('/tftpboot/rootfs.gz')) {$slitaz_roofs_version.=" <span style='color:red'>Absent???</span>";}
+
+	if($slitaz_noyo_version!='') {
+		echo "<div align='center'>\n";
+		echo "<div id='div_versions_slitaz'><p>Version de SliTaz en place&nbsp;:</p>
+<table class='crob'>
+<tr>
+	<th>&nbsp;</th>
+	<th>Sur votre SE3</th>
+</tr>
+<tr>
+	<th>Noyau</th>
+	<td>$slitaz_noyo_version</td>
+</tr>
+<tr>
+	<th>Rootfs</th>
+	<td>$slitaz_roofs_version</td>
+</tr>
+</table></div>\n";
+
+		echo "<script type='text/javascript'>
+		// <![CDATA[
+		function check_versions_slitaz() {
+			new Ajax.Updater($('div_versions_slitaz'),'ajax_lib.php?mode=check_versions_slitaz',{method: 'get'});
+		}
+		//]]>
+	</script>\n";
+		echo "<p><a href='#' onclick='check_versions_slitaz();return false;'>Tester la présence de mises à jour</a></p>\n";
+		echo "</div>\n";
+	}
+	else {
+		echo "<p style='text-align:center; color:red'>SliTaz est absent ou la version en place n'est pas enregistree/versionnee dans la base.</p>";
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr><td>";
+	echo "<input type='hidden' name='action' value='download_slitaz' />";
+	echo "T&#233;l&#233;charger SliTaz.<br>\n";
+	echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Lancer le T&#233;l&#233;chargement\" /></p>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "</table>\n";
+
+	//echo "</fieldset>\n";
+	echo "</form>\n";
+
+	//========================================================================
 
 	echo "<script type='text/javascript'>
 	function maj_affichage_options() {
