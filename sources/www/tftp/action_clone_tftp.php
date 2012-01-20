@@ -372,14 +372,14 @@ if(nb_parcs==1) {
                         echo "<input type=\"hidden\" name=\"id_emetteur\" value=\"$id_emetteur\" />\n";
                         exec("/usr/share/se3/sbin/tcpcheck 2 $lig->ip:445 | grep alive",$arrval,$return_value);
 			if ($return_value == "1") {
-			    echo "<p style='color:red;'>Attention, clonage impossible. La machine $lig->name est injoignable ou proteg&#233;e par un parre feu  :  </p>\n ";
+			    echo "<p style='color:red;'>Attention, clonage impossible. La machine $lig->name est injoignable ou prot&#233;g&#233;e par un pare-feu  :  </p>\n ";
 			    echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
 			    include ("pdp.inc.php");
 			    exit();
                         }
 
 
-			echo "<p>Choisissez les récepteurs.</p>\n";
+			echo "<p>Choisissez les r&#233;cepteurs.</p>\n";
 			$max_eff_parc=0;
 
 			$tab_detect_doublons=array();
