@@ -1215,6 +1215,7 @@ timeout 60
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
+    ;;
 	"seven32")
 		mac=$(echo "$2" | sed -e "s/:/-/g")
 		ip=$3
