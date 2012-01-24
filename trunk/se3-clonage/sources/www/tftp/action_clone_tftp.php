@@ -196,7 +196,9 @@ if(nb_parcs==1) {
 }
 </script>\n";
 
-		echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
+		//echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
+
+		echo "<p style='text-indent: -7em; margin-left: 7em;'><b style='color:red'>ATTENTION&nbsp;:</b> Pour le bon fonctionnement du clonage, il est indispensable que les postes (<em>l'emetteur au moins</em>) soient configurés pour booter en priorité sur le réseau (<em>BIOS&nbsp;: boot PXE (network) avant disque dur</em>).<br />Sinon, quand le poste emetteur va redémarrer pour le clonage (*), il risque de redémarrer sous Window$ au lieu de démarrer en PXE.<br /><br />Et si vous lancez manuellement le clonage ensuite, le poste emetteur aura déjà réintégré le domaine et repris son nom initial. Vous clonerez alors toutes les machines sous ce même nom et elles n'intègreront pas le domaine sous leur nom propre.<br /><br />(*) Le poste emetteur reboote plusieurs fois dans l'opération (<em>il doit quitter le domaine (un reboot),<br />prendre le nom temporaire 'clone' (encore un reboot)<br />et ensuite seulement rebooter sur le réseau pour procéder au clonage</em>)</p>\n";
 	}
 	else {
 		if(!isset($id_emetteur)) {
