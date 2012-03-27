@@ -62,7 +62,7 @@ label su2
 ###SYSRESCCD###LABEL nofbu1
 ###SYSRESCCD###     MENU LABEL SystemRescueCd emetteur UdpCast
 ###SYSRESCCD###     kernel rescuecd
-###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###     TEXT HELP
 ###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
 ###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec
@@ -72,9 +72,10 @@ label su2
 ###SYSRESCCD###LABEL nofbu2
 ###SYSRESCCD###     MENU LABEL SystemRescueCd recepteur UdpCast (poste ecrase)
 ###SYSRESCCD###     kernel rescuecd
-###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###     TEXT HELP
 ###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
 ###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec
 ###SYSRESCCD###     preselection du mode recepteur.
 ###SYSRESCCD###     ENDTEXT
+

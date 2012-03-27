@@ -479,7 +479,7 @@ echo "</div>\n";
 					echo "</tr>\n";
 				}
 
-				echo "<tr><td valign='top'>Rebooter en fin de sauvegarde&nbsp;: </td>\n";
+				echo "<tr><td valign='top'>Rebooter en fin d'op&eacute;ration&nbsp;: </td>\n";
 				echo "<td>\n";
 				echo "<input type='checkbox' name='auto_reboot' value='y' checked />\n";
 				echo "</td>\n";
@@ -502,7 +502,7 @@ echo "</div>\n";
 				echo "Délai avant reboot/arrêt:</td>\n";
 				echo "<td>\n";
 				echo "<input type='text' name='delais_reboot' value='90' size='3' />\n";
-				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Le délai doit être supérieur à 60 secondes pour permettre la récupération du rapport de sauvegarde.')")."\"><img name=\"action_image4\"  src=\"../elements/images/help-info.gif\"></u>\n";
+				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Le délai doit être supérieur à 60 secondes pour permettre la récupération du rapport d opération.')")."\"><img name=\"action_image4\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 
