@@ -65,32 +65,32 @@ label su2
 
 ###SYSRESCCD###label sysrcd
 ###SYSRESCCD###   kernel rescuecd
-###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 
 ###SYSRESCCD###label sysrcd1
 ###SYSRESCCD###   kernel rescuecd
-###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait vga=788
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait vga=788 ###TFTP_SLITAZ_CMDLINE###
 
 ###SYSRESCCD###label sysrcd2
 ###SYSRESCCD###   kernel altker32
-###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 
 ###SYSRESCCD###label sysrcd64
 ###SYSRESCCD###   kernel rescue64
-###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 
 ###SYSRESCCD###   LABEL altker64
 ###SYSRESCCD###     kernel altker64
-###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 
 # UdpCast depuis SystemRescueCd
 ###SYSRESCCD###   LABEL nofbu1
 ###SYSRESCCD###     kernel rescuecd
-###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 
 ###SYSRESCCD###     LABEL nofbu2
 ###SYSRESCCD###     kernel rescuecd
-###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 
 label unattended
     kernel bzImageunattend
@@ -115,3 +115,4 @@ label disk1
 localboot 0x80
 label disk2
 localboot 0x81
+

@@ -53,7 +53,7 @@ label tazrst
 ###SYSRESCCD###label sysrcd
 ###SYSRESCCD###   MENU LABEL SystemRescueCd (resolution graphique minimale)
 ###SYSRESCCD###   kernel rescuecd
-###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###   TEXT HELP
 ###SYSRESCCD###   Boot standard avec le noyau 32bit, clavier FR (devrait toujours fonctionner)
 ###SYSRESCCD###   Vous devriez choisir cette option si vous ne savez pas laquelle utiliser.
@@ -62,7 +62,7 @@ label tazrst
 ###SYSRESCCD###label sysrcd1
 ###SYSRESCCD###   MENU LABEL SystemRescueCd (800x600)
 ###SYSRESCCD###   kernel rescuecd
-###SYSRESCCD###   INITRD initram.igz vga=788 scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait 
+###SYSRESCCD###   INITRD initram.igz vga=788 scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###   TEXT HELP
 ###SYSRESCCD###   Boot standard avec le noyau 32bit, clavier FR avec 800x600.
 ###SYSRESCCD###   En remplacant vga=788 par vga=791, vous passez en 1024x768
@@ -71,7 +71,7 @@ label tazrst
 ###SYSRESCCD###label sysrcd2
 ###SYSRESCCD###   MENU LABEL SystemRescueCd avec noyau alternatif altker32
 ###SYSRESCCD###   kernel altker32
-###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###   TEXT HELP
 ###SYSRESCCD###   Boot sur le noyau alternatif 32bit avec les options par defaut
 ###SYSRESCCD###   (devrait toujours fonctionner).
@@ -80,7 +80,7 @@ label tazrst
 ###SYSRESCCD###label sysrcd64
 ###SYSRESCCD###   MENU LABEL SystemRescueCd avec noyau 64bit
 ###SYSRESCCD###   kernel rescue64
-###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###   TEXT HELP
 ###SYSRESCCD###   Boot sur le noyau 64bit (devrait fonctionner sur CPU 64bit)
 ###SYSRESCCD###   Un noyau 64bit est requis si vous voulez utiliser des programmes 64bit
@@ -90,7 +90,7 @@ label tazrst
 ###SYSRESCCD###LABEL altker64
 ###SYSRESCCD###     MENU LABEL SystemRescueCd avec noyau alternatif altker64
 ###SYSRESCCD###     kernel altker64
-###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###     TEXT HELP
 ###SYSRESCCD###     Boot sur le noyau alternatif 64bit avec les options par defaut
 ###SYSRESCCD###     (devrait toujours fonctionner).
@@ -100,7 +100,7 @@ label tazrst
 ###SYSRESCCD###LABEL nofbu1
 ###SYSRESCCD###     MENU LABEL SystemRescueCd emetteur UdpCast
 ###SYSRESCCD###     kernel rescuecd
-###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###     TEXT HELP
 ###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
 ###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec
@@ -110,7 +110,7 @@ label tazrst
 ###SYSRESCCD###LABEL nofbu2
 ###SYSRESCCD###     MENU LABEL SystemRescueCd recepteur UdpCast (poste ecrase)
 ###SYSRESCCD###     kernel rescuecd
-###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp
+###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###     TEXT HELP
 ###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
 ###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec

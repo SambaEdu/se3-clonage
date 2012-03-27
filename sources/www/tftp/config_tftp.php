@@ -156,7 +156,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td>Lors du boot SliTaz, passer les param&#232;tres suivants en cmdline<br />\n";
+	echo "<td>Lors du boot SliTaz ou SysRescCD, passer les param&#232;tres suivants en cmdline<br />\n";
 	echo "<i>Exemples&nbsp;:</b> cle_ssh=http://$se3ip:909/tftp/paquet_cles_pub_ssh.tar.gz<br />Il faudra cr&#233;er l'archive paquet_cles_pub_ssh.tar.gz dans /var/www/se3/tftp/ avec les cl&#233;s ssh publiques que vous souhaitez.</td>\n";
 	echo "<td valign='top'>\n";
 	$tftp_slitaz_cmdline=crob_getParam('tftp_slitaz_cmdline');
