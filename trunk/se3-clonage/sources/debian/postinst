@@ -78,18 +78,21 @@ identifiant int(11) NOT NULL auto_increment,
 PRIMARY KEY  (identifiant)
 );" |$mysqlrequest
 
+
 # Test du nombre de caracteres du champ name de se3db.params
-test_champ=`echo "SELECT 1=1 FROM params WHERE name='123456789012345678901234567890';" | $mysqlrequest`
+debut_nom_champ="a$(date +%Y%m%d%H%M%S)"
+nom_champ_tmp="${debut_nom_champ}0123456789012345"
+
+# Enregistrement d'une valeur temporaire
+echo "INSERT INTO params SET name='$nom_champ_tmp';" | $mysqlrequest
+
+test_champ=`echo "SELECT 1=1 FROM params WHERE name='$nom_champ_tmp';" | $mysqlrequest`
 if [ -z "$test_champ" ]; then
-	echo "INSERT INTO params SET name='123456789012345678901234567890', value='test de la longueur du champ';"| $mysqlrequest
-	test_champ=`echo "SELECT 1=1 FROM params WHERE name='123456789012345678901234567890';" | $mysqlrequest`
-	if [ -z "$test_champ" ]; then
-		echo "ALTER TABLE params CHANGE name name VARCHAR( 30 );" | $mysqlrequest
-	else
-		# Menage
-		echo "DELETE FROM params WHERE name='123456789012345678901234567890';"| $mysqlrequest
-	fi
+	echo "ALTER TABLE params CHANGE name name VARCHAR( 30 );" | $mysqlrequest
 fi
+
+# Menage:
+echo "DELETE FROM params WHERE name LIKE '$debut_nom_champ%';"| $mysqlrequest
 
 #==============================================================================
 
