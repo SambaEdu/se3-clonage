@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # postinst script for se3-clonage
 #
 # see: dh_installdeb(1)
