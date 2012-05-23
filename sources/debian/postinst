@@ -80,19 +80,19 @@ PRIMARY KEY  (identifiant)
 
 
 # Test du nombre de caracteres du champ name de se3db.params
-debut_nom_champ="a$(date +%Y%m%d%H%M%S)"
-nom_champ_tmp="${debut_nom_champ}0123456789012345"
-
-# Enregistrement d'une valeur temporaire
-echo "INSERT INTO params SET name='$nom_champ_tmp';" | $mysqlrequest
-
-test_champ=`echo "SELECT 1=1 FROM params WHERE name='$nom_champ_tmp';" | $mysqlrequest`
-if [ -z "$test_champ" ]; then
-	echo "ALTER TABLE params CHANGE name name VARCHAR( 30 );" | $mysqlrequest
-fi
-
-# Menage:
-echo "DELETE FROM params WHERE name LIKE '$debut_nom_champ%';"| $mysqlrequest
+# debut_nom_champ="a$(date +%Y%m%d%H%M%S)"
+# nom_champ_tmp="${debut_nom_champ}0123456789012345"
+# 
+# # Enregistrement d'une valeur temporaire
+# echo "INSERT INTO params SET name='$nom_champ_tmp';" | $mysqlrequest
+# 
+# test_champ=`echo "SELECT 1=1 FROM params WHERE name='$nom_champ_tmp';" | $mysqlrequest`
+# if [ -z "$test_champ" ]; then
+# 	echo "ALTER TABLE params CHANGE name name VARCHAR( 30 );" | $mysqlrequest
+# fi
+# 
+# # Menage:
+# echo "DELETE FROM params WHERE name LIKE '$debut_nom_champ%';"| $mysqlrequest
 
 #==============================================================================
 
