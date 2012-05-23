@@ -58,28 +58,29 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		for($i=0;$i<count($suppr);$i++){
 			// Suppression du fichier en /tftpboot/pxelinux.cfg/
 
-			$temoin_erreur="y";
-			$nom="";
+			if(is_admin("system_is_admin",$login)!="Y") {
+				$temoin_erreur="y";
+				$nom="";
+
+				$sql="SELECT name FROM se3_dhcp WHERE id='$suppr[$i]';";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					$lig=mysql_fetch_object($res);
+					$nom=$lig->name;
 	
-			$sql="SELECT name FROM se3_dhcp WHERE id='$suppr[$i]';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				$lig=mysql_fetch_object($res);
-				$nom=$lig->name;
-	
-				for($loop=0;$loop<count($tab_delegated_parcs);$loop++) {
-					// La machine est-elle dans un des parcs délégués?
-					if(is_machine_in_parc($nom,$tab_delegated_parcs[$loop])) {
-						$temoin_erreur='n';
-						break;
+					for($loop=0;$loop<count($tab_delegated_parcs);$loop++) {
+						// La machine est-elle dans un des parcs délégués?
+						if(is_machine_in_parc($nom,$tab_delegated_parcs[$loop])) {
+							$temoin_erreur='n';
+							break;
+						}
 					}
 				}
+				if($temoin_erreur=="y") {
+					echo "<p style='color:red'>La machine $nom n'est pas dans un de vos parcs delegues.</p>\n";
+					die();
+				}
 			}
-			if($temoin_erreur=="y") {
-				echo "<p style='color:red'>La machine $nom n'est pas dans un de vos parcs delegues.</p>\n";
-				die();
-			}
-
 
 			// Récupérer l'adresse MAC:
 			$sql="SELECT mac FROM se3_dhcp WHERE id='$suppr[$i]';";
