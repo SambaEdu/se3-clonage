@@ -1,3 +1,9 @@
+se3-clonage (0.53) lucid; urgency=low
+
+  * correction bin/sh pour bash et suppr code
+
+ -- root <root@DevilXen>  Wed, 23 May 2012 01:22:12 +0200
+
 se3-clonage (0.52) lucid; urgency=low
 
   * ajout test emetteur online et OK
