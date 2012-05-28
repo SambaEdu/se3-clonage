@@ -1,3 +1,15 @@
+se3-clonage (0.55) lucid; urgency=low
+
+  * correctif crob test en trop
+
+ -- root <root@DevilXen>  Mon, 28 May 2012 01:12:14 +0200
+
+se3-clonage (0.54) lucid; urgency=low
+
+  * externalisation distribs
+
+ -- root <root@DevilXen>  Mon, 28 May 2012 01:11:59 +0200
+
 se3-clonage (0.53) lucid; urgency=low
 
   * correction bin/sh pour bash et suppr code
