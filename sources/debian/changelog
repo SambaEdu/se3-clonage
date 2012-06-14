@@ -1,3 +1,9 @@
+se3-clonage (0.56) lucid; urgency=low
+
+  * supppresion modifs sur sudoers
+
+ -- root <root@DevilXen>  Thu, 14 Jun 2012 01:23:09 +0200
+
 se3-clonage (0.55) lucid; urgency=low
 
   * correctif crob test en trop
