@@ -1171,7 +1171,70 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 					echo "<p style='color:red'>La machine $nom_machine ne vous est pas déléguée</p>\n";
 				}
 				else {
-	
+
+					// Nettoyage de scories d'autres programmations:
+					if(file_exists("/tftpboot/pxelinux.cfg/01-".$corrige_mac)) {
+						echo "<p><span style='color:red;'>Suppression d'une programmation précédente pour $nom_machine</span><br>\n";
+						//unlink("/tftpboot/pxelinux.cfg/01-".$corrige_mac);
+
+						$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'menage_tftpboot_pxelinux_cfg' 'mac=$corrige_mac'", $retour);
+						if(count($retour)>0){
+							for($j=0;$j<count($retour);$j++){
+								echo "$retour[$j]<br />\n";
+							}
+						}
+						echo "</p>\n";
+					}
+
+					for($i=0;$i<count($id_recepteur);$i++) {
+						$sql="SELECT * FROM se3_dhcp WHERE id='".$id_recepteur[$i]."';";
+						//echo "$sql<br />";
+						$res_client=mysql_query($sql);
+						if(mysql_num_rows($res_client)==0) {
+							echo "<p>";
+							echo "<span style='color:red;'>La machine d'identifiant $id_recepteur[$i] n'existe pas dans 'se3_dhcp'.</span><br />\n";
+							echo "</p>\n";
+						}
+						else {
+							$temoin_erreur_client="n";
+
+							$lig_client=mysql_fetch_object($res_client);
+							$mac_machine_client=$lig_client->mac;
+							$nom_machine_client=$lig_client->name;
+							$ip_machine_client=$lig_client->ip;
+
+							if($restriction_parcs=="y") {
+								$temoin_erreur_client='y';
+								for($loop=0; $loop<count($tab_delegated_parcs);$loop++) {
+									// La machine est-elle dans un des parcs délégués?
+									if(is_machine_in_parc($nom_machine_client,$tab_delegated_parcs[$loop])) {$temoin_erreur='n';break;}
+								}
+							}
+
+							if($temoin_erreur_client=="y") {
+								echo "<p style='color:red'>La machine $nom_machine_client ne vous est pas déléguée</p>\n";
+							}
+							else {
+
+								$corrige_mac_client=strtolower(strtr($mac_machine_client,":","-"));
+								if(file_exists("/tftpboot/pxelinux.cfg/01-".$corrige_mac_client)) {
+									echo "<p><span style='color:red;'>Suppression d'une programmation précédente pour $nom_machine_client</span><br>\n";
+									//unlink("/tftpboot/pxelinux.cfg/01-".$corrige_mac);
+
+									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'menage_tftpboot_pxelinux_cfg' 'mac=$corrige_mac_client'", $retour);
+									if(count($retour)>0){
+										for($j=0;$j<count($retour);$j++){
+											echo "$retour[$j]<br />\n";
+										}
+									}
+									echo "</p>\n";
+								}
+							}
+						}
+					}
+
+					flush();
+
 					$temoin_erreur="n";
 	
 					$num_op=get_free_se3_action_tftp_num_op();
@@ -1181,6 +1244,15 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 					$chemin="/usr/share/se3/scripts";
 	
 					if($type_os=='xp') {
+
+						echo "<p><span style='color:red; font-weight:bold;'>Rappel&nbsp;:</span> Il faut que les postes émetteur et récepteur(s) bootent en priorité sur le réseau (<em>PXE</em>) pour que le redémarrage se fasse sur ".$distrib." et que le clonage s'ensuive.</p>\n";
+
+						echo "<p><span style='font-weight:bold;'>Informations sur la suite&nbsp;:</span> Le poste émetteur va être sorti du domaine, renommé en 'clone' et préparé pour une réintégration après clonage,...<br>\n";
+						echo "L'opération prend couramment 5 minutes avant que la préparation soit effectuée et que la fin de la présente page HTML s'affiche.<br />\n";
+						echo "Soyez patient...</p>\n";
+
+						flush();
+
 						// on lance la preparation du poste emetteur
 						$resultat=system("/usr/bin/sudo /usr/share/se3/scripts/integreDomaine.sh clone clone $ip_machine $nom_machine adminse3 $xppass > /dev/null", $retint);
 		
