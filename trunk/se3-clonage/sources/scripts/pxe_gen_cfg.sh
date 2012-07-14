@@ -1667,4 +1667,19 @@ prompt 1
 " >> $fich
 	;;
 
+	"menage_tftpboot_pxelinux_cfg")
+
+		mac=$(echo "$*" | sed -e "s| |\n|g"|grep "^mac="|cut -d"=" -f2 | sed -e "s/:/-/g" | sed -e "s|[^0-9A-Za-z\-]||g")
+
+		fichier="/tftpboot/pxelinux.cfg/01-$mac"
+		if [ -e "$fichier" ]; then
+			echo -e "Suppression de $fichier \c";
+			type_action=$(grep "^default " "$fichier" | sed -e "s|^default ||")
+			if [ -n "$type_action" ]; then
+				echo "($type_action)";
+			fi
+			rm -f "$fichier"
+		fi
+	;;
+
 esac
