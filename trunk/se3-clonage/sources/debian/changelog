@@ -1,3 +1,10 @@
+se3-clonage (0.58) lucid; urgency=low
+
+  * correction pour nouveau chemin tftp sous squeeze avec creation lien
+    symbolique
+
+ -- root <root@DevilXen>  Sat, 08 Sep 2012 23:24:26 +0200
+
 se3-clonage (0.57) lucid; urgency=low
 
   * Nettoyage de tâches en attente. Ajout d'informations.
