@@ -207,7 +207,7 @@ if [ -e "/tftpboot/pxelinux.cfg" ]; then
 fi
 
 /usr/sbin/update-rc.d -f atftpd remove
-
+mkdir -p /srv
 if [ ! -h /srv/tftp ]; then
 	rm -rf /srv/tftp 
 	ln -s /tftpboot /srv/tftp 
