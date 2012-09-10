@@ -1,3 +1,9 @@
+se3-clonage (0.59) lucid; urgency=low
+
+  * correction pour creation /srv si besoin
+
+ -- root <root@DevilXen>  Mon, 10 Sep 2012 23:52:46 +0200
+
 se3-clonage (0.58) lucid; urgency=low
 
   * correction pour nouveau chemin tftp sous squeeze avec creation lien
