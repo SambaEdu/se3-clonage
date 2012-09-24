@@ -97,7 +97,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	$ntfsclone_udpcast=isset($_POST['ntfsclone_udpcast']) ? $_POST['ntfsclone_udpcast'] : $valeur_par_defaut;
 
 	$pref_clonage_compression=crob_getParam('pref_clonage_compression');
-	if(($pref_clonage_compression=='')||(!in_array($pref_clonage_compression,array('none','gzip','lzop')))) {$pref_clonage_compression='lzop';}
+	if(($pref_clonage_compression=='')||(!in_array($pref_clonage_compression,array('none','gzip','lzop','pbzip2')))) {$pref_clonage_compression='lzop';}
 
 	$pref_clonage_max_wait=crob_getParam('pref_clonage_max_wait');
 	if($pref_clonage_max_wait=='') {$pref_clonage_max_wait=15;}
@@ -689,21 +689,25 @@ echo "</div>\n";
 
 				echo "<tr><td valign='top'>Périphérique à cloner: </td>\n";
 				echo "<td>";
-				echo "<input type='text' name='disk' value='sda' size='5' /><br />\n";
-				echo "Habituellement: hda1 ou sda1 pour la première partition<br />\n";
-				echo "et hda ou sda pour le disque complet.<br />\n";
-				echo "</td></tr>\n";
-
-				echo "<tr><td valign='top'>Compression: </td><td>";
-				echo "<label for='compr_none'><input type='radio' name='compr' id='compr_none' value='none' ";
-				if($pref_clonage_compression=='none') {echo "checked ";}
-				echo "/> Aucune compression</label><br />\n";
-				echo "<label for='compr_gzip'><input type='radio' name='compr' id='compr_gzip' value='gzip' ";
-				if($pref_clonage_compression=='gzip') {echo "checked ";}
-				echo "/> Compression GZIP</label><br />\n";
-				echo "<label for='compr_lzop'><input type='radio' name='compr' id='compr_lzop' value='lzop' ";
-				if($pref_clonage_compression=='lzop') {echo "checked ";}
-				echo "/> Compression LZOP (<i>recommandé</i>)</label><br />\n";
+                                echo "<input type='text' name='disk' value='sda' size='7' /><br>\n";
+                                echo "Habituellement: hda1 ou sda1 pour la premi<E8>re partition<br>\n";
+                                echo "et hda ou sda pour le disque complet.<br>\n";
+                                echo "Pour le clonage de seven 64bits choisir seven64";
+                                echo "</td></tr>\n";
+                                   
+                                echo "<tr><td valign='top'>Compression: </td><td>";
+                                echo "<label for='compr_none'><input type='radio' name='compr' id='compr_none' value='none' ";
+                                if($pref_clonage_compression=='none') {echo "checked ";}
+                                echo "/> Aucune compression (<i> deconseille sauf SSD et gigabit </i>)</label><br />\n";
+                                echo "<label for='compr_gzip'><input type='radio' name='compr' id='compr_gzip' value='gzip' ";
+                                if($pref_clonage_compression=='gzip') {echo "checked ";}
+                                echo "/> Compression GZIP (<i>2 processeurs mini, 100M</i>)</label><br />\n";
+                                echo "<label for='compr_pbzip2'><input type='radio' name='compr' id='compr_pbzip2' value='pbzip2' ";
+                                if($pref_clonage_compression=='pbzip2') {echo "checked ";}
+                                echo "/> Compression BZ2 parallele (<i>4 processeurs mini, ou reseau lent</i>)</label><br />\n";
+                                echo "<label for='compr_lzop'><input type='radio' name='compr' id='compr_lzop' value='lzop' ";
+                                if($pref_clonage_compression=='lzop') {echo "checked ";}
+                                echo "/> Compression LZOP (<i>1 processeur ou gigabit</i>)</label><br />\n";
 				echo "</td></tr>\n";
 
 				// A FAIRE: Relever les clonage en attente (possible) ou en cours (pas possible en l'état) pour ne pas proposer le même port...
@@ -995,7 +999,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 
 				//===================================
 				// Contrôle des variables:
-				$tab_compr=array('none','gzip','lzop');
+				$tab_compr=array('none','gzip','lzop','pbzip2');
 				if(!in_array($compr,$tab_compr)){$compr='lzop';}
 
 				if((strlen(preg_replace("/[0-9]/","",$port)!=0))||($port=='')) {$port=9002;}
