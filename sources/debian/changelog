@@ -1,3 +1,9 @@
+se3-clonage (0.61) lucid; urgency=low
+
+  * correction bash sur se3_tftp_boot_pxe.sh
+
+ -- root <root@DevilXen>  Sun, 30 Sep 2012 01:03:34 +0200
+
 se3-clonage (0.60) lucid; urgency=low
 
   * Ajout infos pour clonage seven64.
