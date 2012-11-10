@@ -491,7 +491,7 @@ function crob_setParam($name,$value,$descr) {
 }
 //====================================================
 function check_sysresccd_files() {
-	$tab_fichiers_sysresccd=array("/var/www/sysresccd/sysrcd.dat","/var/www/sysresccd/sysrcd.md5","/var/www/sysresccd/autorun2","/var/www/sysresccd/scripts.tar.gz", "/tftpboot/rescuecd", "/tftpboot/initram.igz");
+	$tab_fichiers_sysresccd=array("/var/www/sysresccd/sysrcd.dat","/var/www/sysresccd/sysrcd.md5","/var/www/sysresccd/autorun2","/var/www/sysresccd/scripts.tar.gz", "/tftpboot/rescue32", "/tftpboot/initram.igz");
 	$temoin_sysresccd="n";
 	$cpt_sysresccd=0;
 	foreach($tab_fichiers_sysresccd as $key => $value) {

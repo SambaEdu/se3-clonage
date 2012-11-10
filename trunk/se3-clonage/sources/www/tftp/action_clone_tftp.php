@@ -88,7 +88,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	$distrib=isset($_POST['distrib']) ? $_POST['distrib'] : $valeur_par_defaut;
 
 	$type_os=isset($_POST['type_os']) ? $_POST['type_os'] : "xp";
-	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescuecd";
+	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescue32";
 
 
 	$pref_ntfsclone_udpcast=crob_getParam('pref_ntfsclone_udpcast');
@@ -648,7 +648,7 @@ echo "<td valign='top'>\n";
 echo "Utiliser le noyau&nbsp;: ";
 echo "</td>\n";
 echo "<td>\n";
-echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_rescuecd' value='rescuecd' checked /><label for='sysresccd_kernel_rescuecd'>rescuecd</label><br />\n";
+echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_rescue32' value='rescue32' checked /><label for='sysresccd_kernel_rescue32'>rescue32</label><br />\n";
 echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_altker32' value='altker32' /><label for='sysresccd_kernel_altker32'>altker32</label><br />\n";
 echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_rescue64' value='rescue64' /><label for='sysresccd_kernel_rescue64'>rescue64</label><br />\n";
 echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_altker64' value='altker64' /><label for='sysresccd_kernel_altker64'>altker64</label><br />\n";
@@ -676,6 +676,7 @@ echo "</div>\n";
 
 				}
 				else {
+					echo "<p style='color:red'>SysRescCD est absent (<em>c'est pourtant le choix recommandé</em>).<br />Vous pouvez provoquer le téléchargement dans le menu Serveur TFTP/Configurer le module.<br />A défaut, UdpCast seul sera utilisé.</p>\n";
 					echo "<input type=\"hidden\" name=\"distrib\" value=\"udpcast\" />\n";
 				}
 
@@ -690,7 +691,7 @@ echo "</div>\n";
 				echo "<tr><td valign='top'>Périphérique à cloner: </td>\n";
 				echo "<td>";
                                 echo "<input type='text' name='disk' value='sda' size='7' /><br>\n";
-                                echo "Habituellement: hda1 ou sda1 pour la premi<E8>re partition<br>\n";
+                                echo "Habituellement: hda1 ou sda1 pour la première partition<br>\n";
                                 echo "et hda ou sda pour le disque complet.<br>\n";
                                 echo "Pour le clonage de seven 64bits choisir seven64";
                                 echo "</td></tr>\n";

@@ -2,7 +2,7 @@
 
 # $Id$
 # Auteur: Stephane Boireau
-# Dernière modification: 01/11/2010
+# Dernière modification: 10/11/2012
 
 # Ajout en visudo:
 # Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/se3_get_sysresccd.sh
@@ -159,7 +159,8 @@ fi
 version_srcd_en_place="$srcd_version"
 version_srcd_en_ligne=$(grep ";systemrescuecd.iso$" $tmp/versions.txt | cut -d";" -f1)
 
-if [ -e "$depot_sysrcd/sysrcd.dat" -a -e "$depot_sysrcd/sysrcd.md5" -a -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue64" -a -e "/tftpboot/altker32" -a -e "/tftpboot/initram.igz" ]; then
+#if [ -e "$depot_sysrcd/sysrcd.dat" -a -e "$depot_sysrcd/sysrcd.md5" -a -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue64" -a -e "/tftpboot/altker32" -a -e "/tftpboot/initram.igz" ]; then
+if [ -e "$depot_sysrcd/sysrcd.dat" -a -e "$depot_sysrcd/sysrcd.md5" -a -e "/tftpboot/rescue32" -a -e "/tftpboot/rescue64" -a -e "/tftpboot/altker32" -a -e "/tftpboot/altker64" -a -e "/tftpboot/initram.igz" ]; then
 	# On controle la version SysRescCD
 	version_srcd_en_place="$srcd_version"
 	version_srcd_en_ligne=$(grep ";systemrescuecd.iso$" $tmp/versions.txt | cut -d";" -f1)
@@ -500,13 +501,34 @@ if [ "$temoin_sysrcd" = "y" ]; then
 	else
 		echo "</b>"
 	fi
-	cp -fv $mnt_loop/isolinux/rescuecd /tftpboot/
+
+	if [ -e $mnt_loop/isolinux/rescuecd ]; then
+		cp -fv $mnt_loop/isolinux/rescuecd /tftpboot/
+	fi
+	if [ -e $mnt_loop/isolinux/rescue32 ]; then
+		cp -fv $mnt_loop/isolinux/rescue32 /tftpboot/
+	fi
 	cp -fv $mnt_loop/isolinux/altker32 /tftpboot/
 	cp -fv $mnt_loop/isolinux/rescue64 /tftpboot/
+	cp -fv $mnt_loop/isolinux/altker64 /tftpboot/
 	cp -fv $mnt_loop/isolinux/initram.igz /tftpboot/
 	cp -fv $mnt_loop/sysrcd.dat $depot_sysrcd
 	cp -fv $mnt_loop/sysrcd.md5 $depot_sysrcd
-	
+
+	if [ -e "/tftpboot/rescuecd" ]; then
+		if [ -e "/tftpboot/rescue32" ]; then
+			rm /tftpboot/rescuecd
+			cd /tftpboot
+			ln -s rescue32 rescuecd
+			cd /
+		else
+			mv /tftpboot/rescuecd  /tftpboot/rescue32
+			cd /tftpboot
+			ln -s rescue32 rescuecd
+			cd /
+		fi
+	fi
+
 	# Nettoyage
 	if [ "$mode" = "cmdline" ]; then
 		echo -e "$COLTXT"

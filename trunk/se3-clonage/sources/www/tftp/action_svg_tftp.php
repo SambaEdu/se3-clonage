@@ -42,7 +42,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	if(($pref_distrib_svgrest=='slitaz')||($pref_distrib_svgrest=='sysresccd')) {$valeur_par_defaut=$pref_distrib_svgrest;}
 	else {$valeur_par_defaut="slitaz";}
 	$distrib=isset($_POST['distrib']) ? $_POST['distrib'] : $valeur_par_defaut;
-	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescuecd";
+	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescue32";
 
 	/*
 	// Création de la table dès que possible:
@@ -408,7 +408,7 @@ echo "<td valign='top'>\n";
 echo "Utiliser le noyau&nbsp;: ";
 echo "</td>\n";
 echo "<td>\n";
-echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_rescuecd' value='rescuecd' checked /><label for='sysresccd_kernel_rescuecd'>rescuecd</label><br />\n";
+echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_rescue32' value='rescue32' checked /><label for='sysresccd_kernel_rescue32'>rescue32</label><br />\n";
 echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_altker32' value='altker32' /><label for='sysresccd_kernel_altker32'>altker32</label><br />\n";
 echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_rescue64' value='rescue64' /><label for='sysresccd_kernel_rescue64'>rescue64</label><br />\n";
 echo "<input type='radio' name='sysresccd_kernel' id='sysresccd_kernel_altker64' value='altker64' /><label for='sysresccd_kernel_altker64'>altker64</label><br />\n";
@@ -419,6 +419,7 @@ echo "</div>\n";
 
 				}
 				else {
+					echo "<p style='color:red'>SysRescCD est absent (<em>c'est pourtant le choix recommandé</em>).<br />Vous pouvez provoquer le téléchargement dans le menu Serveur TFTP/Configurer le module.<br />A défaut, SliTaz sera utilisé.</p>\n";
 					echo "<input type=\"hidden\" name=\"distrib\" value=\"slitaz\" />\n";
 				}
 
@@ -483,9 +484,22 @@ echo "</div>\n";
 
 					echo "<tr><td style='vertical-align:top'>Type de sauvegarde&nbsp;: </td>\n";
 					echo "<td>\n";
-					echo "<input type='radio' name='type_svg' id='type_svg_partimage' value='partimage' checked /><label for='type_svg_partimage'> partimage</label><br />\n";
-					echo "<input type='radio' name='type_svg' id='type_svg_ntfsclone' value='ntfsclone' /><label for='type_svg_ntfsclone'> ntfsclone</label><br />\n";
-					echo "<input type='radio' name='type_svg' id='type_svg_fsarchiver' value='fsarchiver' /><label for='type_svg_fsarchiver'> fsarchiver</label><br />\n";
+					echo "<input type='radio' name='type_svg' id='type_svg_partimage' value='partimage' ";
+					$svg_default_type_svg=crob_getParam('svg_default_type_svg');
+					if(($svg_default_type_svg=="")||($svg_default_type_svg=="partimage")) {
+						echo "checked ";
+					}
+					echo "/><label for='type_svg_partimage'> partimage</label><br />\n";
+					echo "<input type='radio' name='type_svg' id='type_svg_ntfsclone' value='ntfsclone' ";
+					if($svg_default_type_svg=="ntfsclone") {
+						echo "checked ";
+					}
+					echo " /><label for='type_svg_ntfsclone'> ntfsclone</label><br />\n";
+					echo "<input type='radio' name='type_svg' id='type_svg_fsarchiver' value='fsarchiver' ";
+					if($svg_default_type_svg=="fsarchiver") {
+						echo "checked ";
+					}
+					echo "/><label for='type_svg_fsarchiver'> fsarchiver</label><br />\n";
 					echo "</td></tr>\n";
 				}
 				else {
@@ -783,7 +797,11 @@ function check_smb_et_valide_formulaire(themessage) {
 
 				echo "<tr>\n";
 				echo "<th style='text-align:left;'>Type de sauvegarde: </th>\n";
-				echo "<td>$type_svg</td>\n";
+				echo "<td>";
+				echo $type_svg;
+				if($type_svg!='') {crob_setParam('svg_default_type_svg',$_POST['type_svg'],'Type par defaut des sauvegardes.');}
+
+				echo "</td>\n";
 				echo "</tr>\n";
 
 				if((isset($_POST['suppr_old_svg']))&&($_POST['suppr_old_svg']=='y')) {
