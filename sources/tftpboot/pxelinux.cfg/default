@@ -64,11 +64,11 @@ label su2
     append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal screen=text umode=rcv work=udpcast2.sh ###TFTP_SLITAZ_CMDLINE###
 
 ###SYSRESCCD###label sysrcd
-###SYSRESCCD###   kernel rescuecd
+###SYSRESCCD###   kernel rescue32
 ###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait ###TFTP_SLITAZ_CMDLINE###
 
 ###SYSRESCCD###label sysrcd1
-###SYSRESCCD###   kernel rescuecd
+###SYSRESCCD###   kernel rescue32
 ###SYSRESCCD###   APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait vga=788 ###TFTP_SLITAZ_CMDLINE###
 
 ###SYSRESCCD###label sysrcd2
@@ -85,11 +85,11 @@ label su2
 
 # UdpCast depuis SystemRescueCd
 ###SYSRESCCD###   LABEL nofbu1
-###SYSRESCCD###     kernel rescuecd
+###SYSRESCCD###     kernel rescue32
 ###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 
 ###SYSRESCCD###     LABEL nofbu2
-###SYSRESCCD###     kernel rescuecd
+###SYSRESCCD###     kernel rescue32
 ###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 
 label unattended

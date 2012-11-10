@@ -255,6 +255,13 @@ SMB_DOMAIN=$se3_domain
 	fi
 fi
 
+# Pour tenir compte des prochaines versions SysRescCD:
+if [ ! -e /tftpboot/rescue32 -a -e /tftpboot/rescuecd ]; then
+	cd /tftpboot && mv rescuecd rescue32 && ln -s rescue32 rescuecd
+	# On pourrait plutot forcer un telechargement de la nouvelle version SysRescCD:
+	# L'absence de rescuecd et rescue32 inviterait au telechargement.
+	#cd /tftpboot && rm rescuecd
+fi
 	;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

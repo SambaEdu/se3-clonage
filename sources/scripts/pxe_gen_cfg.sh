@@ -275,6 +275,12 @@ prompt 1
 		fi
 
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "^kernel="|cut -d"=" -f2)
+		if [ "$kernel" = "rescuecd" -a ! -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue32" ]; then
+			kernel="rescue32"
+		fi
+		if [ "$kernel" = "rescue32" -a ! -e "/tftpboot/rescue32" -a -e "/tftpboot/rescuecd" ]; then
+			kernel="rescuecd"
+		fi
 
 		url_authorized_keys=$(echo "$*" | sed -e "s| |\n|g"|grep "^url_authorized_keys="|cut -d"=" -f2)
 		if [ -n "$url_authorized_keys" ]; then
@@ -384,6 +390,12 @@ prompt 1
 		#fi
 
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "^kernel="|cut -d"=" -f2)
+		if [ "$kernel" = "rescuecd" -a ! -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue32" ]; then
+			kernel="rescue32"
+		fi
+		if [ "$kernel" = "rescue32" -a ! -e "/tftpboot/rescue32" -a -e "/tftpboot/rescuecd" ]; then
+			kernel="rescuecd"
+		fi
 
 		url_authorized_keys=$(echo "$*" | sed -e "s| |\n|g"|grep "^url_authorized_keys="|cut -d"=" -f2)
 		if [ -n "$url_authorized_keys" ]; then
@@ -424,7 +436,7 @@ label disk2
 
 # Label de restauration:
 label sysrcdrst
-    kernel rescuecd
+    kernel $kernel
     #initrd initram.igz" > $fich
 
 		if [ "${src_part:0:4}" = "smb:" ]; then
@@ -730,6 +742,12 @@ prompt 1
 		dhcp_iface=$(echo "$*" | sed -e "s| |\n|g"|grep "dhcp_iface="|cut -d"=" -f2)
 
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "kernel="|cut -d"=" -f2)
+		if [ "$kernel" = "rescuecd" -a ! -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue32" ]; then
+			kernel="rescue32"
+		fi
+		if [ "$kernel" = "rescue32" -a ! -e "/tftpboot/rescue32" -a -e "/tftpboot/rescuecd" ]; then
+			kernel="rescuecd"
+		fi
 
 		url_authorized_keys=$(echo "$*" | sed -e "s| |\n|g"|grep "^url_authorized_keys="|cut -d"=" -f2)
 		if [ -n "$url_authorized_keys" ]; then
@@ -782,7 +800,7 @@ label disk2
 
 # Label d'emission:
 label srcdu1
-    kernel rescuecd
+    kernel $kernel
     #initrd initram.igz" > $fich
 # A revoir: On peut avoir besoin de altker32,... au lieu de rescuecd
 
@@ -861,7 +879,12 @@ prompt 1
 		dhcp_iface=$(echo "$*" | sed -e "s| |\n|g"|grep "dhcp_iface="|cut -d"=" -f2)
 
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "kernel="|cut -d"=" -f2)
-
+		if [ "$kernel" = "rescuecd" -a ! -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue32" ]; then
+			kernel="rescue32"
+		fi
+		if [ "$kernel" = "rescue32" -a ! -e "/tftpboot/rescue32" -a -e "/tftpboot/rescuecd" ]; then
+			kernel="rescuecd"
+		fi
 
 		url_authorized_keys=$(echo "$*" | sed -e "s| |\n|g"|grep "^url_authorized_keys="|cut -d"=" -f2)
 		if [ -n "$url_authorized_keys" ]; then
@@ -915,7 +938,7 @@ label disk2
 
 # Label de reception:
 label srcdu2
-    kernel rescuecd
+    kernel $kernel
     #initrd initram.igz" > $fich
 # A revoir: On peut avoir besoin de altker32,... au lieu de rescuecd
 
@@ -1067,6 +1090,12 @@ prompt 1
 		delais_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "delais_reboot="|cut -d"=" -f2)
 
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "kernel="|cut -d"=" -f2)
+		if [ "$kernel" = "rescuecd" -a ! -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue32" ]; then
+			kernel="rescue32"
+		fi
+		if [ "$kernel" = "rescue32" -a ! -e "/tftpboot/rescue32" -a -e "/tftpboot/rescuecd" ]; then
+			kernel="rescuecd"
+		fi
 
 		#if [ "$auto_reboot" != "y" ]; then
 		if [ "$auto_reboot" != "y" -a "$auto_reboot" != "halt" ]; then
@@ -1344,6 +1373,12 @@ prompt 1
 		dhcp_iface=$(echo "$*" | sed -e "s| |\n|g"|grep "dhcp_iface="|cut -d"=" -f2)
 
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "kernel="|cut -d"=" -f2)
+		if [ "$kernel" = "rescuecd" -a ! -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue32" ]; then
+			kernel="rescue32"
+		fi
+		if [ "$kernel" = "rescue32" -a ! -e "/tftpboot/rescue32" -a -e "/tftpboot/rescuecd" ]; then
+			kernel="rescuecd"
+		fi
 
 		id_microtime=$(echo "$*" | sed -e "s| |\n|g"|grep "id_microtime="|cut -d"=" -f2)
 
@@ -1403,7 +1438,7 @@ label disk2
 
 # Label d'emission:
 label srcdu1
-    kernel rescuecd
+    kernel $kernel
     #initrd initram.igz" > $fich
 # A revoir: On peut avoir besoin de altker32,... au lieu de rescuecd
 
@@ -1482,6 +1517,12 @@ prompt 1
 		dhcp_iface=$(echo "$*" | sed -e "s| |\n|g"|grep "dhcp_iface="|cut -d"=" -f2)
 
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "kernel="|cut -d"=" -f2)
+		if [ "$kernel" = "rescuecd" -a ! -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue32" ]; then
+			kernel="rescue32"
+		fi
+		if [ "$kernel" = "rescue32" -a ! -e "/tftpboot/rescue32" -a -e "/tftpboot/rescuecd" ]; then
+			kernel="rescuecd"
+		fi
 
 		id_microtime=$(echo "$*" | sed -e "s| |\n|g"|grep "id_microtime="|cut -d"=" -f2)
 
@@ -1540,7 +1581,7 @@ label disk2
 
 # Label de reception:
 label srcdu2
-    kernel rescuecd
+    kernel $kernel
     #initrd initram.igz" > $fich
 # A revoir: On peut avoir besoin de altker32,... au lieu de rescuecd
 
@@ -1607,6 +1648,12 @@ prompt 1
 		auto_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "auto_reboot="|cut -d"=" -f2)
 
 		kernel=$(echo "$*" | sed -e "s| |\n|g"|grep "kernel="|cut -d"=" -f2)
+		if [ "$kernel" = "rescuecd" -a ! -e "/tftpboot/rescuecd" -a -e "/tftpboot/rescue32" ]; then
+			kernel="rescue32"
+		fi
+		if [ "$kernel" = "rescue32" -a ! -e "/tftpboot/rescue32" -a -e "/tftpboot/rescuecd" ]; then
+			kernel="rescuecd"
+		fi
 
 		t_delais_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "delais_reboot=")
 		if [ -n "$t_delais_reboot" ]; then
@@ -1647,7 +1694,7 @@ label disk2
 
 # Label de reception:
 label srcdmdp
-    kernel rescuecd
+    kernel $kernel
     #initrd initram.igz" > $fich
 
 		# A revoir: On peut avoir besoin de altker32,... au lieu de rescuecd
