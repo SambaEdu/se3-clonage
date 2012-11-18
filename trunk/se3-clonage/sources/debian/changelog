@@ -1,3 +1,9 @@
+se3-clonage (0.62) lucid; urgency=low
+
+  * Modification pour les nouvelles versions de SysRescCD
+
+ -- root <root@DevilXen>  Sun, 18 Nov 2012 00:19:11 +0100
+
 se3-clonage (0.61) lucid; urgency=low
 
   * correction bash sur se3_tftp_boot_pxe.sh
