@@ -1,3 +1,9 @@
+se3-clonage (0.63) lucid; urgency=low
+
+  * correction test presence sysrescd
+
+ -- root <root@DevilXen>  Mon, 07 Jan 2013 23:40:12 +0100
+
 se3-clonage (0.62) lucid; urgency=low
 
   * Modification pour les nouvelles versions de SysRescCD
