@@ -43,7 +43,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	else {$valeur_par_defaut="slitaz";}
 	$distrib=isset($_POST['distrib']) ? $_POST['distrib'] : $valeur_par_defaut;
 
-	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescuecd";
+	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescue32";
 
 	// Création de la table dès que possible:
 	creation_tftp_tables();
