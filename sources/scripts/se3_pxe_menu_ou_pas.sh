@@ -24,7 +24,7 @@ if [ -n "$2" ]; then
 fi
 
 depot_sysrcd="/var/www/sysresccd"
-if [ -e "${depot_sysrcd}/sysrcd.dat" -a -e "${depot_sysrcd}/sysrcd.md5" -a -e "${depot_sysrcd}/autorun2" -a -e "${depot_sysrcd}/scripts.tar.gz" -a -e "/tftpboot/rescuecd32" -a -e "/tftpboot/altker32" -a -e "/tftpboot/rescue64" ]; then
+if [ -e "${depot_sysrcd}/sysrcd.dat" -a -e "${depot_sysrcd}/sysrcd.md5" -a -e "${depot_sysrcd}/autorun2" -a -e "${depot_sysrcd}/scripts.tar.gz" -a -e "/tftpboot/rescue32" -a -e "/tftpboot/altker32" -a -e "/tftpboot/rescue64" ]; then
 	sed -i "s|###SYSRESCCD###||" /tftpboot/pxelinux.cfg/default
 
 	if [ -e /var/www/se3/includes/config.inc.php ]; then
