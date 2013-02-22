@@ -515,6 +515,30 @@ if [ "$temoin_sysrcd" = "y" ]; then
 	cp -fv $mnt_loop/sysrcd.dat $depot_sysrcd
 	cp -fv $mnt_loop/sysrcd.md5 $depot_sysrcd
 
+	cp -fv $mnt_loop/usb_inst.sh $depot_sysrcd
+	cp -fv $mnt_loop/usbstick.htm $depot_sysrcd
+	cp -fv $mnt_loop/version $depot_sysrcd
+
+	mkdir -p $depot_sysrcd/isolinux
+	cd $depot_sysrcd/isolinux
+	for i in rescue32 rescue64 altker32 initram.igz altker64
+	do
+		rm -f $i
+		ln -s /tftpboot/$i ./
+	done
+
+	mkdir -p $depot_sysrcd/isolinux/maps
+	cp -fv $mnt_loop/isolinux/maps/fr.ktl $depot_sysrcd/isolinux/maps/
+
+	mkdir -p $depot_sysrcd/usb_inst
+	cp -vf $mnt_loop/usb_inst/* $depot_sysrcd/usb_inst/
+
+	mkdir -p $depot_sysrcd/sysresccd
+	cd $depot_sysrcd/sysresccd
+	if [ ! -e "memtest.bin" ]; then
+		ln -s /tftpboot/memtp ./memtest.bin
+	fi
+
 	if [ -e "/tftpboot/rescuecd" ]; then
 		if [ -e "/tftpboot/rescue32" ]; then
 			rm /tftpboot/rescuecd
