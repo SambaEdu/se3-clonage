@@ -1,3 +1,9 @@
+se3-clonage (0.64) lucid; urgency=low
+
+  * modif rescuecd pour rescue32 et installation via PXE
+
+ -- root <root@DevilXen>  Sun, 10 Mar 2013 18:26:32 +0100
+
 se3-clonage (0.63) lucid; urgency=low
 
   * correction test presence sysrescd
