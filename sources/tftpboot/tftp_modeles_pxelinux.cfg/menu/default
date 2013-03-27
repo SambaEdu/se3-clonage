@@ -12,15 +12,18 @@ timeout ###TFTP_DELAIS_BOOT_PXE###0
 #TOTALTIMEOUT 9000
 ONTIMEOUT bootlocal
 
-#label bootlocal
-#  menu label ^Boot disque dur local
-#  kernel chain.c32
-#  append hd0
-
 label bootlocal
   menu label ^Boot disque dur local
-  menu default
-  localboot 0
+  kernel chain.c32
+  append hd0
+
+# Cette deuxieme facon de lancer le boot classique pose probleme avec certaines machines
+# Constate sur des portables Dell Vostro 3750 et Dell Latitude E6520
+#label bootlocal
+#  menu label ^Boot disque dur local
+#  menu default
+#  localboot 0
+
 #  timeout 80
 #  TOTALTIMEOUT 9000
 
