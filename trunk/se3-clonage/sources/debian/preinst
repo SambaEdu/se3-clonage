@@ -3,7 +3,7 @@
 set -e
 
 
-dpkg-divert --package se3-clonage --add --rename --divert /usr/lib/syslinux/pxelinux.0.divert /usr/lib/syslinux/pxelinux.0
+#dpkg-divert --package se3-clonage --add --rename --divert /usr/lib/syslinux/pxelinux.0.divert /usr/lib/syslinux/pxelinux.0
 
 
 

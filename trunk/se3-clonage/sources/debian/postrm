@@ -40,11 +40,11 @@ case "$1" in
 		sed -i '/^Cmnd_Alias SE3CLONAGE.*$/d' /etc/sudoers
 		/etc/init.d/sudo restart
 	fi
-	dpkg-divert --package se3-domain --remove --rename /usr/lib/syslinux/pxelinux.0
+	#dpkg-divert --package se3-domain --remove --rename /usr/lib/syslinux/pxelinux.0
 	;;
 
 	remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-	dpkg-divert --package se3-domain --remove --rename /usr/lib/syslinux/pxelinux.0
+	#dpkg-divert --package se3-domain --remove --rename /usr/lib/syslinux/pxelinux.0
 	;;
 
 
