@@ -690,10 +690,17 @@ echo "</div>\n";
 
 				echo "<tr><td valign='top'>Périphérique à cloner: </td>\n";
 				echo "<td>";
-                                echo "<input type='text' name='disk' value='sda' size='7' /><br>\n";
+                                echo "<input type='text' name='disk' value='sda' size='14' /><br>\n";
                                 echo "Habituellement: hda1 ou sda1 pour la première partition<br>\n";
                                 echo "et hda ou sda pour le disque complet.<br>\n";
-                                echo "Pour le clonage de seven 64bits choisir seven64";
+
+                                echo "<p><em>Avec le choix ntfsclone+udpcast&nbsp;:</em><br />";
+                                echo "Pour le clonage de seven 64bits choisir <strong>seven64</strong> (<em>seules les partitions NTFS sont clon&eacute;es</em>)<br />";
+                                echo "Pour cloner Seven et une partition Linux derri&egrave;re, choisir <strong>seven64_linux</strong> <span style='color:red' title=\"Version du paquet scripts.tar.gz de SysRescCD requise 
+sup&eacute;rieure &agrave; 20140409.
+Version &agrave; controler dans la rubrique
+    Serveur TFTP/Configurer le module\">(*)</span><br />";
+                                echo "Pour cloner (<em>par exemple</em>) les partitions sda1, sda2 et sda5, choisir <strong>sda1_sda2_sda5</strong> (<em>taper le nom des partitions sépar&eacute;es d'un tiret bas _</em>).<br />Avec le choix ntfsclone+udpcast, les partitions ntfs sont clon&eacute;es avec ntfsclone+udpcast et les autres partitions sont clon&eacute;es avec udpcast seul.";
                                 echo "</td></tr>\n";
                                    
                                 echo "<tr><td valign='top'>Compression: </td><td>";
