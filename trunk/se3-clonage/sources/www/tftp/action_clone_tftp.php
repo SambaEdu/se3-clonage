@@ -666,7 +666,8 @@ echo "</div>\n";
 						echo "/><label for='ntfsclone_udpcast_n'> Utiliser udp-sender/udp-receiver seuls</label><br />\n";
 						echo "<input type='radio' name='ntfsclone_udpcast' id='ntfsclone_udpcast_y' value='y' ";
 						if($pref_ntfsclone_udpcast=="y") {echo "checked ";}
-						echo "/><label for='ntfsclone_udpcast_y'>Utiliser ntfsclone et udp-sender/udp-receiver</label> (<em style='color:red'>experimental</em>)<br />\n";
+						echo "/><label for='ntfsclone_udpcast_y'>Utiliser ntfsclone et udp-sender/udp-receiver</label> (<em style='color:red' title=\"Le caractère expérimental de ce mode doit être tempéré.
+De nombreux clonages ont été effectués avec succès et ce beaucoup plus vite grâce à ntfsclone qu'avec udpcast seul.\">experimental</em>)<br />\n";
 						echo "</p>\n";
 					}
 					else {
@@ -690,17 +691,17 @@ echo "</div>\n";
 
 				echo "<tr><td valign='top'>Périphérique à cloner: </td>\n";
 				echo "<td>";
-                                echo "<input type='text' name='disk' value='sda' size='14' /><br>\n";
-                                echo "Habituellement: hda1 ou sda1 pour la première partition<br>\n";
-                                echo "et hda ou sda pour le disque complet.<br>\n";
+                                echo "<input type='text' name='disk' id='disk' value='sda' size='14' /><br>\n";
+                                echo "Habituellement: <a href=\"javascript:affecter_valeur_disk('hda1')\" title=\"Cliquez pour prendre cette valeur.\">hda1</a> ou <a href=\"javascript:affecter_valeur_disk('sda1')\" title=\"Cliquez pour prendre cette valeur.\">sda1</a> pour la première partition<br>\n";
+                                echo "et <a href=\"javascript:affecter_valeur_disk('hda')\" title=\"Cliquez pour prendre cette valeur.\">hda</a> ou <a href=\"javascript:affecter_valeur_disk('sda')\" title=\"Cliquez pour prendre cette valeur.\">sda</a> pour le disque complet.<br>\n";
 
                                 echo "<p><em>Avec le choix ntfsclone+udpcast&nbsp;:</em><br />";
-                                echo "Pour le clonage de seven 64bits choisir <strong>seven64</strong> (<em>seules les partitions NTFS sont clon&eacute;es</em>)<br />";
-                                echo "Pour cloner Seven et une partition Linux derri&egrave;re, choisir <strong>seven64_linux</strong> <span style='color:red' title=\"Version du paquet scripts.tar.gz de SysRescCD requise 
+                                echo "Pour le clonage de seven 64bits choisir <strong><a href=\"javascript:affecter_valeur_disk('seven64')\" title=\"Cliquez pour prendre cette valeur.\">seven64</a></strong> (<em>seules les partitions NTFS sont clon&eacute;es</em>)<br />";
+                                echo "Pour cloner Seven (<em>64 ou non</em>) et une partition Linux derri&egrave;re, choisir <strong><a href=\"javascript:affecter_valeur_disk('seven64_linux')\" title=\"Cliquez pour prendre cette valeur.\">seven64_linux</a></strong> <span style='color:red' title=\"Version du paquet scripts.tar.gz de SysRescCD requise 
 sup&eacute;rieure &agrave; 20140409.
 Version &agrave; controler dans la rubrique
     Serveur TFTP/Configurer le module\">(*)</span><br />";
-                                echo "Pour cloner (<em>par exemple</em>) les partitions sda1, sda2 et sda5, choisir <strong>sda1_sda2_sda5</strong> (<em>taper le nom des partitions sépar&eacute;es d'un tiret bas _</em>).<br />Avec le choix ntfsclone+udpcast, les partitions ntfs sont clon&eacute;es avec ntfsclone+udpcast et les autres partitions sont clon&eacute;es avec udpcast seul.";
+                                echo "Pour cloner (<em>par exemple</em>) les partitions sda1, sda2 et sda5, choisir <strong><a href=\"javascript:affecter_valeur_disk('sda1_sda2_sda5')\" title=\"Cliquez pour prendre cette valeur.\">sda1_sda2_sda5</a></strong> (<em>taper le nom des partitions sépar&eacute;es d'un tiret bas _</em>).<br />Avec le choix ntfsclone+udpcast, les partitions ntfs sont clon&eacute;es avec ntfsclone+udpcast et les autres partitions sont clon&eacute;es avec udpcast seul.";
                                 echo "</td></tr>\n";
                                    
                                 echo "<tr><td valign='top'>Compression: </td><td>";
@@ -888,6 +889,12 @@ Version &agrave; controler dans la rubrique
 
 
 echo "<script type='text/javascript'>
+function affecter_valeur_disk(valeur) {
+	if(document.getElementById('disk')) {
+		document.getElementById('disk').value=valeur;
+	}
+}
+
 function verif_et_valide_form() {
 	if(eval(document.getElementById('min_wait').value)>eval(document.getElementById('max_wait').value)) {
 		alert('La valeur minimale d attente de l emetteur ne devrait pas etre inferieure a la valeur maximale d attente.')
