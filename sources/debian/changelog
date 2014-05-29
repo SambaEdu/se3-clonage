@@ -1,3 +1,9 @@
+se3-clonage (0.66) lucid; urgency=low
+
+  * ajout de la partie installation des clients linux
+
+ -- root <root@DevilXen>  Fri, 30 May 2014 00:07:33 +0200
+
 se3-clonage (0.65) lucid; urgency=low
 
   * Modification PXE par defaut localboot pour regler un pb sur des
