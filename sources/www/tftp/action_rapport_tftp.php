@@ -173,7 +173,9 @@ if(nb_parcs==1) {
 				echo "<th>Nom</th>\n";
 				echo "<th>Etat</th>\n";
 				echo "<th>Session</th>\n";
-				echo "<th>Config DHCP</th>\n";
+				echo "<th>Config DHCP</th>\n";  
+                                echo "<th>Dernier Rapport</th>\n";
+                                
 
 				//echo "<th>Sauvegarde</th>\n";
 				echo "<th>Rapport<br />\n";
@@ -276,7 +278,31 @@ if(nb_parcs==1) {
 						}
 						echo "</td>\n";
 
-
+                                                //dernier rapport
+                                                
+                                                $sql="SELECT * FROM se3_tftp_rapports WHERE name='".$mp[$loop]."' ORDER BY date DESC LIMIT 1;";
+                                                $res_rapport_tftp=mysql_query($sql);
+                                                if(mysql_num_rows($res_rapport_tftp)>0) {
+                                                    $lig=mysql_fetch_object($res_rapport_tftp);
+                                                    echo "<td align=\"center\">";
+                                                    echo "<span style='font-size: x-small;' title='Dernier rapport: $lig->tache ($lig->statut)'><a href=\"../tftp/visu_rapport.php?id_machine=$lig->id\" target='_blank'>".$lig->date."</a></span>\n";
+                                                    $st="$lig->statut";
+                                                    if($st=="SUCCES") {
+							$cl="green";
+							} else {
+							$cl="red";
+                                                        }
+                                                    echo "<FONT color=$cl size=1>"."$lig->statut"."</font>";
+                                                    echo "</td>\n";
+                                                }
+                                                else {
+                                                    echo "<td align=\"center\" style='color:purple'>".gettext("Aucun rapport")."</td>\n";
+                                                    }
+                                                
+                                                
+                                                
+                                                
+                                                
 						// Action programmée
 						echo "<td>\n";
 						if($id_machine!=""){
