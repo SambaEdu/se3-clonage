@@ -120,15 +120,33 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		}
 	}
 
+	$msg_fichiers_manquants="";
 	$temoin_fichiers_requis="y";
 	$chemin_tftpboot="/tftpboot";
 	$tab_udpcast_file=array("vmlu26", "udprd", "vmlu26.old", "udprd.old");
 	for($loop=0;$loop<count($tab_udpcast_file);$loop++) {
 		if(!file_exists($chemin_tftpboot."/".$tab_udpcast_file[$loop])) {
-			echo "<span style='color:red'>".$chemin_tftpboot."/".$tab_udpcast_file[$loop]." est absent.</span><br />\n";
-			echo "Effectuez le telechargement udpcast en <a href='config_tftp.php'>Configurer le module TFTP</a><br />\n";
+			$msg_fichiers_manquants.="<span style='color:red'>".$chemin_tftpboot."/".$tab_udpcast_file[$loop]." est absent.</span><br />\n";
+			$msg_fichiers_manquants.="Vous devriez effectuer le telechargement udpcast en <a href='config_tftp.php'>Configurer le module TFTP</a><br />\n";
 			$temoin_fichiers_requis="n";
 		}
+	}
+
+	if($msg_fichiers_manquants!="") {
+		$msg_fichiers_manquants.="<p>Vous ne pourrez pas effectuer le clonage avec la mini-distribution Linux UdpCast sans d'abord télécharger les fichiers manquants.</p>";
+	}
+
+	$temoin_sysresccd=check_sysresccd_files();
+	if($temoin_sysresccd=="y") {
+		$msg_fichiers_manquants.="<p>Vous pourrez effectuer le clonage avec la distribution SysRescCD.</p>";
+		$temoin_fichiers_requis="y";
+	}
+	else {
+		$msg_fichiers_manquants.="<span style='color:red'>SysRescCD est absente.<br />Cette distribution permet de cloner avec une meilleure reconnaissance matérielle qu'UdpCast seul.<br />Vous devriez en effectuer le téléchargement via <a href='config_tftp.php'>Configurer le module TFTP</a>.</span><br />\n";
+	}
+
+	if($msg_fichiers_manquants!="") {
+		echo $msg_fichiers_manquants;
 	}
 
 	if($temoin_fichiers_requis=="n") {
@@ -631,9 +649,26 @@ if(nb_parcs==1) {
 				if($temoin_sysresccd=="y") {
 					// Il faut aussi le noyau et l'initram.igz dans /tftpboot, 
 					echo "<p>";
-					echo "<input type='radio' name='distrib' id='distrib_udpcast' value='udpcast' onchange='affiche_sections_distrib()' ";
-					if($pref_distrib_clonage!="sysresccd") {echo "checked ";}
-					echo "/><label for='distrib_udpcast'>Utiliser la distribution UdpCast</label><br />\n";
+
+					$temoin_fichiers_udpcast="y";
+					$chemin_tftpboot="/tftpboot";
+					$tab_udpcast_file=array("vmlu26", "udprd", "vmlu26.old", "udprd.old");
+					for($loop=0;$loop<count($tab_udpcast_file);$loop++) {
+						if(!file_exists($chemin_tftpboot."/".$tab_udpcast_file[$loop])) {
+							$temoin_fichiers_udpcast="n";
+							break;
+						}
+					}
+
+					if($temoin_fichiers_udpcast=="y") {
+						echo "<input type='radio' name='distrib' id='distrib_udpcast' value='udpcast' onchange='affiche_sections_distrib()' ";
+						if($pref_distrib_clonage!="sysresccd") {echo "checked ";}
+						echo "/><label for='distrib_udpcast'>Utiliser la distribution UdpCast</label><br />\n";
+					}
+					else {
+						$pref_distrib_clonage="y";
+					}
+
 					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' ";
 					if($pref_distrib_clonage=="sysresccd") {echo "checked ";}
 					echo "/><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)\n";
