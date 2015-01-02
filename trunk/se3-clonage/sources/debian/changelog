@@ -1,3 +1,9 @@
+se3-clonage (0.80) lucid; urgency=low
+
+  * Version Wheezy
+
+ -- root <root@DevilXen>  Fri, 02 Jan 2015 22:26:02 +0100
+
 se3-clonage (0.67) lucid; urgency=low
 
   * Installation clients linux depuis l'interface web
