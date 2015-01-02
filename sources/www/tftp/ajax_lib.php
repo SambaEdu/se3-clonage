@@ -66,5 +66,10 @@ if ($_GET['mode'] == 'ping_ip') {
 	foreach ($retour as $key => $value) {
 		echo $value;
 	}
+} elseif ($_GET['mode'] == 'check_versions_pxe_client_linux') {
+	$resultat2 = exec("/usr/bin/sudo /usr/share/se3/scripts/se3_get_install_client_linux.sh 'check_version'", $retour);
+	foreach ($retour as $key => $value) {
+		echo $value;
+	}
 }
 ?>
