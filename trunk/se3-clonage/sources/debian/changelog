@@ -1,3 +1,9 @@
+se3-clonage (0.67) lucid; urgency=low
+
+  * Installation clients linux depuis l'interface web
+
+ -- root <root@DevilXen>  Fri, 02 Jan 2015 21:32:36 +0100
+
 se3-clonage (0.66) lucid; urgency=low
 
   * ajout de la partie installation des clients linux
