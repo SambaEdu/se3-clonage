@@ -2,7 +2,7 @@
 
 # $Id$
 # Auteur: Stephane Boireau
-# Dernière modification: 08/10/2011
+# Dernière modification: 12/2014
 
 # Ajout en visudo:
 # Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh
@@ -31,6 +31,62 @@ www_sysrcd_ip=$se3ip
 #===========================================
 
 case $1 in
+
+
+"install_linux")
+
+
+mac=$(echo "$2" | sed -e "s/:/-/g")
+		ip=$3
+		pc=$4
+		url_preseed=$5
+		architecture=$6
+
+		# on regenere unattend.csv
+		/usr/share/se3/scripts/unattended_generate.sh -u > /dev/null
+
+		fich=/tftpboot/pxelinux.cfg/01-$mac
+
+		echo "# Script de boot de la machine $pc
+# MAC=$mac
+# IP= $ip
+# Date de generation du fichier: $timedate
+# Timestamp: $timestamp
+
+# Echappatoires pour booter sur le DD:
+label 0
+   localboot 0x80
+label a
+   localboot 0x00
+label q
+   localboot -1
+label disk1
+   localboot 0x80
+label disk2
+  localboot 0x81
+
+# Label d'install linux :
+label linuxinst
+KERNEL  debian-installer/$architecture/linux
+APPEND  ramdisk_size=7680 language=fr locale=fr_FR.UTF-8 console-setup/layoutcode=fr_FR netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/dhcp_timeout=60 netcfg/get_hostname=poste netcfg/get_domain=intranet.local keyboard-configuration/xkb-keymap=fr languagechooser/language-name=French countrychooser/shortlist=FR console-keymaps-at/keymap=fr debian-installer/country=FR  debian-installer/locale=fr_FR.UTF-8 preseed/url=$url_preseed initrd=debian-installer/$architecture/initrd.gz --
+    
+# Choix de boot par défaut:
+default linuxinst
+
+# On boote après 6 secondes:
+timeout 60
+
+# Permet-on à l'utilisateur de choisir l'option de boot?
+# Si on ne permet pas, le timeout n'est pas pris en compte.
+prompt 1
+" > $fich
+
+	;;
+
+
+
+
+
 	"sauve")
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		#ip=$3
