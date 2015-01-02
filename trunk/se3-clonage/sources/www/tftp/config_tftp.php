@@ -104,6 +104,80 @@ if (is_admin("system_is_admin",$login)=="Y")
 			echo "Lancement du t&#233;l&#233;chargement de Udpcast...";
 			system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_udpcast.sh mode=html 2>&1");
 		}
+		elseif($_POST['action']=='download_pxe_client_linux') {
+			echo "Lancement du t&#233;l&#233;chargement du dispositif d'installation client Linux...";
+
+			if(isset($_POST['choix_interface_client_linux'])) {
+				$valeur=(isset($_POST['proposer_no_preseed'])) ? "yes" : "no";
+
+				echo "<p>";
+				$resultat2=crob_setParam('CliLinNoPreseed',"$valeur","Proposer l installation de client Linux libre sans preseed.");
+				if($resultat2) {
+					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinNoPreseed' effectué.</span><br />";
+				}
+				else {
+					echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur '$valeur' pour 'CliLinNoPreseed'.</span><br />";
+				}
+
+				$valeur=(isset($_POST['proposer_xfce64'])) ? "yes" : "no";
+
+				$resultat2=crob_setParam('CliLinXfce64',"$valeur","Proposer l installation de client Linux avec interface Xfce64.");
+				if($resultat2) {
+					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinXfce64' effectué.</span><br />";
+				}
+				else {
+					echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur '$valeur' pour 'CliLinXfce64'.</span><br />";
+				}
+
+				$valeur=(isset($_POST['proposer_lxde'])) ? "yes" : "no";
+
+				$resultat2=crob_setParam('CliLinLXDE',"$valeur","Proposer l installation de client Linux avec interface LXDE.");
+				if($resultat2) {
+					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinLXDE' effectué.</span><br />";
+				}
+				else {
+					echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur '$valeur' pour 'CliLinLXDE'.</span><br />";
+				}
+
+				$valeur=(isset($_POST['proposer_gnome'])) ? "yes" : "no";
+				$resultat2=crob_setParam('CliLinGNOME',"$valeur","Proposer l installation de client Linux avec interface GNOME.");
+				if($resultat2) {
+					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinGNOME' effectué.</span><br />";
+				}
+				else {
+					echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur '$valeur' pour 'CliLinGNOME'.</span><br />";
+				}
+			}
+
+			$suppr_dispositif_precedent=isset($_POST['suppr_dispositif_precedent']) ? " suppr_dispositif_precedent" : "";
+			system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_install_client_linux.sh mode=html $suppr_dispositif_precedent 2>&1");
+		}
+		elseif($_POST['action']=='miroir_apt_client_linux') {
+			$MiroirAptCliLin=isset($_POST['MiroirAptCliLin']) ? "yes" : "no";
+			$resultat1=crob_setParam('MiroirAptCliLin',$MiroirAptCliLin,'Utiliser un miroir apt maison pour les installations client linux.');
+			if($resultat1) {
+				echo "<span style='color:green'>Enregistrement de la valeur ".$MiroirAptCliLin." pour 'MiroirAptCliLin' effectué.</span><br />";
+			}
+			else {
+				echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur ".$MiroirAptCliLin." pour 'MiroirAptCliLin'.</span><br />";
+			}
+
+			$resultat2=crob_setParam('MiroirAptCliLinIP',$_POST['MiroirAptCliLinIP'],'IP du miroir apt pour les installations client linux.');
+			if($resultat2) {
+				echo "<span style='color:green'>Enregistrement de la valeur ".$_POST['MiroirAptCliLinIP']." pour 'MiroirAptCliLinIP' effectué.</span><br />";
+			}
+			else {
+				echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur ".$_POST['MiroirAptCliLinIP']." pour 'MiroirAptCliLinIP'.</span><br />";
+			}
+
+			$resultat3=crob_setParam('MiroirAptCliLinChem',$_POST['MiroirAptCliLinChem'],'Chemin du miroir apt pour les installations client linux.');
+			if($resultat3) {
+				echo "<span style='color:green'>Enregistrement de la valeur ".$_POST['MiroirAptCliLinChem']." pour 'MiroirAptCliLinChem' effectué.</span><br />";
+			}
+			else {
+				echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur ".$_POST['MiroirAptCliLinChem']." pour 'MiroirAptCliLinChem'.</span><br />";
+			}
+		}
 		else {
 			echo "<span style='color:red'>Choix de telechargement invalide.</span><br />";
 		}
@@ -379,6 +453,173 @@ if (is_admin("system_is_admin",$login)=="Y")
 	echo "</table>\n";
 
 	//echo "</fieldset>\n";
+	echo "</form>\n";
+
+	//========================================================================
+
+	echo "<br /><br />";
+
+	//========================================================================
+
+	echo "<table class='crob' width=\"100%\">\n";
+	echo "<tr>\n";
+	echo "<th>Mise en place du dispositif d'installation de clients Linux</th>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>\n";
+
+	$dossier_ressource_dispositif_pxe_client_linux="/tftpboot/client_linux";
+
+	$VarchPxeClientLin_en_place=crob_getParam('VarchPxeClientLin');
+	if(!file_exists($dossier_ressource_dispositif_pxe_client_linux.'/install_client_linux_archive-tftp.tar.gz')) {$VarchPxeClientLin_en_place.=" <span style='color:red'>Absent???</span>";}
+
+	$VscriptPxeClientLin_en_place=crob_getParam('VscriptPxeClientLin');
+	if(!file_exists($dossier_ressource_dispositif_pxe_client_linux.'/install_client_linux_mise_en_place.sh')) {$VscriptPxeClientLin_en_place.=" <span style='color:red'>Absent???</span>";}
+
+	if($VarchPxeClientLin_en_place!='') {
+		echo "<div align='center'>\n";
+		echo "<div id='div_versions_pxe_client_linux'><p>Version du dispositif client Linux&nbsp;:</p>
+<table class='crob'>
+<tr>
+	<th>&nbsp;</th>
+	<th>Sur votre SE3</th>
+</tr>
+<tr>
+	<th>Archive</th>
+	<td>$VarchPxeClientLin_en_place</td>
+</tr>
+<tr>
+	<th>Script</th>
+	<td>$VscriptPxeClientLin_en_place</td>
+</tr>
+</table></div>\n";
+
+		echo "<script type='text/javascript'>
+		// <![CDATA[
+		function check_versions_pxe_client_linux() {
+			new Ajax.Updater($('div_versions_pxe_client_linux'),'ajax_lib.php?mode=check_versions_pxe_client_linux',{method: 'get'});
+		}
+		//]]>
+	</script>\n";
+		echo "<p><a href='#' onclick='check_versions_pxe_client_linux();return false;'>Tester la présence de mises à jour</a></p>\n";
+		echo "</div>\n";
+	}
+	else {
+		echo "<p style='text-align:center; color:red'>Le dispositif d'installation PXE de client Linux est absent ou la version en place n'est pas enregistree/versionnee dans la base.</p>";
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	$checked_CliLinNoPreseed="";
+	$CliLinNoPreseed=crob_getParam('CliLinNoPreseed');
+	if($CliLinNoPreseed=="yes") {$checked_CliLinNoPreseed=" checked";}
+
+	$checked_CliLinXfce64="";
+	$CliLinXfce64=crob_getParam('CliLinXfce64');
+	if($CliLinXfce64=="yes") {$checked_CliLinXfce64=" checked";}
+
+	$checked_CliLinLXDE="";
+	$CliLinLXDE=crob_getParam('CliLinLXDE');
+	if($CliLinLXDE=="yes") {$checked_CliLinLXDE=" checked";}
+
+	$checked_CliLinGNOME="";
+	$CliLinGNOME=crob_getParam('CliLinGNOME');
+	if($CliLinGNOME=="yes") {$checked_CliLinGNOME=" checked";}
+
+	echo "<tr>
+	<td>
+		<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+			<p>Le dispositif propose par defaut l'installation de clients Linux i386 avec l'interface Xfce.<br />
+			Vous pouvez choisir d'autres interfaces, mais pour vous simplifier la gestion evitez d'installer trop d'interfaces differentes.</p>
+
+			<p>Proposer aussi les interfaces suivantes&nbsp;:<br />
+			<input type='checkbox' name='proposer_xfce64' id='proposer_xfce64' value='yes'$checked_CliLinXfce64 /><label for='proposer_xfce64'>Xfce avec choix 64bit</label><br />
+			<input type='checkbox' name='proposer_lxde' id='proposer_lxde' value='yes'$checked_CliLinLXDE /><label for='proposer_lxde'>LXDE (i386 et 64)</label><br />
+			<input type='checkbox' name='proposer_gnome' id='proposer_gnome' value='yes'$checked_CliLinGNOME /><label for='proposer_gnome'>GNOME (i386 et 64)</label></p>
+			<p><input type='checkbox' name='proposer_no_preseed' id='proposer_no_preseed' value='yes'$checked_CliLinNoPreseed /><label for='proposer_no_preseed'>Proposer l'installation manuelle sans Preseed (i386 et 64).</label></p>
+
+			<input type='hidden' name='choix_interface_client_linux' value='yes' />
+			<input type='hidden' name='suppr_dispositif_precedent' value='yes' />
+			<input type='hidden' name='action' value='download_pxe_client_linux' />
+			<p><input type=\"submit\" value=\"Valider\" /></p>
+		</form>
+	</td>
+</tr>
+<tr>
+	<td>
+		<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+			<input type='checkbox' name='suppr_dispositif_precedent' id='suppr_dispositif_precedent' value='yes' /><label for='suppr_dispositif_precedent'>Supprimer le dispositif actuellement en place et relancer le téléchargement.</label><br />
+			<input type='hidden' name='action' value='download_pxe_client_linux' />
+			<p><input type=\"submit\" value=\"Valider\" /></p>
+		</form>
+	</td>
+</tr>
+<tr>
+	<td>
+		<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+			<input type='hidden' name='action' value='download_pxe_client_linux' />
+			T&#233;l&#233;charger le dispositif.<br>
+			<p align='center'><input type=\"submit\" name=\"submit\" value=\"Lancer le T&#233;l&#233;chargement\" /></p>
+		</form>
+	</td>
+</tr>
+</table>\n";
+
+	//========================================================================
+
+	echo "<br /><br />";
+
+	//========================================================================
+
+	$MiroirAptCliLin=crob_getParam('MiroirAptCliLin');
+	$MiroirAptCliLinIP=crob_getParam('MiroirAptCliLinIP');
+	$MiroirAptCliLinChem=crob_getParam('MiroirAptCliLinChem');
+
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+	echo "<div align='center'>\n";
+
+	echo "<table class='crob' width=\"100%\">\n";
+	echo "<tr>\n";
+	echo "<th>Miroir APT pour l'installation des clients Linux</th>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "
+	<p>Un miroir APT permet de conserver les paquets téléchargés lors de l'installation d'un client Linux.<br />
+	Les paquets ainsi conservés peuvent ensuite être fournis plus rapidement lors de l'installation d'autres clients sans trop peser sur votre connexion internet.</p>
+
+	<p>Par défaut, un tel miroir est créé sur le serveur SE3 lui-même dans /var/se3/apt-cacher-ng<br />
+	Si cela vous convient, laissez vides les champs ci-dessous.<br />
+	Si vous disposez ailleurs d'un autre miroir, vous pouvez le paramétrer ci-dessous&nbsp;</p>
+
+	<table class='crob' align='center'>
+	<tr>
+		<th><label for='MiroirAptCliLin'>Utiliser un <span style='color:red'>autre</span> miroir APT que le SE3</label></th>
+		<td><input type='checkbox' name='MiroirAptCliLin' id='MiroirAptCliLin' value='yes' ".(($MiroirAptCliLin=="yes") ? "checked" : "")."/></td>
+	</tr>
+	<tr>
+		<th><label for='MiroirAptCliLinIP'>IP du miroir APT</label></th>
+		<td><input type='text' name='MiroirAptCliLinIP' id='MiroirAptCliLinIP' value='$MiroirAptCliLinIP' /></td>
+	</tr>
+	<tr>
+		<th><label for='MiroirAptCliLinChem'>Chemin du miroir APT</label></th>
+		<td><input type='text' name='MiroirAptCliLinChem' id='MiroirAptCliLinChem' value='$MiroirAptCliLinChem' /></td>
+	</tr>
+	</table>
+
+	<input type='hidden' name='action' value='miroir_apt_client_linux' />
+	<p><input type=\"submit\" name=\"submit\" value=\"Valider\" /></p>
+
+</form>\n";
+
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "</table>\n";
+
+	echo "</div>\n";
 	echo "</form>\n";
 
 	//========================================================================
