@@ -274,9 +274,13 @@ function visu_tache($mac_machine,$mode=NULL) {
 			elseif(strstr($ligne, "label u2auto")) {
 				$type_action="Récepteur UdpCast";
 			}
+                        elseif(strstr($ligne, "label linuxinst")) {
+				$type_action="Installation client Linux";
+			}
 			elseif(strstr($ligne, "label install")) {
 				$type_action="Installation XP unattend";
 			}
+                        
 
 			if($type_action=="Sauvegarde") {
 				//   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr vga=normal sound=no src_part=$src_part dest_part=$dest_part auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=/root/bin/sauve_part.sh
