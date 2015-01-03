@@ -68,9 +68,9 @@ include "tftp.inc.php";
         
         
         // Verid présence dossier install
-        $chemin_install="/home/netlogon/clients-linux/install";
+        $chemin_install="/tftpboot/pxelinux.cfg/inst_wheezy.cfg";
         if(!file_exists($chemin_install)) {
-            echo "<span style='color:red'>le dossier ".$chemin_install." est absent.</span><br />\n";
+            echo "<span style='color:red'>le fichier ".$chemin_install." est absent.</span><br />\n";
             echo "Effectuez le t&eacute;l&eacute;chargement du dispositif d'installation des postes Linux via la page suivante : <a href='config_tftp.php'>Configurer le module TFTP</a><br />\n";
             die();
 	}
