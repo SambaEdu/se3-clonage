@@ -264,7 +264,7 @@ echo "</form>\n";
 
 /**
 
-* Retourne la liste des machines du ou des parcs dans un tableau
+* effectue le parametrage de l'installation
 
 * @Parametres $parc,$os,$id_machine,$se3ip,$ntpserv,$xppass
 * @Return 
@@ -374,7 +374,19 @@ $content .= "<p>Choisissez les paramètres pour le lancement de l'installation: <
   <!--<li>
    <label for='grub_mdp'>Mot de passe Grub</label> : <input type='password' name='grub_mdp' id='grub_mdp' value='' /> <small>(Uniquement pour installation sur partition libre)</small>
   </li>-->
- </ul>\n";
+ </ul>
+ 
+ <p>Pour la ou les machines sélectionnées: <br>\n
+<table border='0'>
+
+<tr><td valign='top'><input type='checkbox' id='wake' name='wake' value='y' checked /> </td><td><label for='wake'>Démarrer les machines par Wake-On-Lan/etherwake<br />si elles sont éteintes.</label></td></tr>\n
+<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait1' name='shutdown_reboot' value='wait1' /> </td><td><label for='shutdown_reboot_wait1'>Attendre le reboot des machines<br />même si aucune session n'est ouverte,</label></td></tr>\n
+<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait2' name='shutdown_reboot' value='wait2' checked /> </td><td><label for='shutdown_reboot_wait2'>Redémarrer les machines sans session ouverte<br />et attendre le reboot pour les machines<br />qui ont des sessions ouvertes,</label></td></tr>\n
+<tr><td valign='top'><input type='radio' id='shutdown_reboot_reboot' name='shutdown_reboot' value='reboot' /> </td><td><label for='shutdown_reboot_reboot'>Redémarrer les machines<br />même si une session est ouverte (<i>pô cool</i>).</label></td></tr>\n
+</table>\n
+
+
+";
 $content .="<p align='center'><input type=\"submit\" name=\"validation_parametres\" value=\"Valider\" /></p>\n
 </form>\n
 
@@ -383,7 +395,10 @@ $content .="<p align='center'><input type=\"submit\" name=\"validation_parametre
 <ul>\n
 
 <li>Pour que l'op&eacute;ration puisse être entièrement provoqu&eacute;e depuis le serveur, il faut que les postes clients soient configur&eacute;s pour booter en PXE (<i>ou au moins s'&eacute;veiller (wol) en bootant sur le r&eacute;seau</i>).<br />Dans le cas contraire, vous devrez passer sur les postes et presser F12 pour choisir de booter en PXE.</li>\n
-</ul>\n";
+</ul>\n
+
+
+";
 return $content;
 }
 
@@ -470,6 +485,15 @@ $grub_pass=isset($_POST['grub_mdp']) ? md5($_POST['grub_mdp']) : md5($xppass);
 //=========================
 // Serveur TFTP
 $dhcp_tftp_server=$_SERVER["SERVER_ADDR"];
+
+
+//=========================
+// rECUP VARIABLES WAKE ET SHUTDOWN
+$wake=$_POST["wake"];
+
+$shutdown_reboot=$_POST["shutdown_reboot"];
+
+
 
 $sql="SELECT value FROM params WHERE name='dhcp_tftp_server';";
 $res=mysql_query($sql);
@@ -793,7 +817,7 @@ echo "<span style='color:red;'>ECHEC de l'enregistrement dans 'se3_tftp_action'<
 $temoin_erreur="y";
 			}
 
-			if($temoin_erreur=="n") {
+			if($temoin_erreur!="y") {
 echo "<span style='color:green;'>OK</span>\n";
 echo " <span id='wake_shutdown_or_reboot_$i'></span>";
 
