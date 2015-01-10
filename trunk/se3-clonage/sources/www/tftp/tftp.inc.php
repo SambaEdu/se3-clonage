@@ -365,11 +365,11 @@ $content .= "<p>Choisissez les paramètres pour le lancement de l'installation: <
    </ol>
   </li>
   <li>
-   <label for='root_mdp'>Mot de passe de l'utilisateur root</label> : <input type='password' name='root_mdp' id='root_mdp' value='".$xppass."' /> <small>Si vous laissez vide, c'est le mot de passe adminse3 qui sera utilis&eacute;</small>
+   <label for='root_mdp'>Mot de passe de l'utilisateur root</label> : <input type='password' name='root_mdp' id='root_mdp' value='".$xppass."' /> <small>Par d&eacute;faut, le mot de passe d'adminse3 sera utilis&eacute;</small>
   </li>
   <li>
-   <label for='newuser_name'>Nom du nouvel utilisateur</label> : <input type='text' name='newuser_name' id='newuser_name' value='enseignant' /><br />
-   <label for='newuser_mdp'>Mot de passe du nouvel utilisateur</label> : <input type='password' name='newuser_mdp' id='newuser_mdp' value='' /> <small>(Cet utilisateur n'est pas g&eacute;r&eacute; par le se3)</small>
+   <label for='newuser_name'>Nom du nouvel utilisateur</label> : <input type='text' name='newuser_name' id='newuser_name' value='enseignant' /><small> Utilisateur local non g&eacute;r&eacute; par le se3)</small><br />
+   <label for='newuser_mdp'>Mot de passe du nouvel utilisateur</label> : <input type='password' name='newuser_mdp' id='newuser_mdp' value='enseignant' /> <small>Par d&eacute;faut ce sera enseignant</small>
   </li>
   <!--<li>
    <label for='grub_mdp'>Mot de passe Grub</label> : <input type='password' name='grub_mdp' id='grub_mdp' value='' /> <small>(Uniquement pour installation sur partition libre)</small>
@@ -467,18 +467,20 @@ $ntpserv = isset($_POST['ntpserv']) ? $_POST['ntpserv'] : 'ntp.ac-creteil.fr';
 
 //=========================
 // Mot de passe root
-$root_pass=isset($_POST['root_mdp']) ? md5($_POST['root_mdp']) : md5($xppass);
+
+$root_pass=isset($_POST['root_mdp']) ? crypt($_POST['root_mdp']) : crypt($xppass);
 //=========================
+
 
 //=========================
 // Nouvel utilisateur
 $newuser_name=isset($_POST['newuser_name']) ? $_POST['newuser_name'] : "enseignant";
-$newuser_pass=isset($_POST['newuser_pass']) ? md5($_POST['newuser_pass']) : md5(enseignant);
+$newuser_pass=isset($_POST['newuser_mdp']) ? crypt($_POST['newuser_mdp']) : crypt(enseignant);
 //=========================
-
+  
 //=========================
 // Mot de passe grub
-$grub_pass=isset($_POST['grub_mdp']) ? md5($_POST['grub_mdp']) : md5($xppass);
+$grub_pass=isset($_POST['grub_mdp']) ? crypt($_POST['grub_mdp']) : crypt($xppass);
 //=========================
 
 
