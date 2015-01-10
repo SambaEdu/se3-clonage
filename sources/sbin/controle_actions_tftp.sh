@@ -18,6 +18,9 @@
 #            (un killall -HUP inetd n'a pas suffit)
 logfile=/var/log/syslog
 
+if [ ! -e "/var/run/rsyslogd.pid" ]; then
+	/usr/sbin/service rsyslog start
+fi
 # echo "*/2 * * * * root /usr/share/se3/sbin/controle_actions_tftp.sh" > /etc/cron.d/se3_action_tftp
 
 test_mysql=$(ps aux | grep "/usr/sbin/mysqld" | grep "/var/run/mysqld/mysqld.pid" | grep -v "grep")
