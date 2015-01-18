@@ -8,8 +8,18 @@ LABEL Menu_maintenance
       KERNEL menu.c32
       APPEND pxelinux.cfg/maintenance.menu
 
-label unattended
-    MENU LABEL ^Unattended
-    kernel bzImageunattend
-    # Add options (z_user=..., z_path=..., etc.) to this line.
-    append initrd=initrdunattend
+###install-win###label unattended
+###install-win###    MENU LABEL ^Unattended
+###install-win###    kernel bzImageunattend
+###install-win###    # Add options (z_user=..., z_path=..., etc.) to this line.
+###install-win###    append initrd=initrdunattend
+
+###install-linux###LABEL Installation Debian wheezy
+###install-linux###    MENU LABEL ^Installation Debian
+###install-linux###    KERNEL menu.c32
+###install-linux###    APPEND pxelinux.cfg/inst_wheezy.cfg
+###install-linux###
+###install-linux###LABEL Installation Ubuntu et xubuntu trusty
+###install-linux###    MENU LABEL ^Installation ubuntu
+###install-linux###    KERNEL menu.c32
+###install-linux###    APPEND pxelinux.cfg/inst_buntu.cfg
