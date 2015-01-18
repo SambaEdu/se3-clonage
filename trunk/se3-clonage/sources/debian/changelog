@@ -1,3 +1,10 @@
+se3-clonage (0.81) lucid; urgency=low
+
+  * Prise en compte installation des linux lors des maj ou validation de
+    la conf
+
+ -- root <root@DevilXen>  Sun, 18 Jan 2015 23:42:34 +0100
+
 se3-clonage (0.80) lucid; urgency=low
 
   * Version Wheezy
