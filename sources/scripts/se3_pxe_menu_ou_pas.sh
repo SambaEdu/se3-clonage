@@ -51,4 +51,12 @@ if [ -e "${depot_sysrcd}/sysrcd.dat" -a -e "${depot_sysrcd}/sysrcd.md5" -a -e "$
 		sed -i "s|###SYSRESCCD###||" /tftpboot/pxelinux.cfg/clonage.menu
 		sed -i "s|###WWW_SYSRCD_IP###|${www_sysrcd_ip}|g" /tftpboot/pxelinux.cfg/clonage.menu
 	fi
+	
+	if [ -e /tftpboot/pxelinux.cfg/install.menu ]; then
+		sed -i "s|###install-linux###||" /tftpboot/pxelinux.cfg/install.menu
+	fi
+	
+	if [ -e /usr/share/se3/scripts/unattended_generate.sh ]; then
+		sed -i "s|###install-win###||" /tftpboot/pxelinux.cfg/install.menu
+	fi
 fi
