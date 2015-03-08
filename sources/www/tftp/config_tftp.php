@@ -105,13 +105,13 @@ if (is_admin("system_is_admin",$login)=="Y")
 			system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_udpcast.sh mode=html 2>&1");
 		}
 		elseif($_POST['action']=='download_pxe_client_linux') {
-			echo "Lancement du t&#233;l&#233;chargement du dispositif d'installation client Linux...";
+			echo "Lancement du t&#233;l&#233;chargement du dispositif d'installation client GNU/Linux...";
 
 			if(isset($_POST['choix_interface_client_linux'])) {
 				$valeur=(isset($_POST['proposer_no_preseed'])) ? "yes" : "no";
 
 				echo "<p>";
-				$resultat2=crob_setParam('CliLinNoPreseed',"$valeur","Proposer l installation de client Linux libre sans preseed.");
+				$resultat2=crob_setParam('CliLinNoPreseed',"$valeur","Proposer l installation de client GNU/Linux libre sans preseed.");
 				if($resultat2) {
 					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinNoPreseed' effectué.</span><br />";
 				}
@@ -131,7 +131,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 				$valeur=(isset($_POST['proposer_lxde'])) ? "yes" : "no";
 
-				$resultat2=crob_setParam('CliLinLXDE',"$valeur","Proposer l installation de client Linux avec interface LXDE.");
+				$resultat2=crob_setParam('CliLinLXDE',"$valeur","Proposer l installation de client GNU/Linux avec interface LXDE.");
 				if($resultat2) {
 					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinLXDE' effectué.</span><br />";
 				}
@@ -140,7 +140,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 				}
 
 				$valeur=(isset($_POST['proposer_gnome'])) ? "yes" : "no";
-				$resultat2=crob_setParam('CliLinGNOME',"$valeur","Proposer l installation de client Linux avec interface GNOME.");
+				$resultat2=crob_setParam('CliLinGNOME',"$valeur","Proposer l installation de client GNU/Linux avec interface GNOME.");
 				if($resultat2) {
 					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinGNOME' effectué.</span><br />";
 				}
@@ -170,7 +170,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 				echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur ".$_POST['MiroirAptCliLinIP']." pour 'MiroirAptCliLinIP'.</span><br />";
 			}
 
-			$resultat3=crob_setParam('MiroirAptCliLinChem',$_POST['MiroirAptCliLinChem'],'Chemin du miroir apt pour les installations client linux.');
+			$resultat3=crob_setParam('MiroirAptCliLinChem',$_POST['MiroirAptCliLinChem'],'Chemin du miroir apt pour les installations clients GNU/Linux.');
 			if($resultat3) {
 				echo "<span style='color:green'>Enregistrement de la valeur ".$_POST['MiroirAptCliLinChem']." pour 'MiroirAptCliLinChem' effectué.</span><br />";
 			}
@@ -261,8 +261,16 @@ if (is_admin("system_is_admin",$login)=="Y")
 	$version_scripts_en_place=crob_getParam('srcd_scripts_vers');
 	if($version_srcd_en_place!='') {
 		echo "<div align='center'>\n";
-		echo "<div id='div_versions_sysresccd'><p>Version de SystemRescueCD en place&nbsp;:</p>
-<table class='crob'>
+                echo "<div id='div_versions_sysresccd'><p>Version de SystemRescueCD en place&nbsp;:</p>";
+                if ($rescd_ajour == "1") {
+                    echo "<p><span style='color:green'>Dispositif signal&#233; &agrave; jour par le test quotidien</span></p>";
+                }
+                else {
+                    echo "<p><span style='color:red'>Dispositif signal&#233; non &agrave; jour par le test quotidien</span></p>";
+                }
+                
+		
+echo "<table class='crob'>
 <tr>
 	<th>&nbsp;</th>
 	<th>Sur votre SE3</th>
@@ -288,7 +296,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 		}
 		//]]>
 	</script>\n";
-		echo "<p><a href='#' onclick='check_versions_sysresccd();return false;'>Tester la présence de mises à jour</a></p>\n";
+		echo "<p><a href='#' onclick='check_versions_sysresccd();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
 		echo "</div>\n";
 	}
 	else {
@@ -336,7 +344,16 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	if($udpcast_noyo_version!='') {
 		echo "<div align='center'>\n";
-		echo "<div id='div_versions_udpcast'><p>Version de Udpcast en place&nbsp;:</p>
+                
+		echo "<div id='div_versions_udpcast'><p>Version de Udpcast en place&nbsp;:</p>";
+                if ($udpcast_ajour == "1") {
+                    echo "<p><span style='color:green'>Dispositif signal&#233; &agrave; jour par le test quotidien</span></p>";
+                }
+                else {
+                    echo "<p><span style='color:red'>Dispositif signal&#233; non &agrave; jour par le test quotidien</span></p>";
+                }
+                
+                echo "
 <table class='crob'>
 <tr>
 	<th>&nbsp;</th>
@@ -367,7 +384,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 		}
 		//]]>
 	</script>\n";
-		echo "<p><a href='#' onclick='check_versions_udpcast();return false;'>Tester la présence de mises à jour</a></p>\n";
+		echo "<p><a href='#' onclick='check_versions_udpcast();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
 		echo "</div>\n";
 	}
 	else {
@@ -411,7 +428,17 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	if($slitaz_noyo_version!='') {
 		echo "<div align='center'>\n";
-		echo "<div id='div_versions_slitaz'><p>Version de SliTaz en place&nbsp;:</p>
+		echo "<div id='div_versions_slitaz'><p>Version de SliTaz en place&nbsp;:</p>";
+                
+                if ($slitaz_ajour == "1") {
+                    echo "<p><span style='color:green'>Dispositif signal&#233; &agrave; jour par le test quotidien</span></p>";
+                }
+                else {
+                    echo "<p><span style='color:red'>Dispositif signal&#233; non &agrave; jour par le test quotidien</span></p>";
+                }
+                
+                echo "
+                
 <table class='crob'>
 <tr>
 	<th>&nbsp;</th>
@@ -434,7 +461,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 		}
 		//]]>
 	</script>\n";
-		echo "<p><a href='#' onclick='check_versions_slitaz();return false;'>Tester la présence de mises à jour</a></p>\n";
+		echo "<p><a href='#' onclick='check_versions_slitaz();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
 		echo "</div>\n";
 	}
 	else {
@@ -463,7 +490,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	echo "<table class='crob' width=\"100%\">\n";
 	echo "<tr>\n";
-	echo "<th>Mise en place du dispositif d'installation de clients Linux</th>\n";
+	echo "<th>Mise en place du dispositif d'installation de clients GNU/Linux</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -479,7 +506,15 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	if($VarchPxeClientLin_en_place!='') {
 		echo "<div align='center'>\n";
-		echo "<div id='div_versions_pxe_client_linux'><p>Version du dispositif client Linux&nbsp;:</p>
+		echo "<div id='div_versions_pxe_client_linux'><p>Version du dispositif client GNU/Linux&nbsp;:</p>";
+                if ($clinux_ajour == "1") {
+                    echo "<p><span style='color:green'>Dispositif signal&#233; &agrave; jour par le test quotidien</span></p>";
+                }
+                else {
+                    echo "<p><span style='color:red'>Dispositif signal&#233; non &agrave; jour par le test quotidien</span></p>";
+                }
+                
+                echo "
 <table class='crob'>
 <tr>
 	<th>&nbsp;</th>
@@ -502,11 +537,11 @@ if (is_admin("system_is_admin",$login)=="Y")
 		}
 		//]]>
 	</script>\n";
-		echo "<p><a href='#' onclick='check_versions_pxe_client_linux();return false;'>Tester la présence de mises à jour</a></p>\n";
+		echo "<p><a href='#' onclick='check_versions_pxe_client_linux();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
 		echo "</div>\n";
 	}
 	else {
-		echo "<p style='text-align:center; color:red'>Le dispositif d'installation PXE de client Linux est absent ou la version en place n'est pas enregistree/versionnee dans la base.</p>";
+		echo "<p style='text-align:center; color:red'>Le dispositif d'installation PXE de client GNU/Linux est absent ou la version en place n'est pas enregistree/versionnee dans la base.</p>";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -530,7 +565,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 	echo "<tr>
 	<td>
 		<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
-			<p>Le dispositif propose par defaut l'installation de clients Linux i386 avec l'interface Xfce.<br />
+			<p>Le dispositif propose par defaut l'installation de clients GNU/Linux i386 avec l'interface Xfce.<br />
 			Vous pouvez choisir d'autres interfaces, mais pour vous simplifier la gestion evitez d'installer trop d'interfaces differentes.</p>
 
 			<p>Proposer aussi les interfaces suivantes&nbsp;:<br />
@@ -581,13 +616,13 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	echo "<table class='crob' width=\"100%\">\n";
 	echo "<tr>\n";
-	echo "<th>Miroir APT pour l'installation des clients Linux</th>\n";
+	echo "<th>Miroir APT pour l'installation des clients GNU/Linux</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td>\n";
 	echo "
-	<p>Un miroir APT permet de conserver les paquets téléchargés lors de l'installation d'un client Linux.<br />
+	<p>Un miroir APT permet de conserver les paquets téléchargés lors de l'installation d'un client GNU/Linux.<br />
 	Les paquets ainsi conservés peuvent ensuite être fournis plus rapidement lors de l'installation d'autres clients sans trop peser sur votre connexion internet.</p>
 
 	<p>Par défaut, un tel miroir est créé sur le serveur SE3 lui-même dans /var/se3/apt-cacher-ng<br />
