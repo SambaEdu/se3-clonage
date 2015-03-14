@@ -349,9 +349,20 @@ $content .= "<p>Choisissez les paramètres pour le lancement de l'installation: <
 //    <label for='sections'>Sections</label> : <input type='text' name='sections' id='sections' value='main, contrib, non-free' disabled='disabled' /><br />
  $content .= " </li>
   <li>Architecture :<br />
-   <ol>
+<ol>
     <li><input type='radio' name='arch' id='arch32' value='i386' check='checked' /><label for='arch32'>32 bits</label></li>
     <li><input type='radio' name='arch' id='arch64' value='amd64' /><label for='arch64'>64 bits</label></li>
+    <li><input type='radio' name='arch' id='arm' value='armhf' check='checked' /><label for='armhf'>arm 32 bits</label></li>
+    <li><input type='radio' name='arch' id='arm64' value='arm64' /><label for='arm64'>arm 64 bits</label></li>
+</ol>
+</li>
+<li>Environnement de bureau :<br />
+   <ol>
+    <li><input type='radio' name='envbur' id='Gnome' value='gnome' check='checked' /><label for='Gnome'>Gnome</label></li>
+    <!--<li><input type='radio' name='envbur' id='KDE' value='kde' /><label for='KDE'>KDE</label></li> -->
+   <li><input type='radio' name='envbur' id='XFCE' value='xfce' /><label for='XFCE'>XFCE</label></li>
+   <li><input type='radio' name='envbur' id='LXE' value='lxde' /><label for='LXDE'>LXDE</label></li>
+<!--<li><input type='radio' name='envbur' id='StudioBox' value='studiobox' /><label for='StudioBox'>StudioBox</label></li>-->
    </ol>
   </li>
   <li>
@@ -444,6 +455,11 @@ $mirror['directory'] = "/depot/debian";
 //=========================
 // Architecture
 $arch = isset($_POST['arch']) ? $_POST['arch'] : 'i386';
+//=========================
+
+//=========================
+// environnement de bureau
+$envbur = isset($_POST['envbur']) ? $_POST['envbur'] : 'xfce';
 //=========================
 
 //=========================
@@ -636,8 +652,7 @@ d-i partman/confirm_nooverwrite boolean true");
 }		
 		fwrite($fu,"
 ### 6. Configuration des comptes Root et utilisateur
-#############
-# Création du compte root (false => non, true => oui)
+############## Création du compte root (false => non, true => oui)
 d-i passwd/root-login boolean true
 
 d-i passwd/root-password-crypted password ".$root_pass."
@@ -679,20 +694,47 @@ d-i apt-setup/security_host string $se3ip:9999/security.debian.org
 #tasksel tasksel/first multiselect gnome-desktop
 # installation d'un serveur ssh (administration distante de la machine)
 #d-i pkgsel/include string openssh-server 
+if($envbur=="gnome")
+    {
+        fwrite($fu,"
+# choix du paquet gnome
+tasksel tasksel/first multiselect desktop, print-server
+tasksel tasksel/desktop multiselect gnome
+# installation d'un serveur ssh (administration distante de la machine)
+d-i pkgsel/include string openssh-server ldap-utils zip unzip tree screen vim vlc ssmtp ntp iceweasel iceweasel-l10n-fr xterm");
+    } else
+    {if($envbur=="xfce")
+            {
+        fwrite($fu,"
+# choix du paquet xfce
+tasksel tasksel/first multiselect desktop, print-server
+tasksel tasksel/desktop multiselect xfce
+# installation d'un serveur ssh (administration distante de la machine)
+d-i pkgsel/include string openssh-server ldap-utils zip unzip tree screen vim vlc ssmtp ntp iceweasel iceweasel-l10n-fr xterm");
+     } else 
+            { if($envbur=="lxde")
+            {fwrite($fu,"
+# choix du paquet lxde
+tasksel tasksel/first multiselect desktop, print-server
+tasksel tasksel/desktop multiselect lxde
+# installation d'un serveur ssh (administration distante de la machine)
+d-i pkgsel/include string openssh-server ldap-utils zip unzip tree screen vim vlc ssmtp ntp gdm3 iceweasel iceweasel-l10n-fr xterm ");
+    } else 
+            { if($envbur=="kde")
+            {fwrite($fu,"
+# choix du paquet kde problème de kdm à résoudre
+#tasksel tasksel/first multiselect standard, print-server
+tasksel tasksel/desktop multiselect kde
+# installation d'un serveur ssh (administration distante de la machine)
+d-i pkgsel/include string openssh-server ldap-utils zip unzip tree screen vim vlc ssmtp ntp gdm3 iceweasel iceweasel-l10n-fr xterm");
+    } 
+    }
+    }
+    }
 
 fwrite($fu,"
-# choix du paquet xfce
-tasksel tasksel/first multiselect standard, print-server
-tasksel tasksel/desktop multiselect xfce4
-
-# installation d'un serveur ssh (administration distante de la machine)
-d-i pkgsel/include string openssh-server ldap-utils zip unzip tree screen vim vlc ssmtp ntp xfce4 gdm3 iceweasel iceweasel-l10n-fr evince geogebra leafpad xterm
-
 # Sélection du pack de langues
 d-i pkgsel/language-packs multiselect fr, en, es, de
-
-
-
 # Gestion des mises à  jour avec 3 possibilités prédéfinies :
 # - \"none\" => pas de mise à  jour automatique
 # - \"unattended-upgrades\" => installe les mises à  jour de sécurité automatiquement
@@ -743,15 +785,18 @@ xserver-xorg xserver-xorg/config/monitor/mode-list \
 d-i preseed/late_command string wget http://$se3ip/install/post-install_debian_wheezy.sh; \
 wget http://$se3ip/install/params.sh; \
 wget http://$se3ip/install/mesapplis-debian.txt; \
+wget http://$se3ip/install/mesapplis-debian-$envbur.txt; \
 wget http://$se3ip/install/bashrc; \
 wget http://$se3ip/install/inittab; \
 chmod +x ./post-install_debian_wheezy.sh ./params.sh; \
 mkdir /target/root/bin; \
-cp params.sh mesapplis-debian.txt post-install_debian_wheezy.sh /target/root/bin/; \
+cp params.sh post-install_debian_wheezy.sh mesapplis-debian.txt /target/root/bin/; \
+cp mesapplis-debian-$envbur.txt /target/root/bin/mesapplis-debian-eb.txt; \
 cp bashrc /target/root/.bashrc; \
 cp /target/etc/inittab /target/root/bin/inittab.orig; \
 cp inittab /target/etc/; \
 in-target update-rc.d gdm3 remove; \
+in-target update-rc.d lightdm remove; \
 cp /target/etc/inittab /target/root/bin/
 
 
