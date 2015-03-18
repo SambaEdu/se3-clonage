@@ -104,6 +104,10 @@ if (is_admin("system_is_admin",$login)=="Y")
 			echo "Lancement du t&#233;l&#233;chargement de Udpcast...";
 			system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_udpcast.sh mode=html 2>&1");
 		}
+		elseif($_POST['action']=='download_clonezilla') {
+			echo "Lancement du t&#233;l&#233;chargement de Clonezilla...";
+			system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_clonezilla.sh mode=html 2>&1");
+		}
 		elseif($_POST['action']=='download_pxe_client_linux') {
 			echo "Lancement du t&#233;l&#233;chargement du dispositif d'installation client GNU/Linux...";
 
@@ -473,6 +477,84 @@ echo "<table class='crob'>
 	echo "<tr><td>";
 	echo "<input type='hidden' name='action' value='download_slitaz' />";
 	echo "T&#233;l&#233;charger SliTaz.<br>\n";
+	echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Lancer le T&#233;l&#233;chargement\" /></p>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "</table>\n";
+
+	//echo "</fieldset>\n";
+	echo "</form>\n";
+
+	//========================================================================
+	echo "<br /><br />";
+
+	//========================================================================
+
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+	//echo "<fieldset>\n";
+
+	echo "<table class='crob' width=\"100%\">\n";
+	echo "<tr>\n";
+	echo "<th>Mise en place de Clonezilla</th>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>\n";
+
+	$clonezilla_version=crob_getParam('clonezilla_version');
+	if((!file_exists('/tftpboot/clonezilla/vmlinuz'))||(!file_exists('/tftpboot/clonezilla/initrd.img'))||(!file_exists('/tftpboot/clonezilla/filesystem.squashfs'))) {$clonezilla_version.=" <span style='color:red'>Absent???</span>";}
+
+	$clonezilla64_version=crob_getParam('clonezilla64_version');
+	if((!file_exists('/tftpboot/clonezilla64/vmlinuz'))||(!file_exists('/tftpboot/clonezilla64/initrd.img'))||(!file_exists('/tftpboot/clonezilla64/filesystem.squashfs'))) {$clonezilla64_version.=" <span style='color:red'>Absent???</span>";}
+
+	if($clonezilla_version!='') {
+		echo "<div align='center'>\n";
+		echo "<div id='div_versions_clonezilla'><p>Version de Clonezilla en place&nbsp;:</p>";
+                
+                if ($clonezilla_ajour == "1") {
+                    echo "<p><span style='color:green'>Dispositif signal&#233; &agrave; jour par le test quotidien</span></p>";
+                }
+                else {
+                    echo "<p><span style='color:red'>Dispositif signal&#233; non &agrave; jour par le test quotidien</span></p>";
+                }
+                
+                echo "
+                
+<table class='crob'>
+<tr>
+	<th>&nbsp;</th>
+	<th>Sur votre SE3</th>
+</tr>
+<tr>
+	<th>Clonezilla</th>
+	<td>$clonezilla_version</td>
+</tr>
+<tr>
+	<th>Clonezilla64</th>
+	<td>$clonezilla64_version</td>
+</tr>
+</table></div>\n";
+
+		echo "<script type='text/javascript'>
+		// <![CDATA[
+		function check_versions_clonezilla() {
+			new Ajax.Updater($('div_versions_clonezilla'),'ajax_lib.php?mode=check_versions_clonezilla',{method: 'get'});
+		}
+		//]]>
+	</script>\n";
+		echo "<p><a href='#' onclick='check_versions_clonezilla();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
+		echo "</div>\n";
+	}
+	else {
+		echo "<p style='text-align:center; color:red'>Clonezilla est absent ou la version en place n'est pas enregistree/versionnee dans la base.</p>";
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr><td>";
+	echo "<input type='hidden' name='action' value='download_clonezilla' />";
+	echo "T&#233;l&#233;charger Clonezilla.<br>\n";
 	echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Lancer le T&#233;l&#233;chargement\" /></p>\n";
 	echo "</td>\n";
 	echo "</tr>\n";

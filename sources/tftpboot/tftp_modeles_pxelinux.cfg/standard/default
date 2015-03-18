@@ -92,6 +92,14 @@ label su2
 ###SYSRESCCD###     kernel rescue32
 ###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp
 
+###CLONEZILLA###LABEL clz
+###CLONEZILLA###     KERNEL clonezilla/vmlinuz
+###CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_prerun="sudo loadkeys fr" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
+
+###CLONEZILLA64###LABEL clz64
+###CLONEZILLA64###     KERNEL clonezilla64/vmlinuz
+###CLONEZILLA64###     APPEND initrd=clonezilla64/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_prerun="sudo loadkeys fr" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
+
 label unattended
     kernel bzImageunattend
     # Add options (z_user=..., z_path=..., etc.) to this line.

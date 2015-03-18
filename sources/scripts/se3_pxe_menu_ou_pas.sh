@@ -51,12 +51,63 @@ if [ -e "${depot_sysrcd}/sysrcd.dat" -a -e "${depot_sysrcd}/sysrcd.md5" -a -e "$
 		sed -i "s|###SYSRESCCD###||" /tftpboot/pxelinux.cfg/clonage.menu
 		sed -i "s|###WWW_SYSRCD_IP###|${www_sysrcd_ip}|g" /tftpboot/pxelinux.cfg/clonage.menu
 	fi
-	
-	if [ -e /tftpboot/pxelinux.cfg/install.menu ]; then
-		sed -i "s|###install-linux###||" /tftpboot/pxelinux.cfg/install.menu
+fi
+
+if [ -e /tftpboot/pxelinux.cfg/install.menu ]; then
+	sed -i "s|###install-linux###||" /tftpboot/pxelinux.cfg/install.menu
+fi
+
+if [ -e /usr/share/se3/scripts/unattended_generate.sh ]; then
+	sed -i "s|###install-win###||" /tftpboot/pxelinux.cfg/install.menu
+fi
+
+depot_clonezilla="/var/se3/clonezilla"
+if [ -e "${depot_clonezilla}/vmlinuz" -a -e "${depot_clonezilla}/initrd.img" -a -e "${depot_clonezilla}/filesystem.squashfs" ]; then
+	sed -i "s|###CLONEZILLA###||" /tftpboot/pxelinux.cfg/default
+
+	if [ -e /var/www/se3/includes/config.inc.php ]; then
+		dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
+		dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
+		dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
+		dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
+	else
+		echo "Fichier de conf inaccessible"
+		exit 1
 	fi
-	
-	if [ -e /usr/share/se3/scripts/unattended_generate.sh ]; then
-		sed -i "s|###install-win###||" /tftpboot/pxelinux.cfg/install.menu
+
+	se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
+	www_clonezilla_ip=$se3ip
+
+	sed -i "s|###WWW_CLONEZILLA_IP###|${www_clonezilla_ip}|g" /tftpboot/pxelinux.cfg/default
+
+	if [ -e /tftpboot/pxelinux.cfg/clonage.menu ]; then
+		sed -i "s|###CLONEZILLA###||" /tftpboot/pxelinux.cfg/clonage.menu
+		sed -i "s|###WWW_CLONEZILLA_IP###|${www_clonezilla_ip}|g" /tftpboot/pxelinux.cfg/clonage.menu
 	fi
 fi
+
+depot_clonezilla64="/var/se3/clonezilla64"
+if [ -e "${depot_clonezilla}/vmlinuz" -a -e "${depot_clonezilla}/initrd.img" -a -e "${depot_clonezilla}/filesystem.squashfs" ]; then
+	sed -i "s|###CLONEZILLA64###||" /tftpboot/pxelinux.cfg/default
+
+	if [ -e /var/www/se3/includes/config.inc.php ]; then
+		dbhost=`cat /var/www/se3/includes/config.inc.php | grep "dbhost=" | cut -d = -f 2 |cut -d \" -f 2`
+		dbname=`cat /var/www/se3/includes/config.inc.php | grep "dbname=" | cut -d = -f 2 |cut -d \" -f 2`
+		dbuser=`cat /var/www/se3/includes/config.inc.php | grep "dbuser=" | cut -d = -f 2 |cut -d \" -f 2`
+		dbpass=`cat /var/www/se3/includes/config.inc.php | grep "dbpass=" | cut -d = -f 2 |cut -d \" -f 2`
+	else
+		echo "Fichier de conf inaccessible"
+		exit 1
+	fi
+
+	se3ip=$(echo "SELECT value FROM params WHERE name='se3ip';"|mysql -N -h $dbhost -u $dbuser -p$dbpass $dbname)
+	www_clonezilla64_ip=$se3ip
+
+	sed -i "s|###WWW_CLONEZILLA64_IP###|${www_clonezilla64_ip}|g" /tftpboot/pxelinux.cfg/default
+
+	if [ -e /tftpboot/pxelinux.cfg/clonage.menu ]; then
+		sed -i "s|###CLONEZILLA64###||" /tftpboot/pxelinux.cfg/clonage.menu
+		sed -i "s|###WWW_CLONEZILLA64_IP###|${www_clonezilla64_ip}|g" /tftpboot/pxelinux.cfg/clonage.menu
+	fi
+fi
+
