@@ -53,13 +53,13 @@ if [ -e "${depot_sysrcd}/sysrcd.dat" -a -e "${depot_sysrcd}/sysrcd.md5" -a -e "$
 	fi
 fi
 
-if [ -e /tftpboot/pxelinux.cfg/install.menu ]; then
-	sed -i "s|###install-linux###||" /tftpboot/pxelinux.cfg/install.menu
-fi
-
-if [ -e /usr/share/se3/scripts/unattended_generate.sh ]; then
-	sed -i "s|###install-win###||" /tftpboot/pxelinux.cfg/install.menu
-fi
+	if [ -e /tftpboot/pxelinux.cfg/install.menu ]; then
+		sed -i "s|###install-linux###||" /tftpboot/pxelinux.cfg/install.menu
+		if [ -e /usr/share/se3/scripts/unattended_generate.sh ]; then
+			sed -i "s|###install-win###||" /tftpboot/pxelinux.cfg/install.menu
+		fi
+	fi
+	
 
 depot_clonezilla="/var/se3/clonezilla"
 if [ -e "${depot_clonezilla}/vmlinuz" -a -e "${depot_clonezilla}/initrd.img" -a -e "${depot_clonezilla}/filesystem.squashfs" ]; then
@@ -110,4 +110,4 @@ if [ -e "${depot_clonezilla}/vmlinuz" -a -e "${depot_clonezilla}/initrd.img" -a 
 		sed -i "s|###WWW_CLONEZILLA64_IP###|${www_clonezilla64_ip}|g" /tftpboot/pxelinux.cfg/clonage.menu
 	fi
 fi
-
+exit 0
