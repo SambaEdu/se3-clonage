@@ -136,7 +136,7 @@ TEST=$(cat /etc/sudoers | grep "Cmnd_Alias SE3CLONAGE")
 
 if [ ! "$(grep "Cmnd_Alias SE3CLONAGE" /etc/sudoers)" ]; then
 	# On insere toute la ligne des commandes
-	sed -i 's|^\(# Cmnd alias specification.*\)$|\1\nCmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh,/usr/share/se3/scripts/recup_rapport.php,/usr/share/se3/scripts/se3_tftp_menage_atq.sh,/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh,/usr/share/se3/scripts/set_password_menu_tftp.sh,/usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh,/usr/share/se3/scripts/se3_get_sysresccd.sh,/usr/share/se3/scripts/se3_get_slitaz.sh,/usr/share/se3/scripts/se3_get_udpcast.sh|' /etc/sudoers
+	sed -i 's|^\(# Cmnd alias specification.*\)$|\1\nCmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh,/usr/share/se3/scripts/recup_rapport.php,/usr/share/se3/scripts/se3_tftp_menage_atq.sh,/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh,/usr/share/se3/scripts/set_password_menu_tftp.sh,/usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh,/usr/share/se3/scripts/se3_get_sysresccd.sh,/usr/share/se3/scripts/se3_get_slitaz.sh,/usr/share/se3/scripts/se3_get_udpcast.sh,/usr/share/se3/scripts/se3_get_clonezilla.sh|' /etc/sudoers
 	TEMOIN_CHGT_SUDO="y"
 else
 	# La ligne Cmnd_Alias SE3CLONAGE existe deja (avec au moins une commande donc)
