@@ -141,7 +141,7 @@ if [ ! "$(grep "Cmnd_Alias SE3CLONAGE" /etc/sudoers)" ]; then
 else
 	# La ligne Cmnd_Alias SE3CLONAGE existe deja (avec au moins une commande donc)
 
-	for i in se3_tftp_boot_pxe.sh pxe_gen_cfg.sh recup_rapport.php se3_tftp_menage_atq.sh se3_pxe_menu_ou_pas.sh set_password_menu_tftp.sh se3_pxe_slitaz_cmdline.sh se3_get_sysresccd.sh se3_get_slitaz.sh se3_get_udpcast.sh se3_get_install_client_linux.sh
+	for i in se3_tftp_boot_pxe.sh pxe_gen_cfg.sh recup_rapport.php se3_tftp_menage_atq.sh se3_pxe_menu_ou_pas.sh set_password_menu_tftp.sh se3_pxe_slitaz_cmdline.sh se3_get_sysresccd.sh se3_get_slitaz.sh se3_get_udpcast.sh se3_get_install_client_linux.sh se3_get_clonezilla.sh 
 	do
 		if [ ! "$(grep "/usr/share/se3/scripts/$i" /etc/sudoers)" ]; then
 			# On ajoute la commande au premier rang
