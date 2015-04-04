@@ -65,7 +65,7 @@ label su2
 ###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u1 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###     TEXT HELP
 ###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
-###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec
+###SYSRESCCD###     ejecter le CD), mais en lancant en fin de boot un script UdpCast avec
 ###SYSRESCCD###     preselection du mode emetteur.
 ###SYSRESCCD###     ENDTEXT
 
@@ -75,9 +75,32 @@ label su2
 ###SYSRESCCD###     APPEND initrd=initram.igz scandelay=5 setkmap=fr netboot=http://###WWW_SYSRCD_IP###/sysresccd/sysrcd.dat autoruns=2 ar_source=http://###WWW_SYSRCD_IP###/sysresccd/ ar_nowait work=u2 docache dodhcp ###TFTP_SLITAZ_CMDLINE###
 ###SYSRESCCD###     TEXT HELP
 ###SYSRESCCD###     Boot sur le noyau standard 32bit avec client DHCP et docache (pour pouvoir
-###SYSRESCCD###     ejecter le CD), mais en lançant en fin de boot un script UdpCast avec
+###SYSRESCCD###     ejecter le CD), mais en lancant en fin de boot un script UdpCast avec
 ###SYSRESCCD###     preselection du mode recepteur.
 ###SYSRESCCD###     ENDTEXT
+
+
+
+
+# En precisant le fetch=
+ ###CLONEZILLA###LABEL CloneZillaPAE
+ ###CLONEZILLA###     MENU LABEL Clonezilla Live i686 (3)
+ ###CLONEZILLA###     KERNEL clonezilla/vmlinuz
+ ###CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live config noswap nolocales edd=on nomodeset ocs_live_run="ocs-live-general" ocs_live_extra_param="" keyboard-layouts="fr" locales="fr_FR.UTF-8" ocs_live_batch="no" locales="" vga=788 nosplash noprompt fetch=tftp://###WWW_CLONEZILLA_IP###/clonezilla/filesystem.squashfs
+ ###CLONEZILLA###  TEXT HELP
+ ###CLONEZILLA###  * Clonezilla live i686.
+ ###CLONEZILLA###  ENDTEXT
+
+
+
+# En precisant le fetch=
+ ###CLONEZILLA###LABEL CloneZillaNOPAE
+ ###CLONEZILLA###     MENU LABEL Clonezilla Live i386 (3)
+ ###CLONEZILLA###     KERNEL clonezilla/vmlinuz
+ ###CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live config noswap forcepae nolocales edd=on nomodeset ocs_live_run="ocs-live-general" ocs_live_extra_param="" keyboard-layouts="fr" locales="fr_FR.UTF-8" ocs_live_batch="no" locales="" vga=788 nosplash noprompt fetch=tftp://###WWW_CLONEZILLA_IP###/clonezilla/filesystem.squashfs
+ ###CLONEZILLA###  TEXT HELP
+ ###CLONEZILLA###  * Clonezilla live i386.
+ ###CLONEZILLA###  ENDTEXT
 
 
 
@@ -89,57 +112,47 @@ label su2
 
 
 
-###CLONEZILLA###LABEL CloneZilla
-###CLONEZILLA###     MENU LABEL Clonezilla Live i386
-###CLONEZILLA###     KERNEL clonezilla/vmlinuz
-###CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_prerun="sudo loadkeys fr" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
-###CLONEZILLA###  TEXT HELP
-###CLONEZILLA###  * Clonezilla live i386.
-###CLONEZILLA###  ENDTEXT
+####CLONEZILLA###LABEL CloneZilla 		####pas glop ####
+####CLONEZILLA###     MENU LABEL Clonezilla Live i386
+####CLONEZILLA###     KERNEL clonezilla/vmlinuz
+####CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_prerun="sudo loadkeys fr" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
+####CLONEZILLA###  TEXT HELP
+####CLONEZILLA###  * Clonezilla live i386.
+####CLONEZILLA###  ENDTEXT
 
-# ocs_live_keymap="/usr/share/keymaps/i386/azerty/fr-latin9.kmap.gz" est deprecated
-# ###CLONEZILLA###LABEL CloneZilla_bis
-# ###CLONEZILLA###     MENU LABEL Clonezilla Live i386 bis
-# ###CLONEZILLA###     KERNEL clonezilla/vmlinuz
-# ###CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_live_keymap="/usr/share/keymaps/i386/azerty/fr-latin9.kmap.gz" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
-# ###CLONEZILLA###  TEXT HELP
-# ###CLONEZILLA###  * Clonezilla live i386.
-# ###CLONEZILLA###  ENDTEXT
+##ocs_live_keymap="/usr/share/keymaps/i386/azerty/fr-latin9.kmap.gz" est deprecated
+#####CLONEZILLA###LABEL CloneZilla_bis
+#####CLONEZILLA###     MENU LABEL Clonezilla Live i386 bis
+#####CLONEZILLA###     KERNEL clonezilla/vmlinuz
+#####CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_live_keymap="/usr/share/keymaps/i386/azerty/fr-latin9.kmap.gz" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
+#####CLONEZILLA###  TEXT HELP
+#####CLONEZILLA###  * Clonezilla live i386.
+#####CLONEZILLA###  ENDTEXT
 
 
 
 # Le suivant fonctionne, mais on reste en ALT+F7 au lieu de ALT+F1
-# ###CLONEZILLA###LABEL CloneZilla_ter
-# ###CLONEZILLA###     MENU LABEL Clonezilla Live i386 ter
-# ###CLONEZILLA###     KERNEL clonezilla/vmlinuz
-# ###CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_live_keymap="/usr/share/keymaps/i386/azerty/fr-latin9.kmap.gz" ocs_prerun1="wget http://###WWW_CLONEZILLA_IP###/clonezilla/script_clonezilla_test.sh -O /tmp/script_clonezilla_test.sh" ocs_prerun2="chmod +x /tmp/script_clonezilla_test.sh" ocs_prerun3="/tmp/script_clonezilla_test.sh" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
-# ###CLONEZILLA###  TEXT HELP
-# ###CLONEZILLA###  * Clonezilla live i386.
-# ###CLONEZILLA###  ENDTEXT
+#####CLONEZILLA###LABEL CloneZilla_ter
+#####CLONEZILLA###     MENU LABEL Clonezilla Live i386 ter
+#####CLONEZILLA###     KERNEL clonezilla/vmlinuz
+#####CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_live_keymap="/usr/share/keymaps/i386/azerty/fr-latin9.kmap.gz" ocs_prerun1="wget http://###WWW_CLONEZILLA_IP###/clonezilla/script_clonezilla_test.sh -O /tmp/script_clonezilla_test.sh" ocs_prerun2="chmod +x /tmp/script_clonezilla_test.sh" ocs_prerun3="/tmp/script_clonezilla_test.sh" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
+#####CLONEZILLA###  TEXT HELP
+#####CLONEZILLA###  * Clonezilla live i386.
+#####CLONEZILLA###  ENDTEXT
 
 
 # Ce qui suit est OK et on ne reste pas sur ALT+F7
-# On va pouvoir mettre en http://###WWW_CLONEZILLA_IP###/clonezilla/script_clonezilla_test.sh un script de sauvegarde,... avec détection de la partition à sauvegarder, de la partition destination....
-###CLONEZILLA###LABEL CloneZilla_4
-###CLONEZILLA###     MENU LABEL Clonezilla Live i386 script test
-###CLONEZILLA###     KERNEL clonezilla/vmlinuz
-###CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_prerun="sudo loadkeys fr" ocs_prerun1="wget http://###WWW_CLONEZILLA_IP###/clonezilla/script_clonezilla_test.sh -O /tmp/script_clonezilla_test.sh" ocs_prerun2="chmod +x /tmp/script_clonezilla_test.sh" ocs_prerun3="/tmp/script_clonezilla_test.sh" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
-###CLONEZILLA###  TEXT HELP
-###CLONEZILLA###  * Clonezilla live i386.
-###CLONEZILLA###  Avec lancement d un script (encore en test)...
-###CLONEZILLA###  ENDTEXT
+# On va pouvoir mettre en http://###WWW_CLONEZILLA_IP###/clonezilla/script_clonezilla_test.sh un script de sauvegarde,... avec detection de la partition a sauvegarder, de la partition destination....
+####CLONEZILLA###LABEL CloneZilla_4
+####CLONEZILLA###     MENU LABEL Clonezilla Live i386 script test
+####CLONEZILLA###     KERNEL clonezilla/vmlinuz
+####CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts="fr" ocs_prerun="sudo loadkeys fr" ocs_prerun1="wget http://###WWW_CLONEZILLA_IP###/clonezilla/script_clonezilla_test.sh -O /tmp/script_clonezilla_test.sh" ocs_prerun2="chmod +x /tmp/script_clonezilla_test.sh" ocs_prerun3="/tmp/script_clonezilla_test.sh" ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1
+####CLONEZILLA###  TEXT HELP
+####CLONEZILLA###  * Clonezilla live i386.
+####CLONEZILLA###  Avec lancement d un script (encore en test)...
+####CLONEZILLA###  ENDTEXT
 
 
-
-
-# En precisant le fetch=, cela foire...
-# ###CLONEZILLA###LABEL CloneZilla3
-# ###CLONEZILLA###     MENU LABEL Clonezilla Live i386 (3)
-# ###CLONEZILLA###     KERNEL clonezilla/vmlinuz
-# ###CLONEZILLA###     APPEND initrd=clonezilla/initrd.img boot=live username=user hostname=utopic config quiet union=overlayfs noswap edd=on nomodeset nodmraid locales="fr_FR.UTF-8" keyboard-layouts= ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no vga=788 splash i915.blacklist=yes radeonhd.blacklist=yes nouveau.blacklist=yes vmwgfx.enable_fbdev=1 fetch=tftp://###WWW_CLONEZILLA_IP###/tftpboot/clonezilla/filesystem.squashfs
-# ###CLONEZILLA###  TEXT HELP
-# ###CLONEZILLA###  * Clonezilla live i386.
-# ###CLONEZILLA###  ENDTEXT
 
 # Ancienne formulation et avec le fetch=, cela foire...
 # ###CLONEZILLA64###LABEL CloneZilla64
