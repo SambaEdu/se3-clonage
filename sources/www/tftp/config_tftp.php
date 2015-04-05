@@ -47,11 +47,21 @@ if (is_admin("system_is_admin",$login)=="Y")
 		$nb_reg=0;
 		if(isset($tftp_aff_menu_pxe)) {
 			if($tftp_aff_menu_pxe=='y') {
+                                if((isset($tftp_pass_menu_pxe))&&(isset($tftp_aff_menu_pxe))&&($tftp_aff_menu_pxe=='y')) {
+                                    $resultat1=crob_setParam('tftp_pass_menu_pxe',"$tftp_pass_menu_pxe",'mot de passe boot pxe');
+                                    if($resultat1) {$nb_reg++;}
+                                //echo "/usr/bin/sudo /usr/share/se3/scripts/set_password_menu_tftp.sh '$tftp_pass_menu_pxe'<br />";
+    //                            $resultat=exec("/usr/bin/sudo /usr/share/se3/scripts/set_password_menu_tftp.sh '$tftp_pass_menu_pxe'", $retour);
+    //                            foreach($retour as $key => $value) {echo "\$retour[$key]=$value<br />";}
+                                }
+                            
+                            
+                            
 				$resultat1=crob_setParam('tftp_aff_menu_pxe','y','affichage menu tftp');
 				$resultat1bis=crob_setParam('tftp_delais_boot_pxe',"$tftp_delais_boot_pxe",'delais boot pxe');
 				if($resultat1) {$nb_reg++;}
 				//echo "/usr/bin/sudo /usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu'<br />";
-				$resultat2=exec("/usr/bin/sudo /usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu' '$tftp_delais_boot_pxe'", $retour);
+				$resultat2=exec("/usr/bin/sudo /usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu' '$tftp_delais_boot_pxe' '$tftp_pass_menu_pxe'", $retour);
 				foreach($retour as $key => $value) {echo "\$retour[$key]=$value<br />";}
 			}
 			else {
@@ -64,13 +74,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 		}
 
 		//if(isset($tftp_pass_menu_pxe)) {
-		if((isset($tftp_pass_menu_pxe))&&(isset($tftp_aff_menu_pxe))&&($tftp_aff_menu_pxe=='y')) {
-			$resultat1=crob_setParam('tftp_pass_menu_pxe',"$tftp_pass_menu_pxe",'mot de passe boot pxe');
-			if($resultat1) {$nb_reg++;}
-			//echo "/usr/bin/sudo /usr/share/se3/scripts/set_password_menu_tftp.sh '$tftp_pass_menu_pxe'<br />";
-			$resultat=exec("/usr/bin/sudo /usr/share/se3/scripts/set_password_menu_tftp.sh '$tftp_pass_menu_pxe'", $retour);
-			foreach($retour as $key => $value) {echo "\$retour[$key]=$value<br />";}
-		}
+		
 
 		if(isset($tftp_slitaz_cmdline)) {
 			// Le pipe | est utilise dans la commande sed de /usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh 
