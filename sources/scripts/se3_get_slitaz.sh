@@ -27,7 +27,7 @@ timestamp=$(date +%s)
 timedate=$(date "+%Y%m%d_%H%M%S")
 
 src="http://wawadeb.crdp.ac-caen.fr/iso/slitaz"
-
+rm -rf "/var/se3/tmp_slitaz_*"
 tmp="/var/se3/tmp_slitaz_${timedate}"
 mkdir -p "$tmp"
 chmod 700 $tmp
@@ -421,6 +421,14 @@ if [ "$temoin_telech_requis" = "y" ]; then
 		SETMYSQL slitaz_roofs_version "$version_rootfs_slitaz_en_ligne" "version actuelle du rootfs SliTaz" 7
 	fi
 fi
+
+
+if [ "${tftp_aff_menu_pxe}" != "y" ]; then
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'standard'
+else
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu'
+fi
+
 
 rm -fr $tmp
 

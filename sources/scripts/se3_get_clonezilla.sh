@@ -418,12 +418,22 @@ if [ "$temoin_clonezilla64" = "y" ]; then
 			cd $tmp
 			rm -fr clonezilla64
 			#rm -fr $tmp
+			
+			
+			
 		fi
 		cpt=$(($cpt+1))
 	fi
 fi
 
 #rm -fr $tmp
+
+
+if [ "${tftp_aff_menu_pxe}" != "y" ]; then
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'standard'
+else
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu'
+fi
 
 if [ "$mode" = "cmdline" ]; then
 	echo -e "$COLTITRE"

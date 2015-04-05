@@ -38,7 +38,7 @@ timestamp=$(date +%s)
 timedate=$(date "+%Y%m%d_%H%M%S")
 
 src="http://wawadeb.crdp.ac-caen.fr/iso/sysresccd"
-
+rm -rf "/var/se3/tmp_sysresccd_*"
 tmp="/var/se3/tmp_sysresccd_${timedate}"
 mkdir -p "$tmp"
 chmod 700 $tmp
@@ -581,6 +581,13 @@ if [ "$temoin_sysrcd" = "y" ]; then
 	rm -fr $mnt_loop
 fi
 rm -fr $tmp
+
+
+if [ "${tftp_aff_menu_pxe}" != "y" ]; then
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'standard'
+else
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu'
+fi
 
 if [ "$mode" = "cmdline" ]; then
 	echo -e "$COLTITRE"

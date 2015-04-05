@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# $Id: se3_get_install_client_linux.sh 8171 2014-05-31 09:49:24Z crob $
+# $Id: se3_get_install_client_linux.sh 8680 2015-04-04 08:02:50Z keyser $
 # Auteur: Stephane Boireau
 # Derniere modification: 29/05/2014
 
@@ -27,7 +27,7 @@ timestamp=$(date +%s)
 timedate=$(date "+%Y%m%d_%H%M%S")
 
 src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux"
-
+rm -rf "/var/se3/tmp_client_linux_*"
 tmp="/var/se3/tmp_client_linux_${timedate}"
 mkdir -p "$tmp"
 chmod 700 $tmp
@@ -493,6 +493,13 @@ if [ "$temoin_telech_requis" = "y" ]; then
 fi
 
 rm -fr $tmp
+
+
+if [ "${tftp_aff_menu_pxe}" != "y" ]; then
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'standard'
+else
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu'
+fi
 
 if [ "$mode" = "cmdline" ]; then
 	echo -e "$COLTITRE"

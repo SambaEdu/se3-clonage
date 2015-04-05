@@ -31,7 +31,7 @@ timestamp=$(date +%s)
 timedate=$(date "+%Y%m%d_%H%M%S")
 
 src="http://wawadeb.crdp.ac-caen.fr/iso/udpcast"
-
+rm -rf "/var/se3/tmp_udpcast_*"
 tmp="/var/se3/tmp_udpcast_${timedate}"
 mkdir -p "$tmp"
 chmod 700 $tmp
@@ -673,6 +673,15 @@ fi
 
 rm -fr $tmp
 
+if [ "${tftp_aff_menu_pxe}" != "y" ]; then
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'standard'
+else
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu'
+fi
+
+# if [ "${tftp_pass_menu_pxe}" != "" ]; then
+# 	/usr/share/se3/scripts/set_password_menu_tftp.sh "${tftp_pass_menu_pxe}"
+# fi
 if [ "$mode" = "cmdline" ]; then
 	echo -e "$COLTITRE"
 else
