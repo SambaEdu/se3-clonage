@@ -32,3 +32,13 @@ LABEL Peripheriques
       MENU LABEL ^Peripheriques de boot
       KERNEL menu.c32
       APPEND pxelinux.cfg/peripheriques.menu
+
+###divers###LABEL Divers
+###divers###      MENU LABEL ^Divers
+###divers###      KERNEL menu.c32
+###divers###      APPEND pxelinux.cfg/divers.menu
+      
+###perso###LABEL Perso
+###perso###      MENU LABEL ^Perso
+###perso###      KERNEL menu.c32
+###perso###      APPEND pxelinux.cfg/perso.menu
