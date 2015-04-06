@@ -1,3 +1,9 @@
+se3-clonage (0.82) lucid; urgency=low
+
+  * Menu par defaut et clonezilla
+
+ -- root <root@DevilXen>  Sat, 04 Apr 2015 18:14:21 +0200
+
 se3-clonage (0.81) lucid; urgency=low
 
   * Prise en compte installation des linux lors des maj ou validation de
