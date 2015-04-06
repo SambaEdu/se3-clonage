@@ -3,7 +3,7 @@
 #
 # see: dh_installdeb(1)
 
-set -e
+# set -x
 
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
@@ -27,7 +27,8 @@ mysqlrequest="mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N"
 
 test_exist=`echo "SELECT value FROM params WHERE name='clonage'" | $mysqlrequest`
 if [ "X$test_exist" = "X" ]; then # if empty
-    echo "INSERT INTO params VALUES ('', 'clonage', '0', 0, 'Activation du serveur de boot pxe - udpcast / unattented', 6)" |$mysqlrequest
+    echo "INSERT INTO params VALUES ('', 'clonage', '1', 0, 'Activation du serveur de boot pxe - udpcast / unattented', 6)" |$mysqlrequest
+    NEWINSTALL="yes"
 fi
 
 echo "CREATE TABLE IF NOT EXISTS se3_tftp_action (
@@ -135,6 +136,7 @@ TEMOIN_CHGT_SUDO="n"
 TEST=$(cat /etc/sudoers | grep "Cmnd_Alias SE3CLONAGE")
 
 if [ ! "$(grep "Cmnd_Alias SE3CLONAGE" /etc/sudoers)" ]; then
+	chmod 640 /etc/sudoers
 	# On insere toute la ligne des commandes
 	sed -i 's|^\(# Cmnd alias specification.*\)$|\1\nCmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh,/usr/share/se3/scripts/recup_rapport.php,/usr/share/se3/scripts/se3_tftp_menage_atq.sh,/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh,/usr/share/se3/scripts/set_password_menu_tftp.sh,/usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh,/usr/share/se3/scripts/se3_get_sysresccd.sh,/usr/share/se3/scripts/se3_get_slitaz.sh,/usr/share/se3/scripts/se3_get_udpcast.sh,/usr/share/se3/scripts/se3_get_clonezilla.sh|' /etc/sudoers
 	TEMOIN_CHGT_SUDO="y"
@@ -145,6 +147,7 @@ else
 	do
 		if [ ! "$(grep "/usr/share/se3/scripts/$i" /etc/sudoers)" ]; then
 			# On ajoute la commande au premier rang
+			chmod 640 /etc/sudoers
 			sed -i "s|Cmnd_Alias SE3CLONAGE=|Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/$i,|" /etc/sudoers
 			TEMOIN_CHGT_SUDO="y"
 		fi
@@ -152,6 +155,7 @@ else
 fi
 
 if [ "$TEMOIN_CHGT_SUDO" = "y" ]; then
+	chmod 440 /etc/sudoers
 	/etc/init.d/sudo restart
 fi
 
@@ -182,16 +186,24 @@ done
 # tftp_aff_menu_pxe=$(echo "SELECT value FROM params WHERE name='tftp_aff_menu_pxe';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
 # tftp_pass_menu_pxe=$(echo "SELECT value FROM params WHERE name='tftp_pass_menu_pxe';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
 # tftp_slitaz_cmdline=$(echo "SELECT value FROM params WHERE name='tftp_slitaz_cmdline';" | mysql -h $dbhost $dbname -u $dbuser -p$dbpass -N)
-
-
-if [ "${tftp_aff_menu_pxe}" != "y" ]; then
-	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'standard'
+if [ "$NEWINSTALL" = "yes" ]; then
+	echo "Installation initiale - activation menu PXE avec passe aleatoire"
 else
-	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu'
+# Nettoyage
+	rm -rf /var/se3/tmp_client_linux_*
+	rm -rf /var/se3/tmp_clonezilla_*
+	rm -rf /var/se3/tmp_sysresccd_*
+	rm -rf /var/se3/tmp_udpcast_*
+	rm -rf /var/se3/tmp_slitaz_*
 fi
 
-if [ "${tftp_pass_menu_pxe}" != "" ]; then
-	/usr/share/se3/scripts/set_password_menu_tftp.sh "${tftp_pass_menu_pxe}"
+
+if [ "${tftp_aff_menu_pxe}" = "y" ]; then
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu'
+elif [ "$NEWINSTALL" = "yes" ]; then
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'menu' '6' 'random'
+else
+	/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh 'standard'
 fi
 
 if [ "${tftp_slitaz_cmdline}" != "" ]; then
