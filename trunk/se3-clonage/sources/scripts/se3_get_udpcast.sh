@@ -49,7 +49,7 @@ version_initrd_old_udpcast_en_place="$udpcast_initrd_old_version"
 t=$(echo "$*" | grep "check_version")
 if [ -n "$t" ]; then
 	cd $tmp
-	wget $src/versions.txt > /dev/null 2>&1
+	wget -O versions.txt $src/versions.txt?  > /dev/null 2>&1
 
 	#vmlu26
 	#udprd
@@ -236,7 +236,7 @@ fi
 
 # Telecharger
 cd $tmp
-wget $src/versions.txt
+wget -O versions.txt $src/versions.txt? 
 if [ "$?" != "0" ]; then
 	if [ "$mode" = "cmdline" ]; then
 		echo -e "$COLERREUR"
@@ -400,7 +400,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 	fi
 
 	if [ ! -e "/tftpboot/vmlu26" -o "$md5_en_ligne" != "$md5_en_place" -o "$version_noyo_udpcast_en_ligne" != "$version_noyo_udpcast_en_place" ]; then
-		wget $src/vmlu26
+		wget -O vmlu26 $src/vmlu26?
 		if [ "$?" != "0" ]; then
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLERREUR"
@@ -460,7 +460,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 	fi
 
 	if [ ! -e "/tftpboot/udprd" -o "$md5_en_ligne" != "$md5_en_place" -o "$version_initrd_udpcast_en_ligne" != "$version_initrd_udpcast_en_place" ]; then
-		wget $src/udprd
+		wget -O udprd $src/udprd?
 		if [ "$?" != "0" ]; then
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLERREUR"
@@ -521,7 +521,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 	fi
 
 	if [ ! -e "/tftpboot/vmlu26.old" -o "$md5_en_ligne" != "$md5_en_place" -o "$version_noyo_old_udpcast_en_ligne" != "$version_noyo_old_udpcast_en_place" ]; then
-		wget $src/vmlu26.old
+		wget -O vmlu26.old $src/vmlu26.old?
 		if [ "$?" != "0" ]; then
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLERREUR"
@@ -581,7 +581,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 	fi
 
 	if [ ! -e "/tftpboot/udprd.old" -o "$md5_en_ligne" != "$md5_en_place" -o "$version_initrd_old_udpcast_en_ligne" != "$version_initrd_old_udpcast_en_place" ]; then
-		wget $src/udprd.old
+		wget -O udprd.old $src/udprd.old?
 		if [ "$?" != "0" ]; then
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLERREUR"

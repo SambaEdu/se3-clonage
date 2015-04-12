@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# $Id: se3_get_install_client_linux.sh 8680 2015-04-04 08:02:50Z keyser $
+# $Id: se3_get_install_client_linux.sh 8705 2015-04-10 23:37:10Z keyser $
 # Auteur: Stephane Boireau
 # Derniere modification: 29/05/2014
 
@@ -45,7 +45,7 @@ mkdir -p ${dossier_ressource_dispositif_pxe_client_linux}
 t=$(echo "$*" | grep "check_version")
 if [ -n "$t" ]; then
 	cd $tmp
-	wget $src/versions.txt > /dev/null 2>&1
+	wget -O versions.txt $src/versions.txt? > /dev/null 2>&1
 	if [ "$?" = 0 -a -e versions.txt ]; then
 		VarchPxeClientLin_en_ligne=$(grep ";install_client_linux_archive-tftp.tar.gz$" $tmp/versions.txt | cut -d";" -f1)
 
@@ -159,7 +159,7 @@ fi
 
 # Telecharger
 cd $tmp
-wget $src/versions.txt
+wget -O versions.txt $src/versions.txt? 
 if [ "$?" != "0" ]; then
 	if [ "$mode" = "cmdline" ]; then
 		echo -e "$COLERREUR"
@@ -306,7 +306,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 	fi
 
 	if [ ! -e "${dossier_ressource_dispositif_pxe_client_linux}/install_client_linux_archive-tftp.tar.gz" -o "$md5_en_ligne" != "$md5_en_place" -o "$VarchPxeClientLin_en_ligne" != "$VarchPxeClientLin_en_place" ]; then
-		wget $src/install_client_linux_archive-tftp.tar.gz
+		wget -O install_client_linux_archive-tftp.tar.gz $src/install_client_linux_archive-tftp.tar.gz?
 		if [ "$?" != "0" ]; then
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLERREUR"
@@ -365,7 +365,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 	fi
 
 	if [ ! -e "${dossier_ressource_dispositif_pxe_client_linux}/install_client_linux_mise_en_place.sh" -o "$md5_en_ligne" != "$md5_en_place" -o "$VscriptPxeClientLin_en_ligne" != "$VscriptPxeClientLin_en_place" ]; then
-		wget $src/install_client_linux_mise_en_place.sh
+		wget -O install_client_linux_mise_en_place.sh $src/install_client_linux_mise_en_place.sh?
 		if [ "$?" != "0" ]; then
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLERREUR"

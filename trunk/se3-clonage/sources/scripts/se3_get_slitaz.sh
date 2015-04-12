@@ -43,7 +43,7 @@ version_rootfs_slitaz_en_place="$slitaz_roofs_version"
 t=$(echo "$*" | grep "check_version")
 if [ -n "$t" ]; then
 	cd $tmp
-	wget $src/versions.txt > /dev/null 2>&1
+	wget -O versions.txt $src/versions.txt? >/dev/null 2>&1
 	if [ "$?" = 0 -a -e versions.txt ]; then
 		version_noyo_slitaz_en_ligne=$(grep ";bzImage$" $tmp/versions.txt | cut -d";" -f1)
 		version_rootfs_slitaz_en_ligne=$(grep ";rootfs.gz$" $tmp/versions.txt | cut -d";" -f1)
@@ -159,7 +159,7 @@ fi
 
 # Telecharger
 cd $tmp
-wget $src/versions.txt
+wget -O versions.txt $src/versions.txt? 
 if [ "$?" != "0" ]; then
 	if [ "$mode" = "cmdline" ]; then
 		echo -e "$COLERREUR"
@@ -276,7 +276,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 	fi
 
 	if [ ! -e "/tftpboot/bzImage" -o "$md5_en_ligne" != "$md5_en_place" -o "$version_noyo_slitaz_en_ligne" != "$version_noyo_slitaz_en_place" ]; then
-		wget $src/bzImage
+		wget -O bzImage $src/bzImage?
 		if [ "$?" != "0" ]; then
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLERREUR"
@@ -337,7 +337,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 
 	if [ ! -e "/tftpboot/rootfs.gz" -o "$md5_en_ligne" != "$md5_en_place" -o "$version_rootfs_slitaz_en_ligne" != "$version_rootfs_slitaz_en_place" ]; then
 
-		wget $src/rootfs.gz
+		wget -O rootfs.gz $src/rootfs.gz?
 		if [ "$?" != "0" ]; then
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLERREUR"

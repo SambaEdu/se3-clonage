@@ -38,7 +38,7 @@ chmod 700 $tmp
 t=$(echo "$*" | grep "check_version")
 if [ -n "$t" ]; then
 	cd $tmp
-	wget http://wawadeb.crdp.ac-caen.fr/iso/clonezilla/versions.txt > /dev/null 2>&1
+	wget -O versions.txt $src/versions.txt? > /dev/null 2>&1
 	if [ "$?" = 0 -a -e versions.txt ]; then
 		version_clonezilla_en_ligne=$(grep ";clonezilla.zip$" $tmp/versions.txt | cut -d";" -f1)
 		version_clonezilla64_en_ligne=$(grep ";clonezilla64.zip$" $tmp/versions.txt | cut -d";" -f1)
@@ -129,7 +129,7 @@ cpt=0
 #===================================================================
 
 cd $tmp
-wget $src/versions.txt
+wget -O versions.txt $src/versions.txt?
 if [ "$?" != "0" ]; then
 	if [ "$mode" = "cmdline" ]; then
 		echo -e "$COLERREUR"
@@ -189,7 +189,7 @@ else
 fi
 
 if [ "$temoin_clonezilla" = "y" ]; then
-	wget $src/clonezilla.zip
+	wget -O clonezilla.zip $src/clonezilla.zip?
 	if [ "$?" != "0" ]; then
 		if [ "$mode" = "cmdline" ]; then
 			echo -e "$COLERREUR"
@@ -323,7 +323,7 @@ else
 fi
 
 if [ "$temoin_clonezilla64" = "y" ]; then
-	wget $src/clonezilla64.zip
+	wget -O clonezilla64.zip $src/clonezilla64.zip?
 	if [ "$?" != "0" ]; then
 		if [ "$mode" = "cmdline" ]; then
 			echo -e "$COLERREUR"
