@@ -48,7 +48,7 @@ chmod 700 $tmp
 t=$(echo "$*" | grep "check_version")
 if [ -n "$t" ]; then
 	cd $tmp
-	wget http://wawadeb.crdp.ac-caen.fr/iso/sysresccd/versions.txt > /dev/null 2>&1
+	wget wget -O versions.txt $src/versions.txt?  > /dev/null 2>&1
 	if [ "$?" = 0 -a -e versions.txt ]; then
 		version_srcd_en_ligne=$(grep ";systemrescuecd.iso$" $tmp/versions.txt | cut -d";" -f1)
 		version_autorun2_en_ligne=$(grep ";autorun2$" $tmp/versions.txt | cut -d";" -f1)
@@ -126,7 +126,7 @@ cpt=0
 #===================================================================
 
 cd $tmp
-wget $src/versions.txt
+wget -O versions.txt $src/versions.txt? 
 if [ "$?" != "0" ]; then
 	if [ "$mode" = "cmdline" ]; then
 		echo -e "$COLERREUR"
@@ -187,7 +187,7 @@ else
 fi
 
 if [ "$temoin_sysrcd" = "y" ]; then
-	wget $src/systemrescuecd.iso
+	wget -O systemrescuecd.iso $src/systemrescuecd.iso?
 	if [ "$?" != "0" ]; then
 		if [ "$mode" = "cmdline" ]; then
 			echo -e "$COLERREUR"
@@ -287,7 +287,7 @@ if [ "$temoin_autorun2" = "y" ]; then
 		fi
 	fi
 
-	wget $src/autorun2
+	wget -O autorun2 $src/autorun2?
 	if [ "$?" != "0" ]; then
 		if [ "$mode" = "cmdline" ]; then
 			echo -e "$COLERREUR"
