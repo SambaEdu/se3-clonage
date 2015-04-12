@@ -48,7 +48,7 @@ sed -i "s|###TFTP_DELAIS_BOOT_PXE###|$tftp_delais_boot_pxe|g" /tftpboot/pxelinux
 
 if [ -n "$tftp_pass_menu_pxe" ]; then
 # 	pass_en_clair="$tftp_pass_menu_pxe"
-	pass_sha1=$(/usr/share/se3/scripts/sha1pass "$tftp_pass_menu_pxe")
+	pass_sha1=$(/usr/bin/sha1pass "$tftp_pass_menu_pxe")
 
 	sed -i "s|^#  MENU PASSWD ###TFTP_PASSWORD_MENU_PXE###|  MENU PASSWD ${pass_sha1}|" /tftpboot/pxelinux.cfg/default
 fi
