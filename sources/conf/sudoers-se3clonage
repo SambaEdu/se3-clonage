@@ -1,0 +1,9 @@
+# sudoers file for se3-clonage
+### $Id$ ###
+
+# Cmnd alias specification
+Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/pxe_gen_cfg.sh,/usr/share/se3/scripts/recup_rapport.php,/usr/share/se3/scripts/se3_get_sysresccd.sh,/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh,/usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh,/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/se3_tftp_menage_atq.sh,/usr/share/se3/scripts/set_password_menu_tftp.sh,/usr/share/se3/scripts/se3_get_slitaz.sh,/usr/share/se3/scripts/se3_get_udpcast.sh,/usr/share/se3/scripts/se3_get_install_client_linux.sh,/usr/share/se3/scripts/se3_get_clonezilla.sh
+
+
+www-se3 ALL=NOPASSWD:SE3CLONAGE
+
