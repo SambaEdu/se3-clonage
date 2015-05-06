@@ -11,7 +11,7 @@ install:
 	cp -R sbin/* $(DESTDIR)/usr/share/se3/sbin/
 	cp -R www/* $(DESTDIR)/var/www/se3/
 	cp conf/se3_action_tftp_cron $(DESTDIR)/etc/cron.d/
-	#cp conf/pxelinux.0 $(DESTDIR)/usr/lib/syslinux/
+	cp conf/sudoers-se3clonage $(DESTDIR)/etc/sudoers.d/sudoers-se3clonage
 	cp -R doc_post_clonage $(DESTDIR)/var/se3/Progs/install
 	cp -R paquet_post-clonage $(DESTDIR)/var/se3/Progs/install
 	cp -R quitte_se3 $(DESTDIR)/var/se3/Progs/install
