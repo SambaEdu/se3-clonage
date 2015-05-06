@@ -5,4 +5,5 @@ usr/share/se3/scripts
 usr/share/se3/sbin
 /usr/lib/syslinux
 etc/cron.d
+etc/sudoers.d
 var/www/se3
