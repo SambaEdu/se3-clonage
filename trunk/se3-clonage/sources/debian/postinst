@@ -124,6 +124,12 @@ fi
 
 #==============================================================================
 
+
+
+echo "Maj droits sudoers..."
+chmod 440 /etc/sudoers.d/sudoers-se3clonage
+
+
 ##### ADD good line in /etc/sudoers.conf if necessary and restart sudo
 #TEMOIN_CHGT_SUDO="n"
 # TEST=$(grep "NOPASSWD:SE3CLONAGE" /etc/sudoers)
