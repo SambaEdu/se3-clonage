@@ -64,7 +64,7 @@ include "tftp.inc.php";
 	$shutdown_reboot=isset($_POST['shutdown_reboot']) ? $_POST['shutdown_reboot'] : (isset($_GET['shutdown_reboot']) ? $_GET['shutdown_reboot'] : NULL);
 
 
-	echo "<h1>".gettext("Installation d'un client Linux".$os)."</h1>\n";
+	echo "<h1>".gettext("Installation d'un client GNU/Linux".$os)."</h1>\n";
         
         
         // Verid présence dossier install
