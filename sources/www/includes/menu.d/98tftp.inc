@@ -11,7 +11,7 @@
 		"Programmer un clonage", "tftp/action_clone_tftp.php","parc_can_clone",3,
 		"Programmer un rapport", "tftp/action_rapport_tftp.php","parc_can_clone",3,
 		"Programmer un memtest", "tftp/action_memtest_tftp.php","parc_can_clone",3,
-                "Installer un client Linux", "tftp/action_unattend_linux_tftp.php","parc_can_clone",3 
+                "D&eacute;ployer GNU/Linux", "tftp/action_unattend_linux_tftp.php","parc_can_clone",3 
 		));
 		
 	if ($menu_unattended=="1") {
