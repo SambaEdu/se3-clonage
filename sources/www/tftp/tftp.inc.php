@@ -340,7 +340,7 @@ $content .= "<p>Choisissez les paramètres pour le lancement de l'installation: <
 
 <ul>
   <li>
-   <label for='mirroir'>Choix du mirroir Debian</label> : <input type='text' name='mirroir' id='mirroir' value='$se3ip/debian' disabled='disabled'/><div style='font-size:small;'>On utilisera le se3 et son service apt-cacher <br /></div>
+   <label for='mirroir'>Choix du beau mirroir Debian</label> : <input type='text' name='mirroir' id='mirroir' value='$se3ip/debian' disabled='disabled'/><div style='font-size:small;'>On utilisera le se3 et son service apt-cacher <br /></div>
   </li>
   <li>Choix de la distribution :<br />";
 
@@ -348,7 +348,7 @@ $content .= "<p>Choisissez les paramètres pour le lancement de l'installation: <
  $content .= "   <label for='version'>Version</label> : <input type='text' name='version' id='version' value='$os' disabled='disabled' /><br />";
 //    <label for='sections'>Sections</label> : <input type='text' name='sections' id='sections' value='main, contrib, non-free' disabled='disabled' /><br />
  $content .= " </li>
-  <li>Architecture :<br />
+  <li>La belle Architecture :<br />
 <ol>
     <li><input type='radio' name='arch' id='arch32' value='i386' check='checked' /><label for='arch32'>32 bits</label></li>
     <li><input type='radio' name='arch' id='arch64' value='amd64' /><label for='arch64'>64 bits</label></li>
@@ -531,282 +531,42 @@ for($i=0;$i<count($id_machine);$i++) {
 		echo "<span style='color:red;'>La machine d'identifiant $id_machine[$i] n'existe pas dans 'se3_dhcp'.</span><br />\n";
 	}
 	else {
-
+        
 		$lig=mysql_fetch_object($res);
 		$nom_machine=$lig->name;
-
+        
 		// On écrit le fichier preseed dans le bon dossier
 		$dossier_preseed="/var/www/se3/tmp/";
+        $dossier_preseed_src="/var/www/install/";
+        $preseeddebian="preseed_debian_jessie.cfg";
+        $preseedmonreseau="preseed_debian_jessie_monreseau.cfg";
 		//$dossier_unattend_txt="/var/www/preseeds";
-		$fu=fopen($dossier_preseed.$nom_machine."_preseed.cfg","w+");
-		if(!$fu) {
+        $preseeddest=$dossier_preseed.$nom_machine."_preseed.cfg";
+    if ($fdisk==0) {
+        $preseedsrc=$dossier_preseed_src."preseed_debian_jessie_".$envbur.".cfg";
+        $preseedboot="preseed_debian_jessie_only.cfg";
+    }
+    else {
+     if ($fdisk==1) {
+         $preseedsrc=$dossier_preseed_src."preseed_debian_jessie_".$envbur."_dboot.cfg";
+         $preseedboot="preseed_debian_jessie_dboot.cfg";
+    }   
+    }
+    $fu=fopen($dossier_preseed.$nom_machine."_preseed.cfg","w+");
+    if (!copy($preseedsrc, $preseeddest)) {
 			echo "<p>ERREUR lors de la cr&eacute;ation de ".$dossier_preseed."/".$nom_machine."_preseed.cfg</p>\n";
 			include ("pdp.inc.php");
 			die();
-		}
-		fwrite($fu,"##########
-#### Fichier de réponses pour l'installation de Debian Wheezy
-
-#############
-# langue et pays
-d-i localechooser/shortlist	select	FR
-d-i debian-installer/locale string fr_FR.UTF-8
-d-i debian-installer/language string fr
-d-i debian-installer/country string FR
-
-# clavier
-d-i console-keymaps-at/keymap select fr-latin9
-d-i debian-installer/keymap string fr-latin9
-d-i console-setup/modelcode string pc105
-d-i console-setup/layoutcode string fr
-
-
-### 2. Configuration du réseau avec le serveur DHCP du SE3
-#############
-# choix automatique de l'interface
-d-i netcfg/choose_interface select auto
-
-# À décommenter quand le serveur dhcp est lent et que l'installateur s'arrête pour l'attendre
-d-i netcfg/dhcp_timeout string 60
-
-# Si pour le réseau ou pour un autre matériel vous avez besoin d'un microprogramme
-# ( firmware ) non libre, vous pouvez forcer l'installateur à  le télécharger,
-# en évitant la demande de confirmation.
-d-i hw-detect/load_firmware boolean true
-
-
-### 3. Configuration du mirroir : utilisation du mirroir local se3 (apt-cacher-ng)
-#############
-d-i mirror/country string manual
-d-i mirror/http/hostname string $se3ip:9999
-d-i mirror/http/directory string /debian
-d-i mirror/http/proxy string
-
-
-
-### 4. Configuration du fuseau horaire : serveur de temps du Slis
-#############
-# réglage de l'horloge matérielle sur UTC et du fuseau horaire
-d-i clock-setup/utc boolean true
-d-i time/zone string Europe/Paris
-
-# autorisation de l'utilisation de NTP pour régler l'horloge pendant l'installation avec le serveur ntp du Slis
-d-i clock-setup/ntp boolean true
-d-i clock-setup/ntp-server string $ntpserv
-
-### 5. Partitionnement du disque dur
-#############\n");
-
-if($fdisk==0) {
-    // On ecrase tout !
-    // une root 15/20Go , une swap qq go au max et une sauvegarde pour le reste...
-
-    fwrite($fu,"d-i partman-auto/automatically_partition string regular
-d-i partman-auto/select_disk select /dev/discs/disc0/disc
-d-i partman-auto/method string regular
-d-i partman-lvm/confirm boolean true
-d-i partman-auto/purge_lvm_from_device boolean true
-d-i partman-auto/expert_recipe_file string /hd-media/recipe
-d-i partman-auto/expert_recipe string                         \
-      cl-recette ::                                          \
-            10000 15000 20000 ext4                                \
-                      \$primary{ } \$bootable{ }              \
-                      method{ format } format{ }              \
-                      use_filesystem{ } filesystem{ ext4 }    \
-                      mountpoint{ / }                     \
-       .                                               		\
-            100% 200% 400% linux-swap               \
-                      \$primary{ }                             \
-                      method{ swap } format{ }                \
-	.                                               		\
-            15000 20000 400000  ext4                            \
-                      \$primary{ }                             \
-                      method{ format } format{ }              \
-                      use_filesystem{ } filesystem{ ext4 }    \
-                      mountpoint{ /sav }	\
-		.		       
-d-i partman-auto/choose_recipe select cl-recette
-d-i partman-partitioning/confirm_write_new_label boolean true
-d-i partman/alignment select cylinder
-d-i partman/confirm boolean true
-d-i partman/choose_partition select Finish partitioning and write changes to disk
-d-i partman/confirm boolean true
-d-i partman/confirm_nooverwrite boolean true");
-} else {
-   // on installe sur un espace libre pré-existant
-    fwrite($fu,"d-i partman-auto/init_automatically_partition select Assisté - utiliser le plus grand espace disponible
-        
-d-i partman-auto/choose_recipe select atomic
-
-
-# choix du format ext4
-d-i partman/default_filesystem string ext4
-
-# partitionnement automatique sans demander de confirmation
-d-i partman/confirm_write_new_label boolean true
-d-i partman/choose_partition select finish
-d-i partman/confirm boolean true
-d-i partman/confirm_nooverwrite boolean true");
+    }
+    $fu=fopen($dossier_preseed.$preseeddebian,"w+");
+    copy($dossier_preseed_src.$preseeddebian,$dossier_preseed.$preseeddebian);
+    $fu=fopen($dossier_preseed.$preseedmonreseau,"w+");
+    copy($dossier_preseed_src.$preseedmonreseau,$dossier_preseed.$preseedmonreseau);
+    $fu=fopen($dossier_preseed.$preseedboot,"w+");
+    copy($dossier_preseed_src.$preseedboot,$dossier_preseed.$preseedboot);
     
+    }
     
-}		
-		fwrite($fu,"
-### 6. Configuration des comptes Root et utilisateur
-############## Création du compte root (false => non, true => oui)
-d-i passwd/root-login boolean true
-
-d-i passwd/root-password-crypted password ".$root_pass."
-
-# Création d'un compte utilisateur normal.
-d-i passwd/user-fullname string ".$newuser_name."
-d-i passwd/username string ".$newuser_name."
-
-d-i passwd/user-password-crypted password ".$newuser_pass."
-
-
-### 7. Configuration d'Apt
-# le fichier /etc/apt/sources.list sera reconfiguré après l'installation
-# à l'aide d'un script de post-installation
-#############
-# Vous pouvez installer des logiciels des distributions non-free et contrib.
-d-i apt-setup/non-free boolean true
-d-i apt-setup/contrib boolean true
-
-# Décommentez cette ligne si vous n'utilisez pas de miroir sur le réseau.
-#d-i apt-setup/use_mirror boolean false
-
-# Choisissez les services de mise à jour et les miroirs à utiliser.
-# Les valeurs ci-après sont les valeurs par défaut :
-d-i apt-setup/services-select multiselect security
-# d-i apt-setup/security_host string security.debian.org
-d-i apt-setup/security_host string $se3ip:9999/security.debian.org
-
-
-
-
-### 8. Choix des paquets
-#############");
-// 
-//Pour le moment xfce uniquement mais il faudrait proposer gnome et lxde
-
-            
-# choix du paquet gnome-desktop
-#tasksel tasksel/first multiselect gnome-desktop
-# installation d'un serveur ssh (administration distante de la machine)
-#d-i pkgsel/include string openssh-server 
-if($envbur=="gnome")
-    {
-        fwrite($fu,"
-# choix du paquet gnome
-tasksel tasksel/first multiselect desktop, print-server
-tasksel tasksel/desktop multiselect gnome
-# installation d'un serveur ssh (administration distante de la machine)
-d-i pkgsel/include string openssh-server ldap-utils zip unzip tree screen vim vlc ssmtp ntp iceweasel iceweasel-l10n-fr xterm");
-    } else
-    {if($envbur=="xfce")
-            {
-        fwrite($fu,"
-# choix du paquet xfce
-tasksel tasksel/first multiselect desktop, print-server
-tasksel tasksel/desktop multiselect xfce
-# installation d'un serveur ssh (administration distante de la machine)
-d-i pkgsel/include string openssh-server ldap-utils zip unzip tree screen vim vlc ssmtp ntp iceweasel iceweasel-l10n-fr xterm");
-     } else 
-            { if($envbur=="lxde")
-            {fwrite($fu,"
-# choix du paquet lxde
-tasksel tasksel/first multiselect desktop, print-server
-tasksel tasksel/desktop multiselect lxde
-# installation d'un serveur ssh (administration distante de la machine)
-d-i pkgsel/include string openssh-server ldap-utils zip unzip tree screen vim vlc ssmtp ntp gdm3 iceweasel iceweasel-l10n-fr xterm ");
-    } else 
-            { if($envbur=="kde")
-            {fwrite($fu,"
-# choix du paquet kde problème de kdm à résoudre
-#tasksel tasksel/first multiselect standard, print-server
-tasksel tasksel/desktop multiselect kde
-# installation d'un serveur ssh (administration distante de la machine)
-d-i pkgsel/include string openssh-server ldap-utils zip unzip tree screen vim vlc ssmtp ntp gdm3 iceweasel iceweasel-l10n-fr xterm");
-    } 
-    }
-    }
-    }
-
-fwrite($fu,"
-# Sélection du pack de langues
-d-i pkgsel/language-packs multiselect fr, en, es, de
-# Gestion des mises à  jour avec 3 possibilités prédéfinies :
-# - \"none\" => pas de mise à  jour automatique
-# - \"unattended-upgrades\" => installe les mises à  jour de sécurité automatiquement
-# - \"landscape\" => manage system with Landscape
-d-i pkgsel/update-policy select unattended-upgrades
-
-# Ne pas envoyer de rapport d'installation
-popularity-contest popularity-contest/participate boolean false
-
-
-### 9. Installation du programme d'amorçage GRUB
-#############
-# Installation automatique sur le MBR si aucun autre système n'est détecté
-d-i grub-installer/only_debian boolean true
-
-# S'il reconnaît un système d'exploitation, vous en serez informé
-# et l'installateur configurera Grub pour pouvoir démarrer aussi bien ce système que Debian
-d-i grub-installer/with_other_os boolean true
-
-# Mot de passe optionnel pour Grub, en clair...
-#d-i grub-installer/password password r00tme
-#d-i grub-installer/password-again password r00tme
-# ... ou chiffré sans confirmation avec MD5 hash, voir grub-md5-crypt(8)
-# pour le chiffrage, utiliser la commande suivante dans une console
-# printf \"uSerpass\" | mkpasswd -s -m md5\n");
-		
-	// A faire !!!
-                if($fdisk==10)
-			fwrite($fu,"#");
-		fwrite($fu,"d-i grub-installer/password-crypted password ".$grub_pass."\n");
-		fwrite($fu,"
-### 10. Configuration de X (gestion de l'affichage)
-#############
-# Détection automatique du moniteur.
-xserver-xorg xserver-xorg/autodetect_monitor boolean true
-xserver-xorg xserver-xorg/config/monitor/selection-method \
-       select medium
-xserver-xorg xserver-xorg/config/monitor/mode-list \
-       select 1024x768 @ 60 Hz
-
-
-### 11. Exécution d'une commande avant la fin de l'installation
-# Cette commande est exécutée juste avant que l'installation ne se termine,
-# quand le répertoire /target est encore utilisable.
-#############
-# À décommenter pour que le script post_installation.sh soit lancé au 1er redémarrage de la machine
-# il faudra rajouter à la fin du script la suppression de ce fichier?
-d-i preseed/late_command string wget http://$se3ip/install/post-install_debian_wheezy.sh; \
-wget http://$se3ip/install/params.sh; \
-wget http://$se3ip/install/mesapplis-debian.txt; \
-wget http://$se3ip/install/mesapplis-debian-$envbur.txt; \
-wget http://$se3ip/install/bashrc; \
-wget http://$se3ip/install/inittab; \
-chmod +x ./post-install_debian_wheezy.sh ./params.sh; \
-mkdir /target/root/bin; \
-cp params.sh post-install_debian_wheezy.sh mesapplis-debian.txt /target/root/bin/; \
-cp mesapplis-debian-$envbur.txt /target/root/bin/mesapplis-debian-eb.txt; \
-cp bashrc /target/root/.bashrc; \
-cp /target/etc/inittab /target/root/bin/inittab.orig; \
-cp inittab /target/etc/; \
-in-target update-rc.d gdm3 remove; \
-in-target update-rc.d lightdm remove; \
-cp /target/etc/inittab /target/root/bin/
-
-
-### 12. Fin de l'installation
-d-i finish-install/reboot_in_progress note\n");
-
-		fclose($fu);
-		#Copie du fichier dans /var/www/se3/tmp/ accessible depuis l'url http://se3ip:909/tmp/
-		//shell_exec("/bin/cp ".$dossier_unattend_txt.$nom_machine."_preseed.cfg  /var/www/se3/tmp/");
-	}
 }
 
 echo "<p>G&eacute;n&eacute;ration des fichiers dans /tftpboot/pxelinux.cfg/ pour l'installation automatique<br />\n";
@@ -830,6 +590,7 @@ for($i=0;$i<count($id_machine);$i++) {
 		$ip_machine=$lig->ip;
 //Ajouter ici le domaine local et l'url du preseed à  passer à  pxe_gen_cfg_debian.sh
 // domaine fait au début du script
+        
 		$url_du_preseed="http://".$se3ip.":909/tmp/".$nom_machine."_preseed.cfg";
 
 		echo "G&eacute;n&eacute;ration pour $nom_machine : ";
