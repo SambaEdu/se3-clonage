@@ -66,9 +66,9 @@ label disk2
   localboot 0x81
 
 # Label d'install linux :
-label linuxinst
-KERNEL  debian-installer/$architecture/linux
-APPEND  ramdisk_size=7680 language=fr locale=fr_FR.UTF-8 console-setup/layoutcode=fr_FR netcfg/wireless_wep= netcfg/choose_interface=eth0 netcfg/dhcp_timeout=60 netcfg/get_hostname=poste netcfg/get_domain=intranet.local keyboard-configuration/xkb-keymap=fr languagechooser/language-name=French countrychooser/shortlist=FR console-keymaps-at/keymap=fr debian-installer/country=FR  debian-installer/locale=fr_FR.UTF-8 preseed/url=$url_preseed initrd=debian-installer/$architecture/initrd.gz --
+LABEL linuxinst
+KERNEL  debian-installer-jessie/$architecture/linux
+APPEND  auto=true priority=critical preseed/url=$url_preseed initrd=debian-installer-jessie/$architecture/initrd.gz --
     
 # Choix de boot par défaut:
 default linuxinst

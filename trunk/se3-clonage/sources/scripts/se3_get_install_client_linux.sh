@@ -26,7 +26,20 @@ COLINFO="\033[0;36m"    # Cyan
 timestamp=$(date +%s)
 timedate=$(date "+%Y%m%d_%H%M%S")
 
-src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux"
+
+# Positionnement de l'url de telechargement en bdd
+if [ -n "$1" ]; then
+	src="$1"
+	SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
+elif [ -n "$SrcPxeClientLin" ]; then
+	src="$SrcPxeClientLin"
+else
+	src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux"
+	SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
+fi
+
+
+
 rm -rf "/var/se3/tmp_client_linux_*"
 tmp="/var/se3/tmp_client_linux_${timedate}"
 mkdir -p "$tmp"
@@ -513,3 +526,5 @@ else
 	echo "</b>"
 	echo "</pre>"
 fi
+/usr/share/se3/includes/functions.inc.sh -fd
+exit 0
