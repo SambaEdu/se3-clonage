@@ -14,15 +14,10 @@ LABEL Menu_maintenance
 ###install-win###    # Add options (z_user=..., z_path=..., etc.) to this line.
 ###install-win###    append initrd=initrdunattend
 
-###install-linux###LABEL Installation Debian Wheezy
-###install-linux###    MENU LABEL ^Installation Debian Wheezy
-###install-linux###    KERNEL menu.c32
-###install-linux###    APPEND pxelinux.cfg/inst_wheezy.cfg
-###install-linux###
 ###install-linux###LABEL Installation Debian Jessie
 ###install-linux###    MENU LABEL ^Installation Debian Jessie
 ###install-linux###    KERNEL menu.c32
-###install-linux###    APPEND pxelinux.cfg/inst_jessie.cfg
+###install-linux###    APPEND pxelinux.cfg/inst_debian.cfg
 ###install-linux###
 ###install-linux###LABEL Installation Ubuntu et xubuntu trusty
 ###install-linux###    MENU LABEL ^Installation Ubuntu
