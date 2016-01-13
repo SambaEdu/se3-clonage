@@ -538,18 +538,18 @@ for($i=0;$i<count($id_machine);$i++) {
 		// On écrit le fichier preseed dans le bon dossier
 		$dossier_preseed="/var/www/se3/tmp/";
         $dossier_preseed_src="/var/www/install/";
-        $preseeddebian="preseed_debian_jessie.cfg";
-        $preseedmonreseau="preseed_debian_jessie_monreseau.cfg";
+        $preseeddebian="preseed_debian.cfg";
+        $preseedmonreseau="preseed_debian_monreseau.cfg";
 		//$dossier_unattend_txt="/var/www/preseeds";
         $preseeddest=$dossier_preseed.$nom_machine."_preseed.cfg";
     if ($fdisk==0) {
-        $preseedsrc=$dossier_preseed_src."preseed_debian_jessie_".$envbur.".cfg";
-        $preseedboot="preseed_debian_jessie_only.cfg";
+        $preseedsrc=$dossier_preseed_src."preseed_debian_".$envbur.".cfg";
+        $preseedboot="preseed_debian_only.cfg";
     }
     else {
      if ($fdisk==1) {
-         $preseedsrc=$dossier_preseed_src."preseed_debian_jessie_".$envbur."_dboot.cfg";
-         $preseedboot="preseed_debian_jessie_dboot.cfg";
+         $preseedsrc=$dossier_preseed_src."preseed_debian_".$envbur."_dboot.cfg";
+         $preseedboot="preseed_debian_dboot.cfg";
     }   
     }
     $fu=fopen($dossier_preseed.$nom_machine."_preseed.cfg","w+");

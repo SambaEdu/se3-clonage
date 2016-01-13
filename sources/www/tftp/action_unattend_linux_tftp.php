@@ -38,6 +38,9 @@ if (is_admin("system_is_admin",$login)!="Y") {
 include "tftp.inc.php";
 	// Choix de l'OS
 	$os=isset($_POST['os']) ? $_POST['os'] : (isset($_GET['os']) ? $_GET['os'] : NULL);
+        $osversion=isset($_POST['osversion']) ? $_POST['osversion'] : (isset($_GET['osversion']) ? $_GET['osversion'] : NULL);
+        
+        
 	// Choix des parcs:
 	$parc=isset($_POST['parc']) ? $_POST['parc'] : (isset($_GET['parc']) ? $_GET['parc'] : NULL);
 	// Choix des machines:
@@ -68,7 +71,7 @@ include "tftp.inc.php";
         
         
         // Verid présence dossier install
-        $chemin_install="/tftpboot/pxelinux.cfg/inst_wheezy.cfg";
+        $chemin_install="/tftpboot/pxelinux.cfg/inst_debian.cfg";
         if(!file_exists($chemin_install)) {
             echo "<span style='color:red'>le fichier ".$chemin_install." est absent.</span><br />\n";
             echo "Effectuez le t&eacute;l&eacute;chargement du dispositif d'installation des postes Linux via la page suivante : <a href='config_tftp.php'>Configurer le module TFTP</a><br />\n";
@@ -81,17 +84,18 @@ include "tftp.inc.php";
         
         
         
-        // pour le moment on se contentera de Wheezy
-        $os="Debian Wheezy";
+        // pour le moment on se contentera de Jessie
+        $os="Debian";
+        $osversion="Jessie";
         
 	if(!isset($os)){
 		echo "<p>Installation automatique de Debian Wheezy ou Ubuntu Trusty</p>\n";
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 		echo "  <ul>
-    <li><input type='radio' name='os' id='windows' value='Windows' /><label for='windows'>Installer Windows</label></li>
-    <li><input type='radio' name='os' id='wheezy' value='Debian Wheezy' /><label for='wheezy'>Installer Debian Wheezy</label></li>
+    <li><input type='radio' name='os' id='debian' value='Debian Wheezy' /><label for='debian'>Installer Debian $osversion</label></li>
     <li><input type='radio' name='os' id='lucid' value='Xubuntu Trusty' /><label for='lucid'>Installer Ubuntu Lucid</label></li>
   </ul>\n";
+               
 echo "<p align='center'><input type=\"submit\" name=\"validation_os\" value=\"Valider\" /></p>\n";
 		echo "</form>\n";
 
@@ -112,14 +116,14 @@ echo "<p align='center'><input type=\"submit\" name=\"validation_os\" value=\"Va
 				$validation_parametres=isset($_POST['validation_parametres']) ? $_POST['validation_parametres'] : (isset($_GET['validation_parametres']) ? $_GET['validation_parametres'] : NULL);
 				if(!isset($validation_parametres)) {
 					
-					if($os=="Debian Wheezy") {
-                                            $content = choix_params_dist($parc,$os,$id_machine,$se3ip,$ntpserv,$xppass);
+					if($os=="Debian") {
+                                            $content = choix_params_dist($parc,$os,$osversion,$id_machine,$se3ip,$ntpserv,$xppass);
                                             
                                             //echo "deb choisie";
                                         //include('includes/03_choix_parametres_wheezy.php');
                                         }
 					elseif($os=="Xubuntu Trusty")
-						choix_params_dist($parc,$os,$id_machine,$se3ip,$ntpserv,$xppass);
+						choix_params_dist($parc,$os,$osversion,$id_machine,$se3ip,$ntpserv,$xppass);
 					else
 						die("Une erreur est survenue, veuillez pr&eacute;ciser le syst&egrave;me d'exploitation voulu.");
 				
@@ -127,7 +131,7 @@ echo "<p align='center'><input type=\"submit\" name=\"validation_os\" value=\"Va
                                 }
                                 else {
 //					
-					if($os=="Debian Wheezy")
+					if($os=="Debian")
                                                 valid_dist($id_machine);
 						//include('includes/04_validation_parametres_wheezy.php');
 //					elseif($os=="Xubuntu Trusty")
