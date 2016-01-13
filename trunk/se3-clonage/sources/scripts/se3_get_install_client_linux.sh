@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# $Id: se3_get_install_client_linux.sh 8705 2015-04-10 23:37:10Z keyser $
+# $Id: se3_get_install_client_linux.sh 9105 2016-01-07 09:45:14Z keyser $
 # Auteur: Stephane Boireau
-# Derniere modification: 29/05/2014
+# Derniere modification: 07/01/2016 - Ajout de la fonction de modification de l'url de telechargement - F.Molle
 
 # - telecharger le dispositif Client Linux depuis http://wawadeb.crdp.ac-caen.fr/iso/client_linux/
 
@@ -28,16 +28,23 @@ timedate=$(date "+%Y%m%d_%H%M%S")
 
 
 # Positionnement de l'url de telechargement en bdd
-if [ -n "$1" ]; then
-	src="$1"
-	SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
-elif [ -n "$SrcPxeClientLin" ]; then
-	src="$SrcPxeClientLin"
-else
-	src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux"
-	SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
+
+if [ "$1" = "url" ]; then
+	if [ -n "$2" ]; then
+		src="$2"
+		echo "mise en place de $2 comme url dans la bdd"
+		SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
+		echo "relancer le script sans argument pour lancer le telechargement"
+		exit 0
+	fi
 fi
 
+if [ -n "$SrcPxeClientLin" ]; then
+		src="$SrcPxeClientLin"
+	else
+		src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux_ng"
+		SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
+fi
 
 
 rm -rf "/var/se3/tmp_client_linux_*"
@@ -473,6 +480,12 @@ if [ "$temoin_telech_requis" = "y" ]; then
 		fi
 
 		chmod +x install_client_linux_mise_en_place.sh
+		
+		#NEttoyage des version précédentes 
+		rm -f bashrc inittab  logon_perso mise_en_place_win_on_linux_se3.sh tty1.conf
+		rm -f mesapplis* inst_* post-install_* preseed_*
+		rm -rf .mozilla .config unefois
+		
 		./install_client_linux_mise_en_place.sh
 
 		if [ "$?" != "0"  ]; then
