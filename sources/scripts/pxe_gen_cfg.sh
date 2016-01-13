@@ -67,8 +67,8 @@ label disk2
 
 # Label d'install linux :
 LABEL linuxinst
-KERNEL  debian-installer-jessie/$architecture/linux
-APPEND  auto=true priority=critical preseed/url=$url_preseed initrd=debian-installer-jessie/$architecture/initrd.gz --
+KERNEL  debian-installer/$architecture/linux
+APPEND  auto=true priority=critical preseed/url=$url_preseed initrd=debian-installer/$architecture/initrd.gz --
     
 # Choix de boot par défaut:
 default linuxinst
