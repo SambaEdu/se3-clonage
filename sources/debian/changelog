@@ -1,3 +1,9 @@
+se3-clonage (0.85) lucid; urgency=low
+
+  * support jessie et Trusty dans la partie installation linux
+
+ -- root <root@DevilXen>  Thu, 14 Jan 2016 01:12:16 +0100
+
 se3-clonage (0.84) lucid; urgency=low
 
   * support jessie et Trusty dans la partie installation linux
