@@ -17,6 +17,12 @@ else
 	cp /tftpboot/tftp_modeles_pxelinux.cfg/standard/* /tftpboot/pxelinux.cfg/
 fi
 
+# Positionnement de l'url de telechargement dispo linux en bdd
+if [ -z "$SrcPxeClientLin" ]; then
+	src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux_ng"
+	SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
+fi
+
 if [ -e "/tftpboot/pxelinux.cfg/divers.menu" ]; then
 	sed -i "s|###divers###||" /tftpboot/pxelinux.cfg/maintenance.menu
 fi
