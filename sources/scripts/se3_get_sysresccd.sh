@@ -48,7 +48,7 @@ chmod 700 $tmp
 t=$(echo "$*" | grep "check_version")
 if [ -n "$t" ]; then
 	cd $tmp
-	wget wget -O versions.txt $src/versions.txt?  > /dev/null 2>&1
+	wget -O versions.txt $src/versions.txt?  > /dev/null 2>&1
 	if [ "$?" = 0 -a -e versions.txt ]; then
 		version_srcd_en_ligne=$(grep ";systemrescuecd.iso$" $tmp/versions.txt | cut -d";" -f1)
 		version_autorun2_en_ligne=$(grep ";autorun2$" $tmp/versions.txt | cut -d";" -f1)
