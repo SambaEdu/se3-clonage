@@ -1,3 +1,9 @@
+se3-clonage (0.86) lucid; urgency=low
+
+  * correctif verification versions dispositif sysrescd
+
+ -- root <root@DevilXen>  Thu, 28 Jan 2016 10:50:47 +0100
+
 se3-clonage (0.85) lucid; urgency=low
 
   * support jessie et Trusty dans la partie installation linux
