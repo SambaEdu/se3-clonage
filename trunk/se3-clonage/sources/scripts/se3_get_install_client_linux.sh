@@ -485,6 +485,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 		rm -f bashrc inittab  logon_perso mise_en_place_win_on_linux_se3.sh tty1.conf
 		rm -f mesapplis* inst_* post-install_* preseed_*
 		rm -rf .mozilla .config unefois
+		rm -rf /home/netlogon/clients-linux/doc
 		
 		./install_client_linux_mise_en_place.sh
 
