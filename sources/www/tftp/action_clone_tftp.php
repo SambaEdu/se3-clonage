@@ -721,8 +721,8 @@ De nombreux clonages ont été effectués avec succès et ce beaucoup plus vite grâc
 
 				echo "<tr><td valign='top'>Type du système à cloner: </td>\n";
 				echo "<td>";
-				echo "<input type='radio' name='type_os' id='type_os_xp' value='xp' onchange='affiche_message_shutdown_cmd()' checked /><label for='type_os_xp'> XP (<i>il y a une intégration du domaine à faire</i>)</label><br />\n";
-				echo "<input type='radio' name='type_os' id='type_os_autre' value='autre' onchange='affiche_message_shutdown_cmd()' /><label for='type_os_autre'> Windows98, Linux ou autre (<i>pas d'intégration automatique du domaine</i>)</label>\n";
+				echo "<input type='radio' name='type_os' id='type_os_xp' value='xp' onchange='affiche_message_shutdown_cmd()' checked /><label for='type_os_xp'> Window XP, Seven, ou autre (<i>il y a une intégration du domaine à faire</i>)</label><br />\n";
+				echo "<input type='radio' name='type_os' id='type_os_autre' value='autre' onchange='affiche_message_shutdown_cmd()' /><label for='type_os_autre'> Linux ou autre cas (<i>pas d'intégration automatique du domaine</i>)</label>\n";
 				echo "</td></tr>\n";
 
 				echo "<tr><td valign='top'>Périphérique à cloner: </td>\n";
