@@ -20,7 +20,7 @@ require ("config.inc.php");
 /**
 
  * Fonctions tftp
- * @Version $Id$
+ * @Version $Id: tftp.inc.php 9151 2016-02-08 01:05:04Z keyser $
 
  * @Projet LCS / SambaEdu
 
@@ -85,7 +85,7 @@ echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Valider\"
 
 echo "</form>\n";
 //return $parc;
-//echo "<p><a href='index.php'>Retour à l'index</a>.</p>\n";
+//echo "<p><a href='index.php'>Retour Ã  l'index</a>.</p>\n";
 }
 
 
@@ -143,13 +143,13 @@ for($i=0;$i<count($parc);$i++){
 		}
 
 		if($suisje_printer=="non") {
-			// Réinitialisation:
+			// RÃ©initialisation:
 			$id_machine="";
 
 			echo "<tr>\n";
 			echo "<td width='15%'>".$mp[$loop]."</td>\n";
 
-			// Etat: allumé ou éteint
+			// Etat: allumÃ© ou Ã©teint
 			echo "<td width='15%'>";
 			$mp_curr=search_machines2("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 			if ($mp_curr[0]["ipHostNumber"]) {
@@ -164,7 +164,7 @@ for($i=0;$i<count($parc);$i++){
 			}
 			echo "</td>\n";
 
-			// Session: ouverte ou pas... sous quelle identité
+			// Session: ouverte ou pas... sous quelle identitÃ©
 			echo "<td width='15%'>\n";
 			echo "<div id='divsession$loop'>Patientez</div>\n";
 			echo "<script type='text/javascript'>
@@ -177,16 +177,16 @@ for($i=0;$i<count($parc);$i++){
 
 			// Etat config DHCP:
 			// Par la suite il ne faudra pas prendre les IP dans l'annuaire,
-			// mais dans la config DHCP parce que ce sont ces IP qui seront attribuées lors du boot PXE
+			// mais dans la config DHCP parce que ce sont ces IP qui seront attribuÃ©es lors du boot PXE
 			echo "<td width='15%'>\n";
 			//$mp_curr=search_machines("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 			if ($mp_curr[0]["macAddress"]) {
 				$sql="SELECT * FROM se3_dhcp WHERE mac='".$mp_curr[0]["macAddress"]."';";
-				// mp_curr[0]["macAddress"] correspond à une adresse mac recherchée dans l'annuaire LDAP.
-				// Si les machines ont été changées et que l'on a ré-attribué le nom, il faut penser à nettoyer l'entrée dans l'annuaire:
+				// mp_curr[0]["macAddress"] correspond Ã  une adresse mac recherchÃ©e dans l'annuaire LDAP.
+				// Si les machines ont Ã©tÃ© changÃ©es et que l'on a rÃ©-attribuÃ© le nom, il faut penser Ã  nettoyer l'entrÃ©e dans l'annuaire:
 				// source /usr/share/se3/sbin/variables_admin_ldap.sh
 				// ldapdelete -x -D $ROOTDN -w $PASSDN cn=NOM_MACHINE,ou=Computers,$BASEDN
-				// Et se reconnecter une fois sur la machine pour que le connexion.pl renseigne une nouvelle entrée cn=NOM_MACHINE
+				// Et se reconnecter une fois sur la machine pour que le connexion.pl renseigne une nouvelle entrÃ©e cn=NOM_MACHINE
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
@@ -204,7 +204,7 @@ for($i=0;$i<count($parc);$i++){
 				echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse MAC dans l'annuaire???\" title=\"Pas d'adresse MAC dans l'annuaire???\" />";
 			}
 			echo "</td>\n";
-			// Sélection des machines à sauvegarder:
+			// SÃ©lection des machines Ã  sauvegarder:
 			echo "<td width='15%'>\n";
 			/*
 			foreach($mp_curr[0] as $champ => $valeur) {
@@ -220,7 +220,7 @@ for($i=0;$i<count($parc);$i++){
 			echo "</td>\n";
 
 
-			// Action programmée
+			// Action programmÃ©e
 			echo "<td>\n";
 			if($id_machine!=""){
 				$sql="SELECT * FROM se3_tftp_action WHERE id='".$id_machine."';";
@@ -312,7 +312,7 @@ if(count($id_machine)>1){$s="s";}else{$s="";}
 echo "<p>Machine$s concern&eacute;e$s: $chaine</p>\n";
 
 
-// Date pour le nom de l'image à générer:
+// Date pour le nom de l'image Ã  gÃ©nÃ©rer:
 $aujourdhui = getdate();
 $mois_se3 = sprintf("%02d",$aujourdhui['mon']);
 $jour_se3 = sprintf("%02d",$aujourdhui['mday']);
@@ -336,7 +336,7 @@ $date_se3=$annee_se3.$mois_se3.$jour_se3;
 //    $xppass = $infos['xppass'];
 
 
-$content .= "<p>Choisissez les paramètres pour le lancement de l'installation: <br />\n
+$content .= "<p>Choisissez les paramÃ¨tres pour le lancement de l'installation: <br />\n
 
 <ul>
   <li>
@@ -372,7 +372,7 @@ $content .= "<p>Choisissez les paramètres pour le lancement de l'installation: <
    <ol>
     <li><input type='radio' name='fdisk' id='fdisk0' value='0' onclick=\"alert('Attention, toute autre installation sera supprim&eacute;e');\" /><label for='fdisk0'>Installer Debian sur le disque dur entier dans une seule partition</label></li>
     <!--<li><input type='radio' name='fdisk' id='fdisk2' value='2' oncheck=\"alert('Attention, toute autre installation sera supprim&eacute;e');\" /><label for='fdisk2'>Installer Debian sur le disque dur entier dans deux partitions (/home s&eacute;par&eacute;)</label></li>-->
-    <li><input type='radio' name='fdisk' id='fdisk1' value='1' /><label for='fdisk1'>Installer Debian sur une partition libre à côt&eacute; de Windows</label></li>
+    <li><input type='radio' name='fdisk' id='fdisk1' value='1' /><label for='fdisk1'>Installer Debian sur une partition libre Ã  cÃ´t&eacute; de Windows</label></li>
    </ol>
   </li>
   <li>
@@ -387,13 +387,13 @@ $content .= "<p>Choisissez les paramètres pour le lancement de l'installation: <
   </li>-->
  </ul>
  
- <p>Pour la ou les machines sélectionnées: <br>\n
+ <p>Pour la ou les machines sÃ©lectionnÃ©es: <br>\n
 <table border='0'>
 
-<tr><td valign='top'><input type='checkbox' id='wake' name='wake' value='y' checked /> </td><td><label for='wake'>Démarrer les machines par Wake-On-Lan/etherwake<br />si elles sont éteintes.</label></td></tr>\n
-<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait1' name='shutdown_reboot' value='wait1' /> </td><td><label for='shutdown_reboot_wait1'>Attendre le reboot des machines<br />même si aucune session n'est ouverte,</label></td></tr>\n
-<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait2' name='shutdown_reboot' value='wait2' checked /> </td><td><label for='shutdown_reboot_wait2'>Redémarrer les machines sans session ouverte<br />et attendre le reboot pour les machines<br />qui ont des sessions ouvertes,</label></td></tr>\n
-<tr><td valign='top'><input type='radio' id='shutdown_reboot_reboot' name='shutdown_reboot' value='reboot' /> </td><td><label for='shutdown_reboot_reboot'>Redémarrer les machines<br />même si une session est ouverte (<i>pô cool</i>).</label></td></tr>\n
+<tr><td valign='top'><input type='checkbox' id='wake' name='wake' value='y' checked /> </td><td><label for='wake'>DÃ©marrer les machines par Wake-On-Lan/etherwake<br />si elles sont Ã©teintes.</label></td></tr>\n
+<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait1' name='shutdown_reboot' value='wait1' /> </td><td><label for='shutdown_reboot_wait1'>Attendre le reboot des machines<br />mÃªme si aucune session n'est ouverte,</label></td></tr>\n
+<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait2' name='shutdown_reboot' value='wait2' checked /> </td><td><label for='shutdown_reboot_wait2'>RedÃ©marrer les machines sans session ouverte<br />et attendre le reboot pour les machines<br />qui ont des sessions ouvertes,</label></td></tr>\n
+<tr><td valign='top'><input type='radio' id='shutdown_reboot_reboot' name='shutdown_reboot' value='reboot' /> </td><td><label for='shutdown_reboot_reboot'>RedÃ©marrer les machines<br />mÃªme si une session est ouverte (<i>pÃ´ cool</i>).</label></td></tr>\n
 </table>\n
 
 
@@ -405,7 +405,7 @@ $content .="<p align='center'><input type=\"submit\" name=\"validation_parametre
 <p><i>NOTES:</i></p>\n
 <ul>\n
 
-<li>Pour que l'op&eacute;ration puisse être entièrement provoqu&eacute;e depuis le serveur, il faut que les postes clients soient configur&eacute;s pour booter en PXE (<i>ou au moins s'&eacute;veiller (wol) en bootant sur le r&eacute;seau</i>).<br />Dans le cas contraire, vous devrez passer sur les postes et presser F12 pour choisir de booter en PXE.</li>\n
+<li>Pour que l'op&eacute;ration puisse Ãªtre entiÃ¨rement provoqu&eacute;e depuis le serveur, il faut que les postes clients soient configur&eacute;s pour booter en PXE (<i>ou au moins s'&eacute;veiller (wol) en bootant sur le r&eacute;seau</i>).<br />Dans le cas contraire, vous devrez passer sur les postes et presser F12 pour choisir de booter en PXE.</li>\n
 </ul>\n
 
 
@@ -415,7 +415,7 @@ return $content;
 
 /**
 
-* ecriture des fichiers pressed en fction des infos précendentes 
+* ecriture des fichiers pressed en fction des infos prÃ©cendentes 
 * @Parametres $id_machine
 * @Return 
 */
@@ -432,7 +432,7 @@ echo "<h2>Validation des param&egrave;tres du lancement de l'installation</h2>\n
 //echo "$_POST[arch]";
 
 //=========================
-// Extraction de paramètres nécessaires par la suite
+// Extraction de paramÃ¨tres nÃ©cessaires par la suite
 $query = "SELECT * from params where name='xppass' OR name='se3_domain' OR name='se3ip'";
 $result = mysql_query($query);
 while($resultat = mysql_fetch_assoc($result))
@@ -464,7 +464,7 @@ $envbur = isset($_POST['envbur']) ? $_POST['envbur'] : 'xfce';
 
 //=========================
 // Partitionnement
-$fdisk=isset($_POST['fdisk']) ? $_POST['fdisk'] : 1; // Au cas où l'admin a désactivé Javascript, on installe dans une partition libre ...
+$fdisk=isset($_POST['fdisk']) ? $_POST['fdisk'] : 1; // Au cas oÃ¹ l'admin a dÃ©sactivÃ© Javascript, on installe dans une partition libre ...
 //=========================
 
 //=========================
@@ -477,7 +477,7 @@ $ntpserv = isset($_POST['ntpserv']) ? $_POST['ntpserv'] : 'ntp.ac-creteil.fr';
 //if(mysql_num_rows($res)>0) {
 //	$lig=mysql_fetch_object($res);
 //	if($lig->value!="") {$dhcp_ntp=$lig->value;}
-//	// Il faudrait contrôler que l'adresse est valide, non?
+//	// Il faudrait contrÃ´ler que l'adresse est valide, non?
 //}
 //=========================
 
@@ -518,7 +518,7 @@ $res=mysql_query($sql);
 if(mysql_num_rows($res)>0) {
 	$lig=mysql_fetch_object($res);
 	if($lig->value!="") {$dhcp_tftp_server=$lig->value;}
-	// Il faudrait contrôler que l'adresse est valide, non?
+	// Il faudrait contrÃ´ler que l'adresse est valide, non?
 }
 //=========================
 
@@ -535,7 +535,7 @@ for($i=0;$i<count($id_machine);$i++) {
 		$lig=mysql_fetch_object($res);
 		$nom_machine=$lig->name;
         
-		// On écrit le fichier preseed dans le bon dossier
+		// On Ã©crit le fichier preseed dans le bon dossier
 		$dossier_preseed="/var/www/se3/tmp/";
         $dossier_preseed_src="/var/www/install/";
         $preseeddebian="preseed_debian.cfg";
@@ -573,7 +573,7 @@ echo "<p>G&eacute;n&eacute;ration des fichiers dans /tftpboot/pxelinux.cfg/ pour
 
 // BOUCLE SUR LA LISTE DES $id_machine[$i]
 
-// Numéro de l'opération de remontée de rapport:
+// NumÃ©ro de l'opÃ©ration de remontÃ©e de rapport:
 $num_op=get_free_se3_action_tftp_num_op();
 for($i=0;$i<count($id_machine);$i++) {
 	$sql="SELECT * FROM se3_dhcp WHERE id='".$id_machine[$i]."';";
@@ -588,8 +588,8 @@ for($i=0;$i<count($id_machine);$i++) {
 		$mac_machine=$lig->mac;
 		$nom_machine=$lig->name;
 		$ip_machine=$lig->ip;
-//Ajouter ici le domaine local et l'url du preseed à  passer à  pxe_gen_cfg_debian.sh
-// domaine fait au début du script
+//Ajouter ici le domaine local et l'url du preseed Ã   passer Ã   pxe_gen_cfg_debian.sh
+// domaine fait au dÃ©but du script
         
 		$url_du_preseed="http://".$se3ip.":909/tmp/".$nom_machine."_preseed.cfg";
 
@@ -648,7 +648,7 @@ echo "<br />\n";
 // +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
 
-// On n'affiche le fichier que pour le dernier (à  titre d'info):
+// On n'affiche le fichier que pour le dernier (Ã   titre d'info):
 if(isset($corrige_mac)) {
 	$fich=fopen("/tftpboot/pxelinux.cfg/01-$corrige_mac","r");
 	if($fich) {

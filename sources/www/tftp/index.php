@@ -1,10 +1,10 @@
 <?php
-/* $Id$
+/* $Id: index.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
    Stephane Boireau
-   Distribué selon les termes de la licence GPL
+   DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -27,50 +27,50 @@ echo "<link type='text/css' rel='stylesheet' href='tftp.css' />\n";
 
 if (is_admin("system_is_admin",$login)=="Y")
 {
-	// Création de la table dès que possible:
+	// CrÃ©ation de la table dÃ¨s que possible:
 	creation_tftp_tables();
 
 	echo "<h1>".gettext("Action TFTP")."</h1>\n";
 
 	echo "<p>Voulez-vous: </p>\n";
 	echo "<ul>\n";
-	echo "<li><a href='consultation_tftp.php'>Consulter les actions programmées</a></li>\n";
+	echo "<li><a href='consultation_tftp.php'>Consulter les actions programmÃ©es</a></li>\n";
 	echo "<li><a href='action_svg_tftp.php'>Programmer une sauvegarde</a></li>\n";
 	echo "<li><a href='action_rest_tftp.php'>Programmer une restauration</a></li>\n";
 	echo "<li><a href='action_clone_tftp.php'>Programmer un clonage</a></li>\n";
-	echo "<li><a href='action_rapport_tftp.php'>Programmer une remontée de rapport de configuration/partitionnement/sauvegardes</a></li>\n";
-	echo "<li><a href='action_memtest_tftp.php'>Programmer un test de mémoire vive</a></li>\n";
+	echo "<li><a href='action_rapport_tftp.php'>Programmer une remontÃ©e de rapport de configuration/partitionnement/sauvegardes</a></li>\n";
+	echo "<li><a href='action_memtest_tftp.php'>Programmer un test de mÃ©moire vive</a></li>\n";
 	echo "</ul>\n";
 
 		echo "<pre>A FAIRE:
-- Exploiter les informations récupérées lors de sauvegardes (noms d'images,...) pour les propositions dans les formulaires (A FAIRE).
-- Ajouter la génération de rapport SliTaz -&gt; rapport.sh
-  (nécessite que la récup soit au point)
+- Exploiter les informations rÃ©cupÃ©rÃ©es lors de sauvegardes (noms d'images,...) pour les propositions dans les formulaires (A FAIRE).
+- Ajouter la gÃ©nÃ©ration de rapport SliTaz -&gt; rapport.sh
+  (nÃ©cessite que la rÃ©cup soit au point)
 - Explorer la piste alternative:
-  Si un SysRescCD est installé, on peut générer un CFG avec:
+  Si un SysRescCD est installÃ©, on peut gÃ©nÃ©rer un CFG avec:
 label nofb
    kernel rescuecd
    append root=/dev/sda5 boot=/dev/sda vga=normal setkmap=fr work=sauvewin.sh
-Il faudrait cependant adapter le sauvewin.sh pour pouvoir prendre les choix en paramètres.
+Il faudrait cependant adapter le sauvewin.sh pour pouvoir prendre les choix en paramÃ¨tres.
 Ou porter le script sauve_part.sh mis au point pour SlisTaz vers SysRescCD.
-- Pouvoir taguer dans se3db.se3_dhcp les machines pouvant démarrer en PXE.
-- Pouvoir supprimer une tâche de la base... et supprimer les fichiers associés
-- La récupération des rapports de sauvegarde/restauration court sur une durée de 4H (durée en dur dans recup_rapport.php) après quoi elle est abandonnée.
-Si la sauvegarde/restauration n'est pas lancée effectivement assez vite (si le démarrage PXE est retardé pour un raison X ou Y, la récup risque de ne pas avoir lieu.)
+- Pouvoir taguer dans se3db.se3_dhcp les machines pouvant dÃ©marrer en PXE.
+- Pouvoir supprimer une tÃ¢che de la base... et supprimer les fichiers associÃ©s
+- La rÃ©cupÃ©ration des rapports de sauvegarde/restauration court sur une durÃ©e de 4H (durÃ©e en dur dans recup_rapport.php) aprÃ¨s quoi elle est abandonnÃ©e.
+Si la sauvegarde/restauration n'est pas lancÃ©e effectivement assez vite (si le dÃ©marrage PXE est retardÃ© pour un raison X ou Y, la rÃ©cup risque de ne pas avoir lieu.)
 Il faudrait revoir cela.</pre>\n";
 
 	echo "<p><i>NOTES</i>:</p>\n";
 	echo "<ul>\n";
 
-	echo "<li><p>Pour fonctionner intégralement, le dispositif nécessite que les machines démarrent par défaut en PXE.<br />Quand aucune tâche n'est programmée, c'est le /tftpboot/pxelinux.cfg/default qui est proposé aux machines.<br />Après 60s, en l'absence d'un autre choix, (<i>ou appui sur ENTREE</i>), le boot est lancé sur le périphérique suivant (<i>disque dur, ou CD selon le paramétrage du BIOS</i>).<br />Quand une action est programmée, un fichier /tftpboot/pxelinux.cfg/01-ADRESSE_MAC est proposé au client et permet de démarrer par défaut, après 6s, sur le choix programmé via l'interface.</p></li>\n";
+	echo "<li><p>Pour fonctionner intÃ©gralement, le dispositif nÃ©cessite que les machines dÃ©marrent par dÃ©faut en PXE.<br />Quand aucune tÃ¢che n'est programmÃ©e, c'est le /tftpboot/pxelinux.cfg/default qui est proposÃ© aux machines.<br />AprÃ¨s 60s, en l'absence d'un autre choix, (<i>ou appui sur ENTREE</i>), le boot est lancÃ© sur le pÃ©riphÃ©rique suivant (<i>disque dur, ou CD selon le paramÃ©trage du BIOS</i>).<br />Quand une action est programmÃ©e, un fichier /tftpboot/pxelinux.cfg/01-ADRESSE_MAC est proposÃ© au client et permet de dÃ©marrer par dÃ©faut, aprÃ¨s 6s, sur le choix programmÃ© via l'interface.</p></li>\n";
 
-	echo "<li><p>Le boot par défaut sur PXE est potentiellement dangereux: Si quelqu'un dans l'établissement est capable de monter son propre serveur TFTP+DHCP et s'il réussit à répondre aux demandes DHCP avant le serveur TFTP+DHCP du SE3, il peut faire démarrer les clients sur l'image de boot qu'il aura préparée... et éventuellement lancer un formatage du disque dur des clients sur lesquels il aura provoqué le démarrage.</p></li>\n";
+	echo "<li><p>Le boot par dÃ©faut sur PXE est potentiellement dangereux: Si quelqu'un dans l'Ã©tablissement est capable de monter son propre serveur TFTP+DHCP et s'il rÃ©ussit Ã  rÃ©pondre aux demandes DHCP avant le serveur TFTP+DHCP du SE3, il peut faire dÃ©marrer les clients sur l'image de boot qu'il aura prÃ©parÃ©e... et Ã©ventuellement lancer un formatage du disque dur des clients sur lesquels il aura provoquÃ© le dÃ©marrage.</p></li>\n";
 
 	echo "</ul>\n";
 }
 else
 {
-	print (gettext("Vous n'avez pas les droits nécessaires pour ouvrir cette page..."));
+	print (gettext("Vous n'avez pas les droits nÃ©cessaires pour ouvrir cette page..."));
 }
 
 // Footer

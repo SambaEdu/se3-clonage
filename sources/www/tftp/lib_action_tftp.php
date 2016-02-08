@@ -1,11 +1,11 @@
 <?php
 /*
-* $Id$
+* $Id: lib_action_tftp.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
    Stephane Boireau
-   Distribué selon les termes de la licence GPL
+   DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -22,7 +22,7 @@ infos VARCHAR(255)
 );";
 	$creation_table=mysql_query($sql);
 	if(!$creation_table) {
-		echo "<span style='color:red'>Erreur lors de la création de la table d'après la requête: </span><br /><pre style='color:green; border:1px solid red;'>$sql</pre>\n";
+		echo "<span style='color:red'>Erreur lors de la crÃ©ation de la table d'aprÃ¨s la requÃªte: </span><br /><pre style='color:green; border:1px solid red;'>$sql</pre>\n";
 		$retour=false;
 	}
 
@@ -39,7 +39,7 @@ PRIMARY KEY  (identifiant)
 );";
 	$creation_table=mysql_query($sql);
 	if(!$creation_table) {
-		echo "<span style='color:red'>Erreur lors de la création de la table d'après la requête: </span><br /><pre style='color:green; border:1px solid red;'>$sql</pre>\n";
+		echo "<span style='color:red'>Erreur lors de la crÃ©ation de la table d'aprÃ¨s la requÃªte: </span><br /><pre style='color:green; border:1px solid red;'>$sql</pre>\n";
 		$retour=false;
 	}
 
@@ -58,7 +58,7 @@ PRIMARY KEY  (identifiant)
 );";
 	$creation_table=mysql_query($sql);
 	if(!$creation_table) {
-		echo "<span style='color:red'>Erreur lors de la création de la table d'après la requête: </span><br /><pre style='color:green; border:1px solid red;'>$sql</pre>\n";
+		echo "<span style='color:red'>Erreur lors de la crÃ©ation de la table d'aprÃ¨s la requÃªte: </span><br /><pre style='color:green; border:1px solid red;'>$sql</pre>\n";
 		$retour=false;
 	}
 
@@ -73,7 +73,7 @@ PRIMARY KEY  (identifiant)
 );";
 	$creation_table=mysql_query($sql);
 	if(!$creation_table) {
-		echo "<span style='color:red'>Erreur lors de la création de la table d'après la requête: </span><br /><pre style='color:green; border:1px solid red;'>$sql</pre>\n";
+		echo "<span style='color:red'>Erreur lors de la crÃ©ation de la table d'aprÃ¨s la requÃªte: </span><br /><pre style='color:green; border:1px solid red;'>$sql</pre>\n";
 		$retour=false;
 	}
 
@@ -135,13 +135,13 @@ function get_free_se3_action_tftp_num_op () {
 function search_machines2 ($filter,$branch) {
 	/*
 	Function: search_machines2
-	Il s'agit d'une modification de search_machines() destinée à récupérer aussi l'adresse MAC
+	Il s'agit d'une modification de search_machines() destinÃ©e Ã  rÃ©cupÃ©rer aussi l'adresse MAC
 
 	Recherche de machines dans l'ou $branch
 
 	Parameters:
 		$filter - Un filtre de recherche permettant l'extraction de l'annuaire des machines
-		$branch - L'ou correspondant à l'ou contenant les machines
+		$branch - L'ou correspondant Ã  l'ou contenant les machines
 
 	Return:
 	Retourne un tableau avec les machines
@@ -204,9 +204,9 @@ function mysql_date_to_fr_date($date) {
 	$tab1=explode(" ",$date);
 	$tab11=explode("-",$tab1[0]);
 	$tab21=explode(":",$tab1[1]);
-	//return sprintf("%02d",$tab11[2])."/".sprintf("%02d",$tab11[1])."/".$tab11[0]." à ".sprintf("%02d",$tab21[0])."H".sprintf("%02d",$tab21[1])."M".sprintf("%02d",$tab21[2])."S";
-	return sprintf("%02d",$tab11[2])."/".sprintf("%02d",$tab11[1])."/".$tab11[0]." à ".sprintf("%02d",$tab21[0]).":".sprintf("%02d",$tab21[1]).":".sprintf("%02d",$tab21[2]);
-	//return sprintf("%02d",$tab11[2])."/".sprintf("%02d",$tab11[1])."/".$tab11[0]." à ".sprintf("%02d",$tab21[0])."H";
+	//return sprintf("%02d",$tab11[2])."/".sprintf("%02d",$tab11[1])."/".$tab11[0]." Ã  ".sprintf("%02d",$tab21[0])."H".sprintf("%02d",$tab21[1])."M".sprintf("%02d",$tab21[2])."S";
+	return sprintf("%02d",$tab11[2])."/".sprintf("%02d",$tab11[1])."/".$tab11[0]." Ã  ".sprintf("%02d",$tab21[0]).":".sprintf("%02d",$tab21[1]).":".sprintf("%02d",$tab21[2]);
+	//return sprintf("%02d",$tab11[2])."/".sprintf("%02d",$tab11[1])."/".$tab11[0]." Ã  ".sprintf("%02d",$tab21[0])."H";
 }
 //====================================================
 function affiche_pxe_cfg($texte) {
@@ -241,7 +241,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 
 	// On passe sinon un $mode=light
 	if(!isset($mode)) {
-		echo "<p>Voici les paramètres de l'action programmée: <br />";
+		echo "<p>Voici les paramÃ¨tres de l'action programmÃ©e: <br />";
 	}
 
 	$corrige_mac=strtolower(strtr($mac_machine,":","-"));
@@ -272,7 +272,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 			}
 			//elseif(strstr($ligne, "default u2auto")) {
 			elseif(strstr($ligne, "label u2auto")) {
-				$type_action="Récepteur UdpCast";
+				$type_action="RÃ©cepteur UdpCast";
 			}
                         elseif(strstr($ligne, "label linuxinst")) {
 				$type_action="Installation client Linux";
@@ -293,7 +293,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 						if(preg_match("/^src_part=/", $tab[$i])) {
 							$src_part=preg_replace("/^src_part=/", "", $tab[$i]);
 							//echo "\$src_part=$src_part<br />";
-							$infos.="<tr><th>Partition sauvegardée</th><td>$src_part</td></tr>";
+							$infos.="<tr><th>Partition sauvegardÃ©e</th><td>$src_part</td></tr>";
 						}
 						elseif(preg_match("/^dest_part=/", $tab[$i])) {
 							$dest_part=preg_replace("/^dest_part=/", "", $tab[$i]);
@@ -313,7 +313,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 						elseif(preg_match("/^delais_reboot=/", $tab[$i])) {
 							$delais_reboot=preg_replace("/^delais_reboot=/", "", $tab[$i]);
 							//echo "\$delais_reboot=$delais_reboot<br />";
-							$infos.="<tr><th>Délai avant reboot</th><td>$delais_reboot</td></tr>";
+							$infos.="<tr><th>DÃ©lai avant reboot</th><td>$delais_reboot</td></tr>";
 						}
 					}
 				}
@@ -330,7 +330,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 						}
 						elseif(preg_match("/^dest_part=/", $tab[$i])) {
 							$dest_part=preg_replace("/^dest_part=/", "", $tab[$i]);
-							$infos.="<tr><th>Partition restaurée</th><td>$dest_part</td></tr>";
+							$infos.="<tr><th>Partition restaurÃ©e</th><td>$dest_part</td></tr>";
 						}
 						elseif(preg_match("/^nom_image=/", $tab[$i])) {
 							$nom_image=preg_replace("/^nom_image=/", "", $tab[$i]);
@@ -343,7 +343,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 						}
 						elseif(preg_match("/^delais_reboot=/", $tab[$i])) {
 							$delais_reboot=preg_replace("/^delais_reboot=/", "", $tab[$i]);
-							$infos.="<tr><th>Délai avant reboot</th><td>$delais_reboot</td></tr>";
+							$infos.="<tr><th>DÃ©lai avant reboot</th><td>$delais_reboot</td></tr>";
 						}
 					}
 				}
@@ -364,7 +364,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 						}
 						elseif(preg_match("/^disk=/", $tab[$i])) {
 							$disk=preg_replace("/^disk=/", "", $tab[$i]);
-							$infos.="<tr><th>Disque ou partition émis(e)</th><td>$disk</td></tr>";
+							$infos.="<tr><th>Disque ou partition Ã©mis(e)</th><td>$disk</td></tr>";
 						}
 						elseif(preg_match("/^enableDiskmodule=/", $tab[$i])) {
 							$enableDiskmodule=preg_replace("/^enableDiskmodule=/", "", $tab[$i]);
@@ -376,7 +376,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 						}
 						elseif(preg_match("/^netmodule=/", $tab[$i])) {
 							$netmodule=preg_replace("/^netmodule=/", "", $tab[$i]);
-							$infos.="<tr><th>Pilote réseau</th><td>$netmodule</td></tr>";
+							$infos.="<tr><th>Pilote rÃ©seau</th><td>$netmodule</td></tr>";
 						}
 						elseif(preg_match("/^udpcparam=/", $tab[$i])) {
 							//$udpcparam="--max-wait=".$max_wait."--min-receivers=".$min_receivers;
@@ -384,11 +384,11 @@ function visu_tache($mac_machine,$mode=NULL) {
 							for($j=0;$j<count($udpcparam);$j++) {
 								if(preg_match("/^max-wait=/", $udpcparam[$j])) {
 									$max_wait=preg_replace("/^max-wait=/", "", $udpcparam[$j]);
-									$infos.="<tr><th>Délai maximum avant de lancer le clonage<br />même si un client fait défaut</th><td>$max_wait</td></tr>";
+									$infos.="<tr><th>DÃ©lai maximum avant de lancer le clonage<br />mÃªme si un client fait dÃ©faut</th><td>$max_wait</td></tr>";
 								}
 								elseif(preg_match("/^min-receivers=/", $udpcparam[$j])) {
 									$min_receivers=preg_replace("/^min-receivers=/", "", $udpcparam[$j]);
-									$infos.="<tr><th>Nombre de clients à attendre</th><td>$min_receivers</td></tr>";
+									$infos.="<tr><th>Nombre de clients Ã  attendre</th><td>$min_receivers</td></tr>";
 								}
 							}
 						}
@@ -399,7 +399,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 					}
 				}
 			}
-			elseif($type_action=="Récepteur UdpCast") {
+			elseif($type_action=="RÃ©cepteur UdpCast") {
 				//append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=$compr port=$port umode=rcv disk=$disk auto_reboot=$auto_reboot enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule udpcparam=$udpcparam
 				if(strstr($ligne, "append initrd=udprd root=01:00 persoparams=oui lang=FR kbmap=FR dhcp=yes compr=")) {
 					unset($tab);
@@ -415,7 +415,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 						}
 						elseif(preg_match("/^disk=/", $tab[$i])) {
 							$disk=preg_replace("/^disk=/", "", $tab[$i]);
-							$infos.="<tr><th>Disque ou partition écrasé(e)</th><td>$disk</td></tr>";
+							$infos.="<tr><th>Disque ou partition Ã©crasÃ©(e)</th><td>$disk</td></tr>";
 						}
 						elseif(preg_match("/^enableDiskmodule=/", $tab[$i])) {
 							$enableDiskmodule=preg_replace("/^enableDiskmodule=/", "", $tab[$i]);
@@ -427,12 +427,12 @@ function visu_tache($mac_machine,$mode=NULL) {
 						}
 						elseif(preg_match("/^netmodule=/", $tab[$i])) {
 							$netmodule=preg_replace("/^netmodule=/", "", $tab[$i]);
-							$infos.="<tr><th>Pilote réseau</th><td>$netmodule</td></tr>";
+							$infos.="<tr><th>Pilote rÃ©seau</th><td>$netmodule</td></tr>";
 						}
 						elseif(preg_match("/^udpcparam=/", $tab[$i])) {
 							//$udpcparam="--start-timeout=".$start_timeout;
 							$udpcparam=preg_replace("/^udpcparam=--start-timeout=/", "", $tab[$i]);
-							$infos.="<tr><th>Délai avant abandon<br />si le clonage ne démarre pas</th><td>$udpcparam</td></tr>";
+							$infos.="<tr><th>DÃ©lai avant abandon<br />si le clonage ne dÃ©marre pas</th><td>$udpcparam</td></tr>";
 						}
 						elseif(preg_match("/^auto_reboot=/", $tab[$i])) {
 							$auto_reboot=preg_replace("/^auto_reboot=/", "", $tab[$i]);
@@ -468,7 +468,7 @@ function visu_tache($mac_machine,$mode=NULL) {
 		}
 	}
 	else {
-		echo "<p>Il n'a pas été possible d'ouvrir le fichier /tftpboot/pxelinux.cfg/01-$corrige_mac</p>\n";
+		echo "<p>Il n'a pas Ã©tÃ© possible d'ouvrir le fichier /tftpboot/pxelinux.cfg/01-$corrige_mac</p>\n";
 	}
 }
 // Fin de visu_tache()
@@ -517,7 +517,7 @@ function liste_sauvegardes($name,$id="",$mac="",$order_by='date DESC',$limit="")
 	$champs=array('id', 'name', 'mac', 'partition', 'image', 'date', 'descriptif', 'df', 'partitionnement', 'identifiant');
 
 	// Une machine peut changer de nom
-	// Une recherche par MAC ou ID donnera plus de réponses... mais peut-être avec des sauvegardes dans lesquelles la machine avait un autre nom
+	// Une recherche par MAC ou ID donnera plus de rÃ©ponses... mais peut-Ãªtre avec des sauvegardes dans lesquelles la machine avait un autre nom
 	if($mac!="") {
 		$sql="select * from se3_tftp_sauvegardes WHERE mac='$mac' ORDER BY $order_by";
 	}
@@ -587,7 +587,7 @@ function liste_rapports($name,$id="",$mac="",$order_by='date DESC',$limit="") {
 	$champs=array('id', 'name', 'mac', 'date', 'tache', 'statut', 'descriptif', 'identifiant');
 
 	// Une machine peut changer de nom
-	// Une recherche par MAC ou ID donnera plus de réponses... mais peut-être avec des sauvegardes dans lesquelles la machine avait un autre nom
+	// Une recherche par MAC ou ID donnera plus de rÃ©ponses... mais peut-Ãªtre avec des sauvegardes dans lesquelles la machine avait un autre nom
 	if($mac!="") {
 		$sql="select * from se3_tftp_rapports WHERE mac='$mac' ORDER BY $order_by";
 	}

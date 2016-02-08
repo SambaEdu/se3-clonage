@@ -1,12 +1,12 @@
 <?php
-/* $Id$
+/* $Id: action_unattend_linux_tftp.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
    Stephane Boireau
-   Modifié par Guillaume Barré
+   ModifiÃ© par Guillaume BarrÃ©
  * modifs keyser 12/2014
-   Distribué selon les termes de la licence GPL
+   DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -25,7 +25,7 @@ $_SESSION["pageaide"]="Client_Linux#";
 // On active les rapports d'erreurs:
 //error_reporting(E_ALL);
 
-// Bibliothèque prototype Ajax pour afficher en décalé l'état des machines:
+// BibliothÃ¨que prototype Ajax pour afficher en dÃ©calÃ© l'Ã©tat des machines:
 echo "<script type='text/javascript' src='../includes/prototype.js'></script>\n";
 
 // CSS pour mes tableaux:
@@ -49,11 +49,11 @@ include "tftp.inc.php";
 	$parametrage_action=isset($_POST['parametrage_action']) ? $_POST['parametrage_action'] : (isset($_GET['parametrage_action']) ? $_GET['parametrage_action'] : NULL);
 
 
-	// Création de la table dès que possible:
+	// CrÃ©ation de la table dÃ¨s que possible:
 	creation_tftp_tables();
 
         
-	// Paramètres SliTaz:
+	// ParamÃ¨tres SliTaz:
 	/*
 	$nom_image=isset($_POST['nom_image']) ? $_POST['nom_image'] : (isset($_GET['nom_image']) ? $_GET['nom_image'] : NULL);
 	$src_part=isset($_POST['src_part']) ? $_POST['src_part'] : (isset($_GET['src_part']) ? $_GET['src_part'] : NULL);
@@ -62,7 +62,7 @@ include "tftp.inc.php";
 	//$auto_reboot=isset($_POST['auto_reboot']) ? $_POST['auto_reboot'] : (isset($_GET['auto_reboot']) ? $_GET['auto_reboot'] : NULL);
 	//$delais_reboot=isset($_POST['delais_reboot']) ? $_POST['delais_reboot'] : (isset($_GET['delais_reboot']) ? $_GET['delais_reboot'] : NULL);
 
-	// Paramètres concernant l'action immédiate sur les machines choisies:
+	// ParamÃ¨tres concernant l'action immÃ©diate sur les machines choisies:
 	$wake=isset($_POST['wake']) ? $_POST['wake'] : (isset($_GET['wake']) ? $_GET['wake'] : "n");
 	$shutdown_reboot=isset($_POST['shutdown_reboot']) ? $_POST['shutdown_reboot'] : (isset($_GET['shutdown_reboot']) ? $_GET['shutdown_reboot'] : NULL);
 
@@ -70,7 +70,7 @@ include "tftp.inc.php";
 	echo "<h1>".gettext("Installation d'un client GNU/Linux".$os)."</h1>\n";
         
         
-        // Verid présence dossier install
+        // Verid prÃ©sence dossier install
         $chemin_install="/tftpboot/pxelinux.cfg/inst_debian.cfg";
         if(!file_exists($chemin_install)) {
             echo "<span style='color:red'>le fichier ".$chemin_install." est absent.</span><br />\n";
@@ -99,7 +99,7 @@ include "tftp.inc.php";
 echo "<p align='center'><input type=\"submit\" name=\"validation_os\" value=\"Valider\" /></p>\n";
 		echo "</form>\n";
 
-		echo "<p><a href='index.php'>Retour à l'index</a>.</p>\n";
+		echo "<p><a href='index.php'>Retour Ã  l'index</a>.</p>\n";
 	}
 	else{
 		if(!isset($parc) && !isset($parc[0])){

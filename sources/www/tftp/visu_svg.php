@@ -1,10 +1,10 @@
 <?php
-/* $Id$
+/* $Id: visu_svg.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
    Stephane Boireau
-   Distribué selon les termes de la licence GPL
+   DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -39,7 +39,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		$restriction_parcs="y";
 		$tab_delegated_parcs=list_delegated_parcs($login);
 		if(count($tab_delegated_parcs)==0) {
-			echo "<p style='color:red'>Aucun parc ne vous a été délégué.</p>\n";
+			echo "<p style='color:red'>Aucun parc ne vous a Ã©tÃ© dÃ©lÃ©guÃ©.</p>\n";
 			include ("pdp.inc.php");
 			die();
 		}
@@ -54,7 +54,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 			$nom=$lig->name;
 
 			for($loop=0;$loop<count($tab_delegated_parcs);$loop++) {
-				// La machine est-elle dans un des parcs délégués?
+				// La machine est-elle dans un des parcs dÃ©lÃ©guÃ©s?
 				if(is_machine_in_parc($nom,$tab_delegated_parcs[$loop])) {
 					$temoin_erreur='n';
 					break;
@@ -75,7 +75,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 			$sql="DELETE FROM se3_tftp_sauvegardes WHERE id='$id_machine' AND identifiant='$suppr[$i]';";
 			$res=mysql_query($sql);
 			if(!$res) {
-				$chaine.="<span style='color:red;'>Erreur lors de la suppression du rapport de sauvegarde n°$suppr[$i].</span><br />\n";
+				$chaine.="<span style='color:red;'>Erreur lors de la suppression du rapport de sauvegarde nÂ°$suppr[$i].</span><br />\n";
 			}
 		}
 		echo $chaine;
@@ -93,7 +93,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		$sql="SELECT * FROM se3_tftp_sauvegardes WHERE id='$id_machine' ORDER BY date DESC;";
 		$res2=mysql_query($sql);
 		if(mysql_num_rows($res2)==0) {
-			echo "<p>Aucune sauvegarde trouvée.</p>\n";
+			echo "<p>Aucune sauvegarde trouvÃ©e.</p>\n";
 		}
 		else {
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -101,7 +101,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 			echo "<tr>\n";
 			echo "<th>Nom</th>\n";
 			echo "<th>Date</th>\n";
-			echo "<th>Partition<br />sauvegardée</th>\n";
+			echo "<th>Partition<br />sauvegardÃ©e</th>\n";
 			echo "<th>Image</th>\n";
 			//echo "<th>Statut</th>\n";
 			echo "<th>Descriptif</th>\n";
@@ -109,7 +109,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 			//echo "<th>Supprimer</th>\n";
 			echo "<th><input type='submit' name='supprimer' value='Supprimer' /><br />\n";
 			echo "<a href='#' onclick='check_suppr(\"check\");return false'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Tout cocher\" title=\"Tout cocher\" /></a>\n";
-			echo " / <a href='#' onclick='check_suppr(\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout décocher\" title=\"Tout décocher\" /></a>\n";
+			echo " / <a href='#' onclick='check_suppr(\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout dÃ©cocher\" title=\"Tout dÃ©cocher\" /></a>\n";
 			echo "</th>\n";
 			echo "</tr>\n";
 			$cpt=0;
@@ -123,7 +123,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 				echo "<td>\n";
 				$tmp=ucfirst(strtolower($lig2->statut));
 				if($tmp=="Succes") {
-					echo "<span style='color:green;'>Succès</span>";
+					echo "<span style='color:green;'>SuccÃ¨s</span>";
 				}
 				elseif($tmp=="Echec") {
 					echo "<span style='color:red;'>Echec</span>";
@@ -162,7 +162,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 								$temoin_volume_image++;
 							}
 
-							if(preg_match("/^Espace total\/occupé\/encore disponible:$/",$tab_descr[$i])) {
+							if(preg_match("/^Espace total\/occupÃ©\/encore disponible:$/",$tab_descr[$i])) {
 								break;
 							}
 
@@ -223,7 +223,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 									unset($tab_esp);
 									$tab_esp=explode(" ",preg_replace("/ {2,}/"," ",preg_replace("/\t/"," ",$tab_descr[$i])));
 									echo "<tr><th>V.total partition</th><td>".$tab_esp[1]."</td></tr>\n";
-									echo "<tr><th>V.occupé</th><td>".$tab_esp[2]."</td></tr>\n";
+									echo "<tr><th>V.occupÃ©</th><td>".$tab_esp[2]."</td></tr>\n";
 									echo "<tr><th>V.libre</th><td>".$tab_esp[3]."</td></tr>\n";
 								}
 								$temoin_espace_dispo++;
@@ -242,7 +242,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 							unset($tab_esp);
 							$tab_esp=explode(" ",preg_replace("/ {2,}/"," ",preg_replace("/\t/"," ",$lig2->df)));
 							echo "<tr><th>V.total partition</th><td>".$tab_esp[1]."</td></tr>\n";
-							echo "<tr><th>V.occupé</th><td>".$tab_esp[2]."</td></tr>\n";
+							echo "<tr><th>V.occupÃ©</th><td>".$tab_esp[2]."</td></tr>\n";
 							echo "<tr><th>V.libre</th><td>".$tab_esp[3]."</td></tr>\n";
 						}
 						//echo "</td></tr>\n";
@@ -287,7 +287,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 <ul>\n";
 	//echo "<li>Modifier le traitement sur le descriptif pour extraire/mettre en valeur les infos.</li>\n";
 	echo "<li>Permettre de supprimer un rapport de sauvegarde: FAIT.<br />
-	En revanche, rien ne permet actuellement de gérer les doublons.</li>
+	En revanche, rien ne permet actuellement de gÃ©rer les doublons.</li>
 </ul>\n";
 	}
 	else {

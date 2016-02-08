@@ -1,10 +1,10 @@
 <?php
-/* $Id$
+/* $Id: action_rapport_tftp.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
    Stephane Boireau
-   Distribué selon les termes de la licence GPL
+   DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -23,7 +23,7 @@ $_SESSION["pageaide"]="Le_module_Clonage_des_stations#Programmer_un_rapport";
 // On active les rapports d'erreurs:
 //error_reporting(E_ALL);
 
-// Bibliothèque prototype Ajax pour afficher en décalé l'état des machines:
+// BibliothÃ¨que prototype Ajax pour afficher en dÃ©calÃ© l'Ã©tat des machines:
 echo "<script type='text/javascript' src='../includes/prototype.js'></script>\n";
 
 // CSS pour mes tableaux:
@@ -41,10 +41,10 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	$distrib=isset($_POST['distrib']) ? $_POST['distrib'] : "slitaz";
 	$sysresccd_kernel=isset($_POST['sysresccd_kernel']) ? $_POST['sysresccd_kernel'] : "rescue32";
 
-	// Création de la table dès que possible:
+	// CrÃ©ation de la table dÃ¨s que possible:
 	creation_tftp_tables();
 
-	// Paramètres SliTaz:
+	// ParamÃ¨tres SliTaz:
 	/*
 	$nom_image=isset($_POST['nom_image']) ? $_POST['nom_image'] : (isset($_GET['nom_image']) ? $_GET['nom_image'] : NULL);
 	$src_part=isset($_POST['src_part']) ? $_POST['src_part'] : (isset($_GET['src_part']) ? $_GET['src_part'] : NULL);
@@ -53,7 +53,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	$auto_reboot=isset($_POST['auto_reboot']) ? $_POST['auto_reboot'] : (isset($_GET['auto_reboot']) ? $_GET['auto_reboot'] : NULL);
 	$delais_reboot=isset($_POST['delais_reboot']) ? $_POST['delais_reboot'] : (isset($_GET['delais_reboot']) ? $_GET['delais_reboot'] : NULL);
 
-	// Paramètres concernant l'action immédiate sur les machines choisies:
+	// ParamÃ¨tres concernant l'action immÃ©diate sur les machines choisies:
 	$wake=isset($_POST['wake']) ? $_POST['wake'] : (isset($_GET['wake']) ? $_GET['wake'] : "n");
 	$shutdown_reboot=isset($_POST['shutdown_reboot']) ? $_POST['shutdown_reboot'] : (isset($_GET['shutdown_reboot']) ? $_GET['shutdown_reboot'] : NULL);
 
@@ -65,7 +65,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		$restriction_parcs="y";
 		$tab_delegated_parcs=list_delegated_parcs($login);
 		if(count($tab_delegated_parcs)==0) {
-			echo "<p>Aucun parc ne vous a été délégué.</p>\n";
+			echo "<p>Aucun parc ne vous a Ã©tÃ© dÃ©lÃ©guÃ©.</p>\n";
 			include ("pdp.inc.php");
 			die();
 		}
@@ -91,14 +91,14 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 
 
 	if(!isset($parc)){
-		echo "<p>Cette page doit vous permettre de programmer une récupération d'informations sur les machines choisies pour connaître les partitions, les sauvegardes présentes,...</p>\n";
+		echo "<p>Cette page doit vous permettre de programmer une rÃ©cupÃ©ration d'informations sur les machines choisies pour connaÃ®tre les partitions, les sauvegardes prÃ©sentes,...</p>\n";
 
 		echo "<p>Choisissez un ou des parcs:</p>\n";
 
 		$list_parcs=search_machines("objectclass=groupOfNames","parcs");
 		if ( count($list_parcs)==0) {
 			echo "<br><br>";
-			echo gettext("Il n'existe aucun parc. Vous devez d'abord créer un parc");
+			echo gettext("Il n'existe aucun parc. Vous devez d'abord crÃ©er un parc");
 			include ("pdp.inc.php");
 			exit;
 		}
@@ -149,7 +149,7 @@ if(nb_parcs==1) {
 }
 </script>\n";
 
-		echo "<p><a href='index.php'>Retour à l'index</a>.</p>\n";
+		echo "<p><a href='index.php'>Retour Ã  l'index</a>.</p>\n";
 	}
 	else {
 		if(!isset($_POST['parametrage_action'])){
@@ -180,9 +180,9 @@ if(nb_parcs==1) {
 				//echo "<th>Sauvegarde</th>\n";
 				echo "<th>Rapport<br />\n";
 				echo "<a href='#' onclick='check_machine($i,\"check\");return false'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Tout cocher\" title=\"Tout cocher\" /></a>\n";
-				echo " / <a href='#' onclick='check_machine($i,\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout décocher\" title=\"Tout décocher\" /></a>\n";
+				echo " / <a href='#' onclick='check_machine($i,\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout dÃ©cocher\" title=\"Tout dÃ©cocher\" /></a>\n";
 				echo "</th>\n";
-				echo "<th>Actions programmées</th>\n";
+				echo "<th>Actions programmÃ©es</th>\n";
 				echo "</tr>\n";
 
 				for ($loop=0; $loop < count($mp); $loop++) {
@@ -199,13 +199,13 @@ if(nb_parcs==1) {
 					}
 
 					if($suisje_printer=="non") {
-						// Réinitialisation:
+						// RÃ©initialisation:
 						$id_machine="";
 
 						echo "<tr>\n";
 						echo "<td width='20%'>".$mp[$loop]."</td>\n";
 
-						// Etat: allumé ou éteint
+						// Etat: allumÃ© ou Ã©teint
 						echo "<td width='20%'>";
 						$mp_curr=search_machines2("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 						if ($mp_curr[0]["ipHostNumber"]) {
@@ -221,7 +221,7 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Session: ouverte ou pas... sous quelle identité
+						// Session: ouverte ou pas... sous quelle identitÃ©
 						echo "<td width='20%'>\n";
 						echo "<div id='divsession$loop'>Patientez</div>\n";
 						echo "<script type='text/javascript'>
@@ -234,16 +234,16 @@ if(nb_parcs==1) {
 
 						// Etat config DHCP:
 						// Par la suite il ne faudra pas prendre les IP dans l'annuaire,
-						// mais dans la config DHCP parce que ce sont ces IP qui seront attribuées lors du boot PXE
+						// mais dans la config DHCP parce que ce sont ces IP qui seront attribuÃ©es lors du boot PXE
 						echo "<td width='20%'>\n";
 						//$mp_curr=search_machines("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 						if ($mp_curr[0]["macAddress"]) {
 							$sql="SELECT * FROM se3_dhcp WHERE mac='".$mp_curr[0]["macAddress"]."';";
-							// mp_curr[0]["macAddress"] correspond à une adresse mac recherchée dans l'annuaire LDAP.
-							// Si les machines ont été changées et que l'on a ré-attribué le nom, il faut penser à nettoyer l'entrée dans l'annuaire:
+							// mp_curr[0]["macAddress"] correspond Ã  une adresse mac recherchÃ©e dans l'annuaire LDAP.
+							// Si les machines ont Ã©tÃ© changÃ©es et que l'on a rÃ©-attribuÃ© le nom, il faut penser Ã  nettoyer l'entrÃ©e dans l'annuaire:
 							// source /usr/share/se3/sbin/variables_admin_ldap.sh
 							// ldapdelete -x -D $ROOTDN -w $PASSDN cn=NOM_MACHINE,ou=Computers,$BASEDN
-							// Et se reconnecter une fois sur la machine pour que le connexion.pl renseigne une nouvelle entrée cn=NOM_MACHINE
+							// Et se reconnecter une fois sur la machine pour que le connexion.pl renseigne une nouvelle entrÃ©e cn=NOM_MACHINE
 							//echo "$sql<br />";
 							$res=mysql_query($sql);
 							if(mysql_num_rows($res)>0) {
@@ -254,7 +254,7 @@ if(nb_parcs==1) {
 								echo "<img src=\"../elements/images/enabled.gif\" border='0' alt=\"$lig->ip\" title=\"$lig->ip\" />";
 							}
 							else {
-								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuée\" title=\"Pas d'adresse IP attribuée\" />";
+								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuÃ©e\" title=\"Pas d'adresse IP attribuÃ©e\" />";
 							}
 						}
 						else {
@@ -263,7 +263,7 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Sélection des machines à sauvegarder:
+						// SÃ©lection des machines Ã  sauvegarder:
 						echo "<td width='20%'>\n";
 						/*
 						foreach($mp_curr[0] as $champ => $valeur) {
@@ -303,17 +303,17 @@ if(nb_parcs==1) {
                                                 
                                                 
                                                 
-						// Action programmée
+						// Action programmÃ©e
 						echo "<td>\n";
 						if($id_machine!=""){
 							$sql="SELECT * FROM se3_tftp_action WHERE id='".$id_machine."';";
 							$res=mysql_query($sql);
 							if(mysql_num_rows($res)>0) {
 								$lig=mysql_fetch_object($res);
-								echo "<a href='visu_action.php?id_machine=$id_machine' target='_blank'>$lig->type programmé(e)</a>";
+								echo "<a href='visu_action.php?id_machine=$id_machine' target='_blank'>$lig->type programmÃ©(e)</a>";
 							}
 							else {
-								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmée\" title=\"Pas d'action programmée\" />";
+								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmÃ©e\" title=\"Pas d'action programmÃ©e\" />";
 							}
 						}
 						echo "</td>\n";
@@ -348,13 +348,13 @@ if(nb_parcs==1) {
 		else {
 			$validation_parametres=isset($_POST['validation_parametres']) ? $_POST['validation_parametres'] : (isset($_GET['validation_parametres']) ? $_GET['validation_parametres'] : NULL);
 			if(!isset($validation_parametres)) {
-				echo "<h2>Paramétrage de la remontée de rapport</h2>\n";
+				echo "<h2>ParamÃ©trage de la remontÃ©e de rapport</h2>\n";
 
 				$nombre_machines=count($id_machine);
 				if($nombre_machines==0){
 					echo "<p>ERREUR: Il faut choisir au moins une machine.</p>\n";
 
-					echo "<p><a href='#' onclick='history.go(-1);'>Retour au choix des machines sur lesquelles programmer une remontée de rapport</a>.</p>\n";
+					echo "<p><a href='#' onclick='history.go(-1);'>Retour au choix des machines sur lesquelles programmer une remontÃ©e de rapport</a>.</p>\n";
 
 					echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
 					include ("pdp.inc.php");
@@ -382,10 +382,10 @@ if(nb_parcs==1) {
 					}
 				}
 				if(count($id_machine)>1){$s="s";}else{$s="";}
-				echo "<p>Machine$s concernée$s: $chaine</p>\n";
+				echo "<p>Machine$s concernÃ©e$s: $chaine</p>\n";
 
 
-				// Date pour le nom de l'image à générer:
+				// Date pour le nom de l'image Ã  gÃ©nÃ©rer:
 				$aujourdhui = getdate();
 				$mois_se3 = sprintf("%02d",$aujourdhui['mon']);
 				$jour_se3 = sprintf("%02d",$aujourdhui['mday']);
@@ -396,14 +396,14 @@ if(nb_parcs==1) {
 
 				$date_se3=$annee_se3.$mois_se3.$jour_se3;
 
-				echo "<p>Choisissez les paramètres pour la remontée de rapport: <br />\n";
+				echo "<p>Choisissez les paramÃ¨tres pour la remontÃ©e de rapport: <br />\n";
 
 				$temoin_sysresccd=check_sysresccd_files();
 
 				if($temoin_sysresccd=="y") {
 					// Il faut aussi le noyau et l'initram.igz dans /tftpboot, 
 					echo "<input type='radio' name='distrib' id='distrib_slitaz' value='slitaz' onchange='affiche_sections_distrib()' /><label for='distrib_slitaz'>Utiliser la distribution SliTaz</label><br />\n";
-					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' checked /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)<br />\n";
+					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' checked /><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long Ã  booter et 300Mo de RAM minimum, mais meilleure dÃ©tection des pilotes</i>)<br />\n";
 
 echo "<div id='div_sysresccd_kernel'>\n";
 echo "<table border='0'>\n";
@@ -430,15 +430,15 @@ echo "</div>\n";
 				echo "<table border='0'>\n";
 				/*
 				echo "<tr><td>Nom de la sauvegarde: </td><td><input type='text' name='nom_image' value='image_$date_se3' />\n";
-				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Si vous laissez vide, un nom du type image_NOM_PARTITION_DATE_HEURE_MINUTE_SECONDE sera utilisé.')")."\"><img name=\"action_image1\"  src=\"../elements/images/help-info.gif\"></u>\n";
+				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Si vous laissez vide, un nom du type image_NOM_PARTITION_DATE_HEURE_MINUTE_SECONDE sera utilisÃ©.')")."\"><img name=\"action_image1\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
 
-				echo "<tr><td>Partition à sauvegarder: </td><td><input type='text' name='src_part' value='auto' />\n";
-				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda1, sda1,... selon les cas, ou laissez \'auto\' si la première partition du disque est bien la partition système à sauvegarder.')")."\"><img name=\"action_image2\"  src=\"../elements/images/help-info.gif\"></u>\n";
+				echo "<tr><td>Partition Ã  sauvegarder: </td><td><input type='text' name='src_part' value='auto' />\n";
+				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda1, sda1,... selon les cas, ou laissez \'auto\' si la premiÃ¨re partition du disque est bien la partition systÃ¨me Ã  sauvegarder.')")."\"><img name=\"action_image2\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
 
 				echo "<tr><td>Partition de stockage: </td><td><input type='text' name='dest_part' value='auto' />\n";
-				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la première partition Linux (<i>ou à défaut W$ après la partition système</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
+				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Proposer hda5, sda5,... selon les cas, ou laissez \'auto\' si la premiÃ¨re partition Linux (<i>ou Ã  dÃ©faut W$ aprÃ¨s la partition systÃ¨me</i>) est bien la partition de stockage.')")."\"><img name=\"action_image3\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td></tr>\n";
 				*/
 
@@ -465,27 +465,27 @@ echo "</div>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 
-				echo "<tr><td valign='top'>Ne pas rebooter ni éteindre la machine<br />en fin de rapport: </td>\n";
+				echo "<tr><td valign='top'>Ne pas rebooter ni Ã©teindre la machine<br />en fin de rapport: </td>\n";
 				echo "<td>\n";
 				echo "<input type='radio' name='auto_reboot' value='n' />\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 
 				echo "<tr><td valign='top'>\n";
-				echo "Délai avant reboot/arrêt:</td>\n";
+				echo "DÃ©lai avant reboot/arrÃªt:</td>\n";
 				echo "<td>\n";
 				echo "<input type='text' name='delais_reboot' value='90' size='3' />\n";
-				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Le délai doit être supérieur à 60 secondes pour permettre la récupération du rapport.')")."\"><img name=\"action_image4\"  src=\"../elements/images/help-info.gif\"></u>\n";
+				echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('Le dÃ©lai doit Ãªtre supÃ©rieur Ã  60 secondes pour permettre la rÃ©cupÃ©ration du rapport.')")."\"><img name=\"action_image4\"  src=\"../elements/images/help-info.gif\"></u>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 
-				echo "<tr><td valign='top'>Pour la ou les machines sélectionnées: </td>\n";
+				echo "<tr><td valign='top'>Pour la ou les machines sÃ©lectionnÃ©es: </td>\n";
 				echo "<td>\n";
 					echo "<table border='0'>\n";
-					echo "<tr><td valign='top'><input type='checkbox' id='wake' name='wake' value='y' checked /> </td><td><label for='wake'>Démarrer les machines par Wake-On-Lan/etherwake<br />si elles sont éteintes.</label></td></tr>\n";
-					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait1' name='shutdown_reboot' value='wait1' /> </td><td><label for='shutdown_reboot_wait1'>Attendre le reboot des machines<br />même si aucune session n'est ouverte,</label></td></tr>\n";
-					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait2' name='shutdown_reboot' value='wait2' checked /> </td><td><label for='shutdown_reboot_wait2'>Redémarrer les machines sans session ouverte<br />et attendre le reboot pour les machines<br />qui ont des sessions ouvertes,</label></td></tr>\n";
-					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_reboot' name='shutdown_reboot' value='reboot' /> </td><td><label for='shutdown_reboot_reboot'>Redémarrer les machines<br />même si une session est ouverte (<i>pô cool</i>).</label></td></tr>\n";
+					echo "<tr><td valign='top'><input type='checkbox' id='wake' name='wake' value='y' checked /> </td><td><label for='wake'>DÃ©marrer les machines par Wake-On-Lan/etherwake<br />si elles sont Ã©teintes.</label></td></tr>\n";
+					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait1' name='shutdown_reboot' value='wait1' /> </td><td><label for='shutdown_reboot_wait1'>Attendre le reboot des machines<br />mÃªme si aucune session n'est ouverte,</label></td></tr>\n";
+					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait2' name='shutdown_reboot' value='wait2' checked /> </td><td><label for='shutdown_reboot_wait2'>RedÃ©marrer les machines sans session ouverte<br />et attendre le reboot pour les machines<br />qui ont des sessions ouvertes,</label></td></tr>\n";
+					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_reboot' name='shutdown_reboot' value='reboot' /> </td><td><label for='shutdown_reboot_reboot'>RedÃ©marrer les machines<br />mÃªme si une session est ouverte (<i>pÃ´ cool</i>).</label></td></tr>\n";
 					echo "</table>\n";
 				echo "</td></tr>\n";
 
@@ -518,17 +518,17 @@ affiche_sections_distrib();
 
 				echo "<p><i>NOTES:</i></p>\n";
 				echo "<ul>\n";
-				//echo "<li>Ce choix nécessite une partition de sauvegarde sur la machine.</li>\n";
-				echo "<li><b>Attention:</b > Le délai avant reboot ajouté au temps de l'opération lancée doit dépasser la périodicité du script controle_actions_tftp.sh en crontab.<br />
-				Ce délai doit aussi permettre de récupérer en http://IP_CLIENT/~hacker/Public/*.txt des informations sur le succès ou l'échec de l'opération.<br />
-				Une tâche cron se charge d'effectuer le 'wget' sur les infos, puis le remplissage d'une table MySQL.<br />
-				La tâche cron est lancée toutes les 60s.</li>\n";
-				echo "<li>Pour que l'opération puisse être entièrement provoquée depuis le serveur, il faut que les postes clients soient configurés pour booter en PXE (<i>ou au moins s'éveiller (wol) en bootant sur le réseau</i>).<br />Dans le cas contraire, vous devrez passer sur les postes et presser F12 pour choisir de booter en PXE.</li>\n";
+				//echo "<li>Ce choix nÃ©cessite une partition de sauvegarde sur la machine.</li>\n";
+				echo "<li><b>Attention:</b > Le dÃ©lai avant reboot ajoutÃ© au temps de l'opÃ©ration lancÃ©e doit dÃ©passer la pÃ©riodicitÃ© du script controle_actions_tftp.sh en crontab.<br />
+				Ce dÃ©lai doit aussi permettre de rÃ©cupÃ©rer en http://IP_CLIENT/~hacker/Public/*.txt des informations sur le succÃ¨s ou l'Ã©chec de l'opÃ©ration.<br />
+				Une tÃ¢che cron se charge d'effectuer le 'wget' sur les infos, puis le remplissage d'une table MySQL.<br />
+				La tÃ¢che cron est lancÃ©e toutes les 60s.</li>\n";
+				echo "<li>Pour que l'opÃ©ration puisse Ãªtre entiÃ¨rement provoquÃ©e depuis le serveur, il faut que les postes clients soient configurÃ©s pour booter en PXE (<i>ou au moins s'Ã©veiller (wol) en bootant sur le rÃ©seau</i>).<br />Dans le cas contraire, vous devrez passer sur les postes et presser F12 pour choisir de booter en PXE.</li>\n";
 				echo "</ul>\n";
 
 			}
 			else {
-				echo "<h2>Validation des paramètres de la récupération de rapports</h2>\n";
+				echo "<h2>Validation des paramÃ¨tres de la rÃ©cupÃ©ration de rapports</h2>\n";
 
 				$opt_url_authorized_keys="";
 				if((isset($_POST['prendre_en_compte_url_authorized_keys']))&&(isset($_POST['url_authorized_keys']))&&($_POST['url_authorized_keys']!='')&&(preg_replace('|[A-Za-z0-9/:_\.\-]|','',$_POST['url_authorized_keys'])=='')) {
@@ -536,14 +536,14 @@ affiche_sections_distrib();
 					crob_setParam('url_authorized_keys',$_POST['url_authorized_keys'],'Url fichier authorized_keys pour acces ssh aux clients TFTP');
 				}
 
-				echo "<p>Rappel des paramètres:</p>\n";
+				echo "<p>Rappel des paramÃ¨tres:</p>\n";
 
 				$temoin_sysresccd=check_sysresccd_files();
 
 				if($temoin_sysresccd=="y") {
 					echo "<table class='crob'>\n";
 					echo "<tr>\n";
-					echo "<th style='text-align:left;'>Distribution linux à utiliser: </th>\n";
+					echo "<th style='text-align:left;'>Distribution linux Ã  utiliser: </th>\n";
 					echo "<td>\n";
 					echo $distrib;
 					if($distrib=='sysresccd') {
@@ -561,27 +561,27 @@ affiche_sections_distrib();
 				echo "<tr>\n";
 				echo "<th style='text-align:left;'>Nom de l'image: </th>\n";
 				echo "<td>\n";
-				if($nom_image=="") {echo "Nom généré automatiquement lors de la sauvegarde.";} else {echo $nom_image;}
+				if($nom_image=="") {echo "Nom gÃ©nÃ©rÃ© automatiquement lors de la sauvegarde.";} else {echo $nom_image;}
 				echo "</td>\n";
 				echo "</tr>\n";
 
 				echo "<tr>\n";
-				echo "<th style='text-align:left;'>Partition à sauvegarder: </th>\n";
+				echo "<th style='text-align:left;'>Partition Ã  sauvegarder: </th>\n";
 				echo "<td>\n";
-				if($src_part=="auto") {echo "Détectée automatiquement lors de la sauvegarde.";} else {echo $src_part;}
+				if($src_part=="auto") {echo "DÃ©tectÃ©e automatiquement lors de la sauvegarde.";} else {echo $src_part;}
 				echo "</td>\n";
 				echo "</tr>\n";
 
 				echo "<tr>\n";
 				echo "<th style='text-align:left;'>Partition de stockage de la sauvegarde: </th>\n";
 				echo "<td>\n";
-				if($dest_part=="auto") {echo "Détectée automatiquement lors de la sauvegarde.";} else {echo $dest_part;}
+				if($dest_part=="auto") {echo "DÃ©tectÃ©e automatiquement lors de la sauvegarde.";} else {echo $dest_part;}
 				echo "</td>\n";
 				echo "</tr>\n";
 				*/
 
 				echo "<tr>\n";
-				echo "<th style='text-align:left;'>Rebooter en fin d'opération: </th>\n";
+				echo "<th style='text-align:left;'>Rebooter en fin d'opÃ©ration: </th>\n";
 				echo "<td>\n";
 				echo $auto_reboot;
 				echo "</td>\n";
@@ -590,7 +590,7 @@ affiche_sections_distrib();
 				//if($auto_reboot=='y') {
 				if(($auto_reboot=='y')||($auto_reboot=='halt')) {
 					echo "<tr>\n";
-					echo "<th style='text-align:left;'>Délai avant reboot: </th>\n";
+					echo "<th style='text-align:left;'>DÃ©lai avant reboot: </th>\n";
 					echo "<td>\n";
 					echo "$delais_reboot s";
 					echo "</td>\n";
@@ -600,11 +600,11 @@ affiche_sections_distrib();
 				echo "</table>\n";
 
 
-				echo "<p>Génération du fichier dans /tftpboot/pxelinux.cfg/ pour la remontée de rapports.<br />\n";
+				echo "<p>GÃ©nÃ©ration du fichier dans /tftpboot/pxelinux.cfg/ pour la remontÃ©e de rapports.<br />\n";
 
 				// BOUCLE SUR LA LISTE DES $id_machine[$i]
 
-				// Numéro de l'opération de remontée de rapport:
+				// NumÃ©ro de l'opÃ©ration de remontÃ©e de rapport:
 				$num_op=get_free_se3_action_tftp_num_op();
 				for($i=0;$i<count($id_machine);$i++) {
 					$sql="SELECT * FROM se3_dhcp WHERE id='".$id_machine[$i]."';";
@@ -624,16 +624,16 @@ affiche_sections_distrib();
 						if($restriction_parcs=="y") {
 							$temoin_erreur='y';
 							for($loop=0; $loop<count($tab_delegated_parcs);$loop++) {
-								// La machine est-elle dans un des parcs délégués?
+								// La machine est-elle dans un des parcs dÃ©lÃ©guÃ©s?
 								if(is_machine_in_parc($nom_machine,$tab_delegated_parcs[$loop])) {$temoin_erreur='n';break;}
 							}
 						}
 
 						if($temoin_erreur=="y") {
-							echo "<p style='color:red'>La machine $nom_machine ne vous est pas déléguée</p>\n";
+							echo "<p style='color:red'>La machine $nom_machine ne vous est pas dÃ©lÃ©guÃ©e</p>\n";
 						}
 						else {
-							echo "Génération pour $nom_machine: ";
+							echo "GÃ©nÃ©ration pour $nom_machine: ";
 	
 							$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 	
@@ -657,8 +657,8 @@ affiche_sections_distrib();
 	
 							if(count($retour)>0){
 								//echo "<p>";
-								//echo "<span style='color:red;'>Il semble que la génération du fichier ait échoué...</span><br />\n";
-								echo "<span style='color:red;'>ECHEC de la génération du fichier</span><br />\n";
+								//echo "<span style='color:red;'>Il semble que la gÃ©nÃ©ration du fichier ait Ã©chouÃ©...</span><br />\n";
+								echo "<span style='color:red;'>ECHEC de la gÃ©nÃ©ration du fichier</span><br />\n";
 								for($j=0;$j<count($retour);$j++){
 									echo "$retour[$j]<br />\n";
 								}
@@ -683,13 +683,13 @@ affiche_sections_distrib();
 									$temoin_erreur="y";
 								}
 	
-								// Génération du lanceur de récupération:
+								// GÃ©nÃ©ration du lanceur de rÃ©cupÃ©ration:
 								//$dossier="/var/se3/tmp/tftp/$id_machine[$i]";
 								$dossier="/etc/se3/www-tools/tftp/$id_machine[$i]";
 								if(!file_exists($dossier)) { mkdir($dossier,0700);}
 								$lanceur_recup="$dossier/lanceur_recup_rapport_action_tftp.sh";
 								$fich=fopen($lanceur_recup,"w+");
-								// On donne 4H pour que la récup soit effectuée:
+								// On donne 4H pour que la rÃ©cup soit effectuÃ©e:
 								$timestamp_limit=time()+4*3600;
 								//fwrite($fich,"/usr/share/se3/scripts/recup_rapport.php '$id_machine[$i]' '$ip_machine' 'rapport' '$timestamp_limit'");
 								if($distrib=='slitaz') {
@@ -702,25 +702,25 @@ affiche_sections_distrib();
 								fclose($fich);
 								chmod($lanceur_recup,0750);
 	
-								// Ménage dans les tâches précédentes
+								// MÃ©nage dans les tÃ¢ches prÃ©cÃ©dentes
 								@exec("sudo /usr/share/se3/scripts/se3_tftp_menage_atq.sh $id_machine[$i]",$retour);
 	
-								// Planification de la tâche
+								// Planification de la tÃ¢che
 								//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 								@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
 								//passthru("at -f $lanceur_recup now + 1 minute",$retour);
 								if($retour) {
-									echo "<span style='color:red;'>ECHEC de la planification de la tâche.</span><br />\n";
+									echo "<span style='color:red;'>ECHEC de la planification de la tÃ¢che.</span><br />\n";
 									for($j=0;$j<count($retour);$j++){echo "$retour[$j]<br />\n";}
 									//echo "$retour<br />\n";
 									$temoin_erreur="y";
 								}
 	
 								/*
-								// Avec ça on arrive à récupérer l'info:
+								// Avec Ã§a on arrive Ã  rÃ©cupÃ©rer l'info:
 								//	-warning: commands will be executed using /bin/sh -
 								//	-job 1572 at 2008-03-01 15:13 -
-								// Mais une fois le at repoussé, ce n'est plus www-se3, mais root qui en est proprio...
+								// Mais une fois le at repoussÃ©, ce n'est plus www-se3, mais root qui en est proprio...
 								if(file_exists("$dossier/at.txt")) {
 									$fp=fopen("$dossier/at.txt","r");
 									while(!feof($fp)) {
@@ -766,12 +766,12 @@ affiche_sections_distrib();
 				// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
 
-				// On n'affiche le fichier que pour le dernier (à titre d'info):
+				// On n'affiche le fichier que pour le dernier (Ã  titre d'info):
 				if(isset($corrige_mac)) {
 					//$fich=fopen("/tftpboot/pxelinux.cfg/01-$lig1->mac","r");
 					$fich=fopen("/tftpboot/pxelinux.cfg/01-$corrige_mac","r");
 					if($fich) {
-						echo "<p>Pour information, voici le contenu du fichier généré:<br />\n";
+						echo "<p>Pour information, voici le contenu du fichier gÃ©nÃ©rÃ©:<br />\n";
 						echo "<pre style='border:1px solid black; color:green;'>";
 						while(!feof($fich)) {
 							$ligne=fgets($fich,4096);
@@ -781,7 +781,7 @@ affiche_sections_distrib();
 						fclose($fich);
 					}
 					else {
-						echo "<p style='color:red;'>Il n'a pas été possible d'ouvrir le fichier /tftpboot/pxelinux.cfg/01-$corrige_mac</p>\n";
+						echo "<p style='color:red;'>Il n'a pas Ã©tÃ© possible d'ouvrir le fichier /tftpboot/pxelinux.cfg/01-$corrige_mac</p>\n";
 					}
 				}
 			}
@@ -790,7 +790,7 @@ affiche_sections_distrib();
 	}
 }
 else {
-	print (gettext("Vous n'avez pas les droits nécessaires pour ouvrir cette page..."));
+	print (gettext("Vous n'avez pas les droits nÃ©cessaires pour ouvrir cette page..."));
 }
 
 // Footer

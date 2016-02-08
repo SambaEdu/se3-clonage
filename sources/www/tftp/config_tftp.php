@@ -1,10 +1,10 @@
 <?php
-/* $Id$
+/* $Id: config_tftp.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
 Projet SE3
 Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
 Stephane Boireau
-Distribué selon les termes de la licence GPL
+DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -121,7 +121,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 				echo "<p>";
 				$resultat2=crob_setParam('CliLinNoPreseed',"$valeur","Proposer l installation de client GNU/Linux libre sans preseed.");
 				if($resultat2) {
-					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinNoPreseed' effectué.</span><br />";
+					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinNoPreseed' effectuÃ©.</span><br />";
 				}
 				else {
 					echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur '$valeur' pour 'CliLinNoPreseed'.</span><br />";
@@ -131,7 +131,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 				$resultat2=crob_setParam('CliLinXfce64',"$valeur","Proposer l installation de client Linux avec interface Xfce64.");
 				if($resultat2) {
-					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinXfce64' effectué.</span><br />";
+					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinXfce64' effectuÃ©.</span><br />";
 				}
 				else {
 					echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur '$valeur' pour 'CliLinXfce64'.</span><br />";
@@ -141,7 +141,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 				$resultat2=crob_setParam('CliLinLXDE',"$valeur","Proposer l installation de client GNU/Linux avec interface LXDE.");
 				if($resultat2) {
-					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinLXDE' effectué.</span><br />";
+					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinLXDE' effectuÃ©.</span><br />";
 				}
 				else {
 					echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur '$valeur' pour 'CliLinLXDE'.</span><br />";
@@ -150,7 +150,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 				$valeur=(isset($_POST['proposer_gnome'])) ? "yes" : "no";
 				$resultat2=crob_setParam('CliLinGNOME',"$valeur","Proposer l installation de client GNU/Linux avec interface GNOME.");
 				if($resultat2) {
-					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinGNOME' effectué.</span><br />";
+					echo "<span style='color:green'>Enregistrement de la valeur '$valeur' pour 'CliLinGNOME' effectuÃ©.</span><br />";
 				}
 				else {
 					echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur '$valeur' pour 'CliLinGNOME'.</span><br />";
@@ -164,7 +164,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 			$MiroirAptCliLin=isset($_POST['MiroirAptCliLin']) ? "yes" : "no";
 			$resultat1=crob_setParam('MiroirAptCliLin',$MiroirAptCliLin,'Utiliser un miroir apt maison pour les installations client linux.');
 			if($resultat1) {
-				echo "<span style='color:green'>Enregistrement de la valeur ".$MiroirAptCliLin." pour 'MiroirAptCliLin' effectué.</span><br />";
+				echo "<span style='color:green'>Enregistrement de la valeur ".$MiroirAptCliLin." pour 'MiroirAptCliLin' effectuÃ©.</span><br />";
 			}
 			else {
 				echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur ".$MiroirAptCliLin." pour 'MiroirAptCliLin'.</span><br />";
@@ -172,7 +172,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 			$resultat2=crob_setParam('MiroirAptCliLinIP',$_POST['MiroirAptCliLinIP'],'IP du miroir apt pour les installations client linux.');
 			if($resultat2) {
-				echo "<span style='color:green'>Enregistrement de la valeur ".$_POST['MiroirAptCliLinIP']." pour 'MiroirAptCliLinIP' effectué.</span><br />";
+				echo "<span style='color:green'>Enregistrement de la valeur ".$_POST['MiroirAptCliLinIP']." pour 'MiroirAptCliLinIP' effectuÃ©.</span><br />";
 			}
 			else {
 				echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur ".$_POST['MiroirAptCliLinIP']." pour 'MiroirAptCliLinIP'.</span><br />";
@@ -180,7 +180,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 			$resultat3=crob_setParam('MiroirAptCliLinChem',$_POST['MiroirAptCliLinChem'],'Chemin du miroir apt pour les installations clients GNU/Linux.');
 			if($resultat3) {
-				echo "<span style='color:green'>Enregistrement de la valeur ".$_POST['MiroirAptCliLinChem']." pour 'MiroirAptCliLinChem' effectué.</span><br />";
+				echo "<span style='color:green'>Enregistrement de la valeur ".$_POST['MiroirAptCliLinChem']." pour 'MiroirAptCliLinChem' effectuÃ©.</span><br />";
 			}
 			else {
 				echo "<span style='color:red'>Erreur lors de l'enregistrement de la valeur ".$_POST['MiroirAptCliLinChem']." pour 'MiroirAptCliLinChem'.</span><br />";
@@ -304,7 +304,7 @@ echo "<table class='crob'>
 		}
 		//]]>
 	</script>\n";
-		echo "<p><a href='#' onclick='check_versions_sysresccd();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
+		echo "<p><a href='#' onclick='check_versions_sysresccd();return false;'>Tester la prÃ©sence de mises Ã  jour immÃ©diatement</a></p>\n";
 		echo "</div>\n";
 	}
 	else {
@@ -315,7 +315,7 @@ echo "<table class='crob'>
 
 	echo "<tr><td>";
 	echo "<input type='hidden' name='action' value='download_sysresccd' />";
-	echo "T&#233;l&#233;charger system rescue cd (~274Mo) afin de l'utiliser à la place de slistaz / udpcast.<br> Avantage : en g&#233;n&#233;ral system rescue cd fonctionne sur davantage de mat&#233;riels recents.<br>\n";
+	echo "T&#233;l&#233;charger system rescue cd (~274Mo) afin de l'utiliser Ã  la place de slistaz / udpcast.<br> Avantage : en g&#233;n&#233;ral system rescue cd fonctionne sur davantage de mat&#233;riels recents.<br>\n";
 	echo "<p align='center'><input type=\"submit\" name=\"submit\" value=\"Lancer le T&#233;l&#233;chargement\" /></p>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -392,7 +392,7 @@ echo "<table class='crob'>
 		}
 		//]]>
 	</script>\n";
-		echo "<p><a href='#' onclick='check_versions_udpcast();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
+		echo "<p><a href='#' onclick='check_versions_udpcast();return false;'>Tester la prÃ©sence de mises Ã  jour immÃ©diatement</a></p>\n";
 		echo "</div>\n";
 	}
 	else {
@@ -469,7 +469,7 @@ echo "<table class='crob'>
 		}
 		//]]>
 	</script>\n";
-		echo "<p><a href='#' onclick='check_versions_slitaz();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
+		echo "<p><a href='#' onclick='check_versions_slitaz();return false;'>Tester la prÃ©sence de mises Ã  jour immÃ©diatement</a></p>\n";
 		echo "</div>\n";
 	}
 	else {
@@ -547,7 +547,7 @@ echo "<table class='crob'>
 		}
 		//]]>
 	</script>\n";
-		echo "<p><a href='#' onclick='check_versions_clonezilla();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
+		echo "<p><a href='#' onclick='check_versions_clonezilla();return false;'>Tester la prÃ©sence de mises Ã  jour immÃ©diatement</a></p>\n";
 		echo "</div>\n";
 	}
 	else {
@@ -623,7 +623,7 @@ echo "<table class='crob'>
 		}
 		//]]>
 	</script>\n";
-		echo "<p><a href='#' onclick='check_versions_pxe_client_linux();return false;'>Tester la présence de mises à jour immédiatement</a></p>\n";
+		echo "<p><a href='#' onclick='check_versions_pxe_client_linux();return false;'>Tester la prÃ©sence de mises Ã  jour immÃ©diatement</a></p>\n";
 		echo "</div>\n";
 	}
 	else {
@@ -670,7 +670,7 @@ echo "<table class='crob'>
 <tr>
 	<td>
 		<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
-			<input type='checkbox' name='suppr_dispositif_precedent' id='suppr_dispositif_precedent' value='yes' /><label for='suppr_dispositif_precedent'>Supprimer le dispositif actuellement en place et relancer le téléchargement.</label><br />
+			<input type='checkbox' name='suppr_dispositif_precedent' id='suppr_dispositif_precedent' value='yes' /><label for='suppr_dispositif_precedent'>Supprimer le dispositif actuellement en place et relancer le tÃ©lÃ©chargement.</label><br />
 			<input type='hidden' name='action' value='download_pxe_client_linux' />
 			<p><input type=\"submit\" value=\"Valider\" /></p>
 		</form>
@@ -708,12 +708,12 @@ echo "<table class='crob'>
 	echo "<tr>\n";
 	echo "<td>\n";
 	echo "
-	<p>Un miroir APT permet de conserver les paquets téléchargés lors de l'installation d'un client GNU/Linux.<br />
-	Les paquets ainsi conservés peuvent ensuite être fournis plus rapidement lors de l'installation d'autres clients sans trop peser sur votre connexion internet.</p>
+	<p>Un miroir APT permet de conserver les paquets tÃ©lÃ©chargÃ©s lors de l'installation d'un client GNU/Linux.<br />
+	Les paquets ainsi conservÃ©s peuvent ensuite Ãªtre fournis plus rapidement lors de l'installation d'autres clients sans trop peser sur votre connexion internet.</p>
 
-	<p>Par défaut, un tel miroir est créé sur le serveur SE3 lui-même dans /var/se3/apt-cacher-ng<br />
+	<p>Par dÃ©faut, un tel miroir est crÃ©Ã© sur le serveur SE3 lui-mÃªme dans /var/se3/apt-cacher-ng<br />
 	Si cela vous convient, laissez vides les champs ci-dessous.<br />
-	Si vous disposez ailleurs d'un autre miroir, vous pouvez le paramétrer ci-dessous&nbsp;</p>
+	Si vous disposez ailleurs d'un autre miroir, vous pouvez le paramÃ©trer ci-dessous&nbsp;</p>
 
 	<table class='crob' align='center'>
 	<tr>
@@ -762,8 +762,8 @@ echo "<table class='crob'>
 
 	function clavier_up_down_increment(n,e,vmin,vmax){
 		//alert(n);
-		// Fonction destinée à incrémenter/décrémenter le champ courant entre 0 et 255 (pour des composantes de couleurs)
-		// Modifié pour aller de vmin à vmax
+		// Fonction destinÃ©e Ã  incrÃ©menter/dÃ©crÃ©menter le champ courant entre 0 et 255 (pour des composantes de couleurs)
+		// ModifiÃ© pour aller de vmin Ã  vmax
 		touche= e.keyCode ;
 		//alert('touche='+touche);
 		if (touche == '40') {

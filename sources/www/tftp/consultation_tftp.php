@@ -1,10 +1,10 @@
 <?php
-/* $Id$
+/* $Id: consultation_tftp.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
 Projet SE3
 Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
 Stephane Boireau
-Distribué selon les termes de la licence GPL
+DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -46,7 +46,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		$restriction_parcs="y";
 		$tab_delegated_parcs=list_delegated_parcs($login);
 		if(count($tab_delegated_parcs)==0) {
-			echo "<p>Aucun parc ne vous a été délégué.</p>\n";
+			echo "<p>Aucun parc ne vous a Ã©tÃ© dÃ©lÃ©guÃ©.</p>\n";
 			include ("pdp.inc.php");
 			die();
 		}
@@ -69,7 +69,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 					$nom=$lig->name;
 	
 					for($loop=0;$loop<count($tab_delegated_parcs);$loop++) {
-						// La machine est-elle dans un des parcs délégués?
+						// La machine est-elle dans un des parcs dÃ©lÃ©guÃ©s?
 						if(is_machine_in_parc($nom,$tab_delegated_parcs[$loop])) {
 							$temoin_erreur='n';
 							break;
@@ -82,7 +82,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 				}
 			}
 
-			// Récupérer l'adresse MAC:
+			// RÃ©cupÃ©rer l'adresse MAC:
 			$sql="SELECT mac FROM se3_dhcp WHERE id='$suppr[$i]';";
 			//echo "$sql<br />\n";
 			$res_mac=mysql_query($sql);
@@ -91,7 +91,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 				//echo "$sql<br />\n";
 				$res_mac=mysql_query($sql);
 				if(mysql_num_rows($res_mac)==0) {
-					echo "<span style='color:red'>ERREUR:</span> L'adresse MAC de la machine d'identifiant $suppr[$i] n'a pas été trouvée dans les tables 'se3_dhcp' ni 'se3_tftp_action'. Il se peut qu'il subsiste un fichier /tftpboot/pxelinux.cfg/01-ADRESSE_MAC qui pourrait perturber le démarrage de la machine.<br />\n";
+					echo "<span style='color:red'>ERREUR:</span> L'adresse MAC de la machine d'identifiant $suppr[$i] n'a pas Ã©tÃ© trouvÃ©e dans les tables 'se3_dhcp' ni 'se3_tftp_action'. Il se peut qu'il subsiste un fichier /tftpboot/pxelinux.cfg/01-ADRESSE_MAC qui pourrait perturber le dÃ©marrage de la machine.<br />\n";
 				}
 				else {
 					$lig_mac=mysql_fetch_object($res_mac);
@@ -120,7 +120,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 			//echo "$sql<br />\n";
 			$suppression=mysql_query($sql);
 
-			// Suppression de la tâche recup_rapport.php?
+			// Suppression de la tÃ¢che recup_rapport.php?
 			//$dossier="/var/se3/tmp/tftp/$suppr[$i]";
 			$dossier="/etc/se3/www-tools/tftp/$suppr[$i]";
 			$lanceur_recup="$dossier/lanceur_recup_rapport_action_tftp.sh";
@@ -130,7 +130,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		}
 	}
 
-	// Création de la table dès que possible:
+	// CrÃ©ation de la table dÃ¨s que possible:
 	creation_tftp_tables();
 
 	echo "<h1>".gettext("Consultation TFTP")."</h1>\n";
@@ -142,7 +142,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	if(!isset($mode_rech)){
 		echo "<p>Choisissez le mode de consultation:</p>\n";
 		echo "<ul>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode_rech=parc'>Sélectionner un parc</a>.</li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode_rech=parc'>SÃ©lectionner un parc</a>.</li>\n";
 
 		$sql="SELECT 1=1 FROM se3_tftp_action WHERE type='sauvegarde';";
 		$test=mysql_query($sql);
@@ -165,7 +165,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		$sql="SELECT 1=1 FROM se3_tftp_action WHERE type='rapport';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			echo "<li><a href='".$_SERVER['PHP_SELF']."?mode_rech=rapport'>Afficher les remontées de rapports en attente</a>.</li>\n";
+			echo "<li><a href='".$_SERVER['PHP_SELF']."?mode_rech=rapport'>Afficher les remontÃ©es de rapports en attente</a>.</li>\n";
 		}
 
 		$sql="SELECT 1=1 FROM se3_tftp_action WHERE type='unattend_xp';";
@@ -176,7 +176,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 
 		echo "</ul>\n";
 
-		echo "<p><a href='index.php'>Retour à l'index</a>.</p>\n";
+		echo "<p><a href='index.php'>Retour Ã  l'index</a>.</p>\n";
 	}
 	else {
 		if($mode_rech=="parc"){
@@ -186,7 +186,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 				$list_parcs=search_machines("objectclass=groupOfNames","parcs");
 				if (count($list_parcs)==0) {
 					echo "<br><br>";
-					echo gettext("Il n'existe aucun parc. Vous devez d'abord créer un parc");
+					echo gettext("Il n'existe aucun parc. Vous devez d'abord crÃ©er un parc");
 					include ("pdp.inc.php");
 					exit;
 				}
@@ -241,7 +241,7 @@ if(nb_parcs==1) {
 			}
 			else {
 				echo "<script type='text/javascript' src='../includes/prototype.js'></script>\n";
-				// Afficher un tableau des parcs avec les machines qui ont une action programmée...
+				// Afficher un tableau des parcs avec les machines qui ont une action programmÃ©e...
 
 				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 				echo "<input type=\"hidden\" name=\"mode_rech\" value=\"$mode_rech\" />\n";
@@ -269,11 +269,11 @@ if(nb_parcs==1) {
 
 					echo "<th>Supprimer l'action<br />\n";
 					echo "<a href='#' onclick='check_suppr($i,\"check\");return false'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Tout cocher\" title=\"Tout cocher\" /></a>\n";
-					echo " / <a href='#' onclick='check_suppr($i,\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout décocher\" title=\"Tout décocher\" /></a>\n";
+					echo " / <a href='#' onclick='check_suppr($i,\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout dÃ©cocher\" title=\"Tout dÃ©cocher\" /></a>\n";
 					echo "</th>\n";
 
 					echo "<th>Rapports</th>\n";
-					echo "<th>Sauvegardes<br />antérieures</th>\n";
+					echo "<th>Sauvegardes<br />antÃ©rieures</th>\n";
 
 					//echo "<th></th>\n";
 					echo "</tr>\n";
@@ -292,13 +292,13 @@ if(nb_parcs==1) {
 						}
 
 						if($suisje_printer=="non") {
-							// Réinitialisation:
+							// RÃ©initialisation:
 							$id_machine="";
 
 							echo "<tr>\n";
 							echo "<td width='20%'>".$mp[$loop]."</td>\n";
 
-							// Etat: allumé ou éteint
+							// Etat: allumÃ© ou Ã©teint
 							echo "<td width='20%'>";
 							$mp_curr=search_machines2("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 							if ($mp_curr[0]["ipHostNumber"]) {
@@ -316,7 +316,7 @@ if(nb_parcs==1) {
 							echo "</td>\n";
 
 
-							// Session: ouverte ou pas... sous quelle identité
+							// Session: ouverte ou pas... sous quelle identitÃ©
 							echo "<td width='20%'>\n";
 							echo "<div id='divsession$loop'>Patientez</div>\n";
 
@@ -331,7 +331,7 @@ if(nb_parcs==1) {
 
 							// Etat config DHCP:
 							// Par la suite il ne faudra pas prendre les IP dans l'annuaire,
-							// mais dans la config DHCP parce que ce sont ces IP qui seront attribuées lors du boot PXE
+							// mais dans la config DHCP parce que ce sont ces IP qui seront attribuÃ©es lors du boot PXE
 							echo "<td width='20%'>\n";
 							//$mp_curr=search_machines("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 							if ($mp_curr[0]["macAddress"]) {
@@ -346,7 +346,7 @@ if(nb_parcs==1) {
 									echo "<img src=\"../elements/images/enabled.gif\" border='0' alt=\"$lig->ip\" title=\"$lig->ip\" />";
 								}
 								else {
-									echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuée\" title=\"Pas d'adresse IP attribuée\" />";
+									echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuÃ©e\" title=\"Pas d'adresse IP attribuÃ©e\" />";
 								}
 							}
 							else {
@@ -355,7 +355,7 @@ if(nb_parcs==1) {
 							echo "</td>\n";
 
 
-							// Action programmée
+							// Action programmÃ©e
 							echo "<td width='20%'>\n";
 							/*
 							foreach($mp_curr[0] as $champ => $valeur) {
@@ -383,7 +383,7 @@ if(nb_parcs==1) {
 									//echo " <u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('<center>".visu_tache($mp_curr[0]["macAddress"],'light')."</center>')")."\"><img name=\"action_image$loop\"  src=\"../elements/images/detail.gif\" /></u>";
 								}
 								else {
-									echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmée\" title=\"Pas d'action programmée\" />";
+									echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmÃ©e\" title=\"Pas d'action programmÃ©e\" />";
 								}
 							}
 							else {
@@ -398,7 +398,7 @@ if(nb_parcs==1) {
 							}
 							else {
 								echo "<td>\n";
-								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action à supprimer\" title=\"Pas d'action à supprimer\" />\n";
+								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action Ã  supprimer\" title=\"Pas d'action Ã  supprimer\" />\n";
 								echo "</td>\n";
 							}
 
@@ -432,7 +432,7 @@ if(nb_parcs==1) {
 									$lig=mysql_fetch_object($res);
 									echo "<a href='visu_svg.php?id_machine=$id_machine' target='_blank'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Visualiser la(les) sauvegarde(s) existante(s)\" title=\"Visualiser la(les) sauvegarde(s) existante(s)\" /></a>";
 									echo "<br />\n";
-									echo "<span style='font-size: x-small;' title='Dernière sauvegarde: $lig->image'>".mysql_date_to_fr_date($lig->date)."</span>\n";
+									echo "<span style='font-size: x-small;' title='DerniÃ¨re sauvegarde: $lig->image'>".mysql_date_to_fr_date($lig->date)."</span>\n";
 								}
 								else {
 									echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Aucune sauvegarde existante\" title=\"Aucune sauvegarde existante\" />";
@@ -481,7 +481,7 @@ if(nb_parcs==1) {
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 			echo "<input type=\"hidden\" name=\"mode_rech\" value=\"$mode_rech\" />\n";
 
-			// Afficher un tableau des parcs avec les machines qui ont une action programmée...
+			// Afficher un tableau des parcs avec les machines qui ont une action programmÃ©e...
 			//for($i=0;$i<count($parc);$i++){
 
 				if($mode_rech=="svg") {
@@ -507,18 +507,18 @@ if(nb_parcs==1) {
 					}
 				}
 				elseif($mode_rech=="rapport") {
-					echo "<h2>Remontées de rapports programmées</h2>\n";
+					echo "<h2>RemontÃ©es de rapports programmÃ©es</h2>\n";
 
 					$sql="SELECT * FROM se3_tftp_action WHERE type='rapport' ORDER BY num_op,name;";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0){
-						echo "<p>Aucune remontée de rapport n'est en attente.</p>\n";
+						echo "<p>Aucune remontÃ©e de rapport n'est en attente.</p>\n";
 						include ("pdp.inc.php");
 						exit();
 					}
 				}
 				elseif($mode_rech=="unattend_xp") {
-					echo "<h2>Remontées de rapports programmées</h2>\n";
+					echo "<h2>RemontÃ©es de rapports programmÃ©es</h2>\n";
 
 					$sql="SELECT * FROM se3_tftp_action WHERE type='unattend_xp' ORDER BY num_op,name;";
 					$res=mysql_query($sql);
@@ -541,7 +541,7 @@ if(nb_parcs==1) {
 				echo "<table class='crob'>\n";
 				echo "<tr>\n";
 
-				//echo "<th>Numéro d'opération</th>\n";
+				//echo "<th>NumÃ©ro d'opÃ©ration</th>\n";
 				echo "<th>Nom</th>\n";
 				echo "<th>Etat</th>\n";
 				echo "<th>Session</th>\n";
@@ -551,11 +551,11 @@ if(nb_parcs==1) {
 
 				echo "<th>Supprimer l'action<br />\n";
 				echo "<a href='#' onclick='check_suppr(\"check\");return false'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Tout cocher\" title=\"Tout cocher\" /></a>\n";
-				echo " / <a href='#' onclick='check_suppr(\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout décocher\" title=\"Tout décocher\" /></a>\n";
+				echo " / <a href='#' onclick='check_suppr(\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout dÃ©cocher\" title=\"Tout dÃ©cocher\" /></a>\n";
 				echo "</th>\n";
 
 				echo "<th>Rapports</th>\n";
-				echo "<th>Sauvegardes<br />antérieures</th>\n";
+				echo "<th>Sauvegardes<br />antÃ©rieures</th>\n";
 
 				//echo "<th></th>\n";
 				echo "</tr>\n";
@@ -574,14 +574,14 @@ if(nb_parcs==1) {
 					}
 
 					if($suisje_printer=="non") {
-						// Réinitialisation:
+						// RÃ©initialisation:
 						$id_machine="";
 
 						echo "<tr>\n";
 						//echo "<td width='20%'></td>\n";
 						echo "<td width='20%'>".$mp[$loop]."</td>\n";
 
-						// Etat: allumé ou éteint
+						// Etat: allumÃ© ou Ã©teint
 						echo "<td width='20%'>";
 						$mp_curr=search_machines2("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 						if ($mp_curr[0]["ipHostNumber"]) {
@@ -597,7 +597,7 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Session: ouverte ou pas... sous quelle identité
+						// Session: ouverte ou pas... sous quelle identitÃ©
 						echo "<td width='20%'>\n";
 						echo "<div id='divsession$loop'>Patientez</div>\n";
 						echo "<script type='text/javascript'>
@@ -610,7 +610,7 @@ if(nb_parcs==1) {
 
 						// Etat config DHCP:
 						// Par la suite il ne faudra pas prendre les IP dans l'annuaire,
-						// mais dans la config DHCP parce que ce sont ces IP qui seront attribuées lors du boot PXE
+						// mais dans la config DHCP parce que ce sont ces IP qui seront attribuÃ©es lors du boot PXE
 						echo "<td width='20%'>\n";
 						//$mp_curr=search_machines("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 						if ($mp_curr[0]["macAddress"]) {
@@ -625,7 +625,7 @@ if(nb_parcs==1) {
 								echo "<img src=\"../elements/images/enabled.gif\" border='0' alt=\"$lig->ip\" title=\"$lig->ip\" />";
 							}
 							else {
-								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuée\" title=\"Pas d'adresse IP attribuée\" />";
+								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuÃ©e\" title=\"Pas d'adresse IP attribuÃ©e\" />";
 							}
 						}
 						else {
@@ -634,7 +634,7 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Action programmée
+						// Action programmÃ©e
 						echo "<td width='20%'>\n";
 						/*
 						foreach($mp_curr[0] as $champ => $valeur) {
@@ -652,7 +652,7 @@ if(nb_parcs==1) {
 								echo " <u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('<center>".preg_replace("/'/","",visu_tache($mp_curr[0]["macAddress"],'light'))."</center>')")."\"><img name=\"action_image$loop\"  src=\"../elements/images/detail.gif\"></u>";
 							}
 							else {
-								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmée\" title=\"Pas d'action programmée\" />";
+								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmÃ©e\" title=\"Pas d'action programmÃ©e\" />";
 							}
 						}
 						else {
@@ -740,7 +740,7 @@ if(nb_parcs==1) {
 
 					echo "<table class='crob'>\n";
 					echo "<tr>\n";
-					echo "<th>Numéro d'opération</th>\n";
+					echo "<th>NumÃ©ro d'opÃ©ration</th>\n";
 					echo "<th>Emetteur</th>\n";
 					echo "<th>Clones</th>\n";
 					echo "<th>Disque/Partition</th>\n";
@@ -765,7 +765,7 @@ if(nb_parcs==1) {
 							}
 						}
 						else {
-							echo "<span style='color:red'>Aucun récepteur</span>";
+							echo "<span style='color:red'>Aucun rÃ©cepteur</span>";
 						}
 						echo "</td>\n";
 
@@ -786,8 +786,8 @@ if(nb_parcs==1) {
 
 					echo "<p><i>A FAIRE:</i></p>\n";
 					echo "<ul>\n";
-					echo "<li>Permettre d'ajouter une ou des machines dans une opération de clonage</li>\n";
-					echo "<li>Supprimer automatiquement les opérations udpcast_recepteur si on supprime l'action udpcast_emetteur</li>\n";
+					echo "<li>Permettre d'ajouter une ou des machines dans une opÃ©ration de clonage</li>\n";
+					echo "<li>Supprimer automatiquement les opÃ©rations udpcast_recepteur si on supprime l'action udpcast_emetteur</li>\n";
 					echo "</ul>\n";
 				}
 				else {
@@ -795,7 +795,7 @@ if(nb_parcs==1) {
 				}
 			}
 			else {
-				echo "<h2>Clonage n°$num_op</h2>\n";
+				echo "<h2>Clonage nÂ°$num_op</h2>\n";
 
 				$sql="SELECT * FROM se3_tftp_action WHERE num_op='$num_op';";
 				$res=mysql_query($sql);
@@ -807,12 +807,12 @@ if(nb_parcs==1) {
 
 					echo "<table class='crob'>\n";
 					echo "<tr>\n";
-					echo "<th>Numéro d'opération</th>\n";
+					echo "<th>NumÃ©ro d'opÃ©ration</th>\n";
 					echo "<th>Nom</th>\n";
 					echo "<th>Statut</th>\n";
 					echo "<th>Supprimer l'action<br />\n";
 					echo "<a href='#' onclick='check_suppr(\"check\");return false'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Tout cocher\" title=\"Tout cocher\" /></a>\n";
-					echo " / <a href='#' onclick='check_suppr(\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout décocher\" title=\"Tout décocher\" /></a>\n";
+					echo " / <a href='#' onclick='check_suppr(\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout dÃ©cocher\" title=\"Tout dÃ©cocher\" /></a>\n";
 					echo "</th>\n";
 					echo "</tr>\n";
 
@@ -822,7 +822,7 @@ if(nb_parcs==1) {
 						echo "<td>$lig->num_op</td>\n";
 						echo "<td>$lig->name</td>\n";
 						echo "<td>";
-						if($lig->type=="udpcast_emetteur") {echo "Emetteur";} else {echo "Récepteur";}
+						if($lig->type=="udpcast_emetteur") {echo "Emetteur";} else {echo "RÃ©cepteur";}
 						echo "</td>\n";
 
 						echo "<td>\n";
@@ -854,7 +854,7 @@ if(nb_parcs==1) {
 					echo "</form>\n";
 				}
 				else {
-					echo "<p>Aucune machine ne correspond au numéro d'opération choisi.</p>\n";
+					echo "<p>Aucune machine ne correspond au numÃ©ro d'opÃ©ration choisi.</p>\n";
 				}
 			}
 			//echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au menu de consultation</a>.</p>\n";
@@ -863,7 +863,7 @@ if(nb_parcs==1) {
 	}
 }
 else {
-	print (gettext("Vous n'avez pas les droits nécessaires pour ouvrir cette page..."));
+	print (gettext("Vous n'avez pas les droits nÃ©cessaires pour ouvrir cette page..."));
 }
 
 // Footer

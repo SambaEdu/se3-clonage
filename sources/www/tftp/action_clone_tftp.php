@@ -1,10 +1,10 @@
 <?php
-/* $Id$
+/* $Id: action_clone_tftp.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
    Stephane Boireau
-   Distribué selon les termes de la licence GPL
+   DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -23,20 +23,20 @@ $_SESSION["pageaide"]="Le_module_Clonage_des_stations#Programmer_un_clonage";
 // On active les rapports d'erreurs:
 //error_reporting(E_ALL);
 
-// Liste des modules réseau pour Udpcast
+// Liste des modules rÃ©seau pour Udpcast
 // Appliquer le traitement:
 // chaine="";while read A;do B=$(echo "$A" | cut -d'"' -f2);chaine="$chaine,'$B'";done<netmodule.txt;echo $chaine
-// sur la portion appropriée de la page http://udpcast.linux.lu/cast-o-matic/stage2.cgi (en ayant cliqué sur 'Chech all' dans http://udpcast.linux.lu/cast-o-matic/ et enregistré le résultat sous le nom netmodule.txt)
+// sur la portion appropriÃ©e de la page http://udpcast.linux.lu/cast-o-matic/stage2.cgi (en ayant cliquÃ© sur 'Chech all' dans http://udpcast.linux.lu/cast-o-matic/ et enregistrÃ© le rÃ©sultat sous le nom netmodule.txt)
 $tab_netmodule=array('3c59x','8139cp','8139too','82596','8390','amd8111e','atp','b44','cxgb3','de2104x','dgrs','dmfe','e100','eepro100','eexpress','epic100','es3210','forcedeth','hp100','lne390','lp486e','mii','natsemi','ne3210','ne2k-pci','ni52','pcnet32','qla3xxx','sc92031','sis900','smc9194','smc-ultra32','starfire','strip','sundance','sungem','sunhme','tlan','tulip','typhoon','uli526x','via-rhine','winbond-840','acenic','atl1','bnx2','cassini','cxgb','dl2k','e1000','fealnx','hamachi','ixgb','myri10ge','netxen_nic','ns83820','r8169','sb1000','sis190','sk98lin','skge','sky2','s2io','tg3','via-velocity','yellowfin','3c574_cs','3c589_cs','airo','airo_cs','arlan','atmel','atmel_pci','atmel_cs','axnet_cs','fmvj18x_cs','hermes','ipw2100','ipw2200','libertas','netwave_cs','nmclan_cs','orinoco','orinoco_cs','orinoco_nortel','orinoco_pci','orinoco_plx','orinoco_tmd','pcnet_cs','prism54','ray_cs','smc91c92_cs','spectrum_cs','usb8xxx','wl3501_cs','wavelan','wavelan_cs','xirc2ps_cs','xircom_cb','xircom_tulip_cb','3c501','3c503','3c505','3c507','3c509','3c515','ac3200','at1700','cs89x0','de4x5','depca','e2100','eth16i','eepro','ewrk3','hp-plus','hp','lance','ne','ni5010','ni65','seeq8005','smc-ultra','wd','znet');
 
 
 // Liste des modules disque pour Udpcast
 // Appliquer le traitement:
 // chaine="";while read A;do B=$(echo "$A" | cut -d'"' -f2);chaine="$chaine,'$B'";done<diskmodule.txt;echo $chaine
-// sur la portion appropriée de la page http://udpcast.linux.lu/cast-o-matic/stage2.cgi (en ayant cliqué sur 'Chech all' dans http://udpcast.linux.lu/cast-o-matic/ et enregistré le résultat sous le nom diskmodule.txt)
+// sur la portion appropriÃ©e de la page http://udpcast.linux.lu/cast-o-matic/stage2.cgi (en ayant cliquÃ© sur 'Chech all' dans http://udpcast.linux.lu/cast-o-matic/ et enregistrÃ© le rÃ©sultat sous le nom diskmodule.txt)
 $tab_diskmodule=array('ahci','ata_piix','sata_inic162x','sata_mv','sata_nv','sata_promise','sata_qstor','sata_sil','sata_sil24','sata_sis','sata_svw','sata_sx4','sata_uli','sata_via','sata_vsc','pata_ali','pata_amd','pata_artop','pata_atiixp','pata_cmd640','pata_cmd64x','pata_cs5520','pata_cs5530','pata_cs5535','pata_cypress','pata_efar','pata_hpt366','pata_hpt37x','pata_hpt3x2n','pata_hpt3x3','pata_isapnp','pata_it8213','pata_it821x','pata_jmicron','pata_legacy','pata_marvell','pata_mpiix','pata_netcell','pata_ns87410','pata_oldpiix','pata_opti','pata_optidma','pata_pcmcia','pata_pdc2027x','pata_pdc202xx_old','pata_platform','pata_qdi','pata_radisys','pata_rz1000','pata_sc1200','pata_serverworks','pata_sil680','pata_sis','pata_sl82c105','pata_triflex','pata_via','pata_winbond','3w-9xxx','53c700','advansys','aha152x','aha152x_cs','aha1542','aha1740','aic7xxx','aic79xx','aic94xx','arcmsr','BusLogic','dc395x','dpt_i2o','dtc','fdomain','fdomain_cs','g_NCR5380','g_NCR5380_mmio','hptiop','in2000','ipr','iscsi_tcp','libiscsi','libsas','lpfc','NCR53c406a','nsp32','nsp_cs','pas16','pdc_adma','psi240i','qla1280','qla2100','qla2200','qla2300','qla2322','qla2xxx','qla4xxx','qla6312','qlogic_cs','qlogicfas','qlogicfas408','qlogicfc','qlogicisp','scsi_transport_iscsi','seagate','sim710','stex','sym53c416','sym53c500_cs','t128','u14-34f','ultrastor','wd7000','aacraid','megaraid_sas');
 
-// Bibliothèque prototype Ajax pour afficher en décalé l'état des machines:
+// BibliothÃ¨que prototype Ajax pour afficher en dÃ©calÃ© l'Ã©tat des machines:
 echo "<script type='text/javascript' src='../includes/prototype.js'></script>\n";
 
 /*
@@ -59,10 +59,10 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	$id_recepteur=isset($_POST['id_recepteur']) ? $_POST['id_recepteur'] : (isset($_GET['id_recepteur']) ? $_GET['id_recepteur'] : NULL);
 
 
-	// Création de la table dès que possible:
+	// CrÃ©ation de la table dÃ¨s que possible:
 	creation_tftp_tables();
 
-	// Paramètres pour UdpCast
+	// ParamÃ¨tres pour UdpCast
 	$disk=isset($_POST['disk']) ? $_POST['disk'] : (isset($_GET['disk']) ? $_GET['disk'] : NULL);
 	$compr=isset($_POST['compr']) ? $_POST['compr'] : (isset($_GET['compr']) ? $_GET['compr'] : NULL);
 	$port=isset($_POST['port']) ? $_POST['port'] : (isset($_GET['port']) ? $_GET['port'] : NULL);
@@ -77,7 +77,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 
 	$auto_reboot=isset($_POST['auto_reboot']) ? $_POST['auto_reboot'] : (isset($_GET['auto_reboot']) ? $_GET['auto_reboot'] : NULL);
 
-	// Paramètres concernant l'action immédiate sur les machines choisies:
+	// ParamÃ¨tres concernant l'action immÃ©diate sur les machines choisies:
 	$wake=isset($_POST['wake']) ? $_POST['wake'] : (isset($_GET['wake']) ? $_GET['wake'] : "n");
 	$shutdown_reboot=isset($_POST['shutdown_reboot']) ? $_POST['shutdown_reboot'] : (isset($_GET['shutdown_reboot']) ? $_GET['shutdown_reboot'] : NULL);
 
@@ -114,7 +114,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		$restriction_parcs="y";
 		$tab_delegated_parcs=list_delegated_parcs($login);
 		if(count($tab_delegated_parcs)==0) {
-			echo "<p>Aucun parc ne vous a été délégué.</p>\n";
+			echo "<p>Aucun parc ne vous a Ã©tÃ© dÃ©lÃ©guÃ©.</p>\n";
 			include ("pdp.inc.php");
 			die();
 		}
@@ -133,7 +133,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 	}
 
 	if($msg_fichiers_manquants!="") {
-		$msg_fichiers_manquants.="<p>Vous ne pourrez pas effectuer le clonage avec la mini-distribution Linux UdpCast sans d'abord télécharger les fichiers manquants.</p>";
+		$msg_fichiers_manquants.="<p>Vous ne pourrez pas effectuer le clonage avec la mini-distribution Linux UdpCast sans d'abord tÃ©lÃ©charger les fichiers manquants.</p>";
 	}
 
 	$temoin_sysresccd=check_sysresccd_files();
@@ -142,7 +142,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		$temoin_fichiers_requis="y";
 	}
 	else {
-		$msg_fichiers_manquants.="<span style='color:red'>SysRescCD est absente.<br />Cette distribution permet de cloner avec une meilleure reconnaissance matérielle qu'UdpCast seul.<br />Vous devriez en effectuer le téléchargement via <a href='config_tftp.php'>Configurer le module TFTP</a>.</span><br />\n";
+		$msg_fichiers_manquants.="<span style='color:red'>SysRescCD est absente.<br />Cette distribution permet de cloner avec une meilleure reconnaissance matÃ©rielle qu'UdpCast seul.<br />Vous devriez en effectuer le tÃ©lÃ©chargement via <a href='config_tftp.php'>Configurer le module TFTP</a>.</span><br />\n";
 	}
 
 	if($msg_fichiers_manquants!="") {
@@ -162,7 +162,7 @@ if ((is_admin("system_is_admin",$login)=="Y")||(ldap_get_right("parc_can_clone",
 		$list_parcs=search_machines("objectclass=groupOfNames","parcs");
 		if ( count($list_parcs)==0) {
 			echo "<br><br>";
-			echo gettext("Il n'existe aucun parc. Vous devez d'abord créer un parc");
+			echo gettext("Il n'existe aucun parc. Vous devez d'abord crÃ©er un parc");
 			include ("pdp.inc.php");
 			exit;
 		}
@@ -216,13 +216,13 @@ if(nb_parcs==1) {
 
 		//echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
 
-		echo "<p style='text-indent: -7em; margin-left: 7em;'><b style='color:red'>ATTENTION&nbsp;:</b> Pour le bon fonctionnement du clonage, il est indispensable que les postes (<em>l'emetteur au moins</em>) soient configurés pour booter en priorité sur le réseau (<em>BIOS&nbsp;: boot PXE (network) avant disque dur</em>).<br />Sinon, quand le poste emetteur va redémarrer pour le clonage (*), il risque de redémarrer sous Window$ au lieu de démarrer en PXE.<br /><br />Et si vous lancez manuellement le clonage ensuite, le poste emetteur aura déjà réintégré le domaine et repris son nom initial. Vous clonerez alors toutes les machines sous ce même nom et elles n'intègreront pas le domaine sous leur nom propre.<br /><br />(*) Le poste emetteur reboote plusieurs fois dans l'opération (<em>il doit quitter le domaine (un reboot),<br />prendre le nom temporaire 'clone' (encore un reboot)<br />et ensuite seulement rebooter sur le réseau pour procéder au clonage</em>)</p>\n";
+		echo "<p style='text-indent: -7em; margin-left: 7em;'><b style='color:red'>ATTENTION&nbsp;:</b> Pour le bon fonctionnement du clonage, il est indispensable que les postes (<em>l'emetteur au moins</em>) soient configurÃ©s pour booter en prioritÃ© sur le rÃ©seau (<em>BIOS&nbsp;: boot PXE (network) avant disque dur</em>).<br />Sinon, quand le poste emetteur va redÃ©marrer pour le clonage (*), il risque de redÃ©marrer sous Window$ au lieu de dÃ©marrer en PXE.<br /><br />Et si vous lancez manuellement le clonage ensuite, le poste emetteur aura dÃ©jÃ  rÃ©intÃ©grÃ© le domaine et repris son nom initial. Vous clonerez alors toutes les machines sous ce mÃªme nom et elles n'intÃ¨greront pas le domaine sous leur nom propre.<br /><br />(*) Le poste emetteur reboote plusieurs fois dans l'opÃ©ration (<em>il doit quitter le domaine (un reboot),<br />prendre le nom temporaire 'clone' (encore un reboot)<br />et ensuite seulement rebooter sur le rÃ©seau pour procÃ©der au clonage</em>)</p>\n";
 	}
 	else {
 		if(!isset($id_emetteur)) {
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
-			echo "<p>Choisissez l'émetteur.</p>\n";
+			echo "<p>Choisissez l'Ã©metteur.</p>\n";
 
 			$tab_detect_doublons=array();
 			$tab_infos_doublons=array();
@@ -245,7 +245,7 @@ if(nb_parcs==1) {
 				echo "<th>Config DHCP</th>\n";
 
 				echo "<th>Emetteur</th>\n";
-				echo "<th>Actions programmées</th>\n";
+				echo "<th>Actions programmÃ©es</th>\n";
 				echo "</tr>\n";
 
 				for ($loop=0; $loop < count($mp); $loop++) {
@@ -262,7 +262,7 @@ if(nb_parcs==1) {
 					}
 
 					if($suisje_printer=="non") {
-						// Réinitialisation:
+						// RÃ©initialisation:
 						$id_machine="";
 
 						$mp_curr=search_machines2("(&(cn=$mpenc)(objectClass=ipHost))","computers");
@@ -279,7 +279,7 @@ if(nb_parcs==1) {
 						echo "<tr>\n";
 						echo "<td width='20%'>".$mp[$loop]."</td>\n";
 
-						// Etat: allumé ou éteint
+						// Etat: allumÃ© ou Ã©teint
 						echo "<td width='20%'>";
 						if ($mp_curr[0]["ipHostNumber"]) {
 							$iphost=$mp_curr[0]["ipHostNumber"];
@@ -294,7 +294,7 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Session: ouverte ou pas... sous quelle identité
+						// Session: ouverte ou pas... sous quelle identitÃ©
 						echo "<td width='20%'>\n";
 						echo "<div id='divsession$loop'>Patientez</div>\n";
 						echo "<script type='text/javascript'>
@@ -307,7 +307,7 @@ if(nb_parcs==1) {
 
 						// Etat config DHCP:
 						// Par la suite il ne faudra pas prendre les IP dans l'annuaire,
-						// mais dans la config DHCP parce que ce sont ces IP qui seront attribuées lors du boot PXE
+						// mais dans la config DHCP parce que ce sont ces IP qui seront attribuÃ©es lors du boot PXE
 						echo "<td width='20%'>\n";
 						//$mp_curr=search_machines("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 						if ($mp_curr[0]["macAddress"]) {
@@ -322,7 +322,7 @@ if(nb_parcs==1) {
 								echo "<img src=\"../elements/images/enabled.gif\" border='0' alt=\"$lig->ip\" title=\"$lig->ip\" />";
 							}
 							else {
-								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuée\" title=\"Pas d'adresse IP attribuée\" />";
+								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuÃ©e\" title=\"Pas d'adresse IP attribuÃ©e\" />";
 							}
 						}
 						else {
@@ -331,7 +331,7 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Sélection de l'émetteur UDPCAST:
+						// SÃ©lection de l'Ã©metteur UDPCAST:
 						echo "<td width='20%'>\n";
 						/*
 						foreach($mp_curr[0] as $champ => $valeur) {
@@ -341,10 +341,10 @@ if(nb_parcs==1) {
 						if($id_machine!=""){
 							//echo "<input type='checkbox' name='id_machine[]' value='$id_machine' />\n";
 							echo "<input type='radio' name='id_emetteur' value='$id_machine' />\n";
-							// On affiche quand même la case à cocher parce qu'il se peut que la case soit désactivée si l'identifiant est absent de la table se3_dhcp
+							// On affiche quand mÃªme la case Ã  cocher parce qu'il se peut que la case soit dÃ©sactivÃ©e si l'identifiant est absent de la table se3_dhcp
 							if($temoin_check=='n') {
-								//echo "<img src=\"../elements/images/info.png\" border='0' alt=\"La machine doit être dans plusieurs parcs ou inscrite sous plusieurs noms dans l'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."\" title=\"La machine doit être dans plusieurs parcs ou inscrite sous plusieurs noms dans l'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."\" />";
-								echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('La machine doit être dans plusieurs parcs ou inscrite sous plusieurs noms dans l\'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."')")."\"><img name=\"action_image$loop\"  src=\"../elements/images/info.png\"></u>\n";
+								//echo "<img src=\"../elements/images/info.png\" border='0' alt=\"La machine doit Ãªtre dans plusieurs parcs ou inscrite sous plusieurs noms dans l'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."\" title=\"La machine doit Ãªtre dans plusieurs parcs ou inscrite sous plusieurs noms dans l'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."\" />";
+								echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('La machine doit Ãªtre dans plusieurs parcs ou inscrite sous plusieurs noms dans l\'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."')")."\"><img name=\"action_image$loop\"  src=\"../elements/images/info.png\"></u>\n";
 
 							}
 						}
@@ -354,17 +354,17 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Action programmée
+						// Action programmÃ©e
 						echo "<td>\n";
 						if($id_machine!=""){
 							$sql="SELECT * FROM se3_tftp_action WHERE id='".$id_machine."';";
 							$res=mysql_query($sql);
 							if(mysql_num_rows($res)>0) {
 								$lig=mysql_fetch_object($res);
-								echo "<a href='visu_action.php?id_machine=$id_machine' target='_blank'>$lig->type programmé(e)</a>";
+								echo "<a href='visu_action.php?id_machine=$id_machine' target='_blank'>$lig->type programmÃ©(e)</a>";
 							}
 							else {
-								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmée\" title=\"Pas d'action programmée\" />";
+								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmÃ©e\" title=\"Pas d'action programmÃ©e\" />";
 							}
 						}
 						echo "</td>\n";
@@ -424,13 +424,13 @@ if(nb_parcs==1) {
 				echo "<th>Session</th>\n";
 				echo "<th>Config DHCP</th>\n";
 
-				//echo "<th>Récepteurs</th>\n";
-				echo "<th>Récepteurs<br />\n";
+				//echo "<th>RÃ©cepteurs</th>\n";
+				echo "<th>RÃ©cepteurs<br />\n";
 				echo "<a href='#' onclick='check_machine($i,\"check\");return false'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Tout cocher\" title=\"Tout cocher\" /></a>\n";
-				echo " / <a href='#' onclick='check_machine($i,\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout décocher\" title=\"Tout décocher\" /></a>\n";
+				echo " / <a href='#' onclick='check_machine($i,\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout dÃ©cocher\" title=\"Tout dÃ©cocher\" /></a>\n";
 				echo "</th>\n";
 
-				echo "<th>Actions programmées</th>\n";
+				echo "<th>Actions programmÃ©es</th>\n";
 				echo "</tr>\n";
 
 				for ($loop=0; $loop < count($mp); $loop++) {
@@ -447,7 +447,7 @@ if(nb_parcs==1) {
 					}
 
 					if($suisje_printer=="non") {
-						// Réinitialisation:
+						// RÃ©initialisation:
 						$id_machine="";
 
 						$mp_curr=search_machines2("(&(cn=$mpenc)(objectClass=ipHost))","computers");
@@ -463,7 +463,7 @@ if(nb_parcs==1) {
 						echo "<tr>\n";
 						echo "<td width='20%'>".$mp[$loop]."</td>\n";
 
-						// Etat: allumé ou éteint
+						// Etat: allumÃ© ou Ã©teint
 						echo "<td width='20%'>";
 						//$mp_curr=search_machines2("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 						if ($mp_curr[0]["ipHostNumber"]) {
@@ -479,7 +479,7 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Session: ouverte ou pas... sous quelle identité
+						// Session: ouverte ou pas... sous quelle identitÃ©
 						echo "<td width='20%'>\n";
 						echo "<div id='divsession$loop'>Patientez</div>\n";
 						echo "<script type='text/javascript'>
@@ -492,7 +492,7 @@ if(nb_parcs==1) {
 
 						// Etat config DHCP:
 						// Par la suite il ne faudra pas prendre les IP dans l'annuaire,
-						// mais dans la config DHCP parce que ce sont ces IP qui seront attribuées lors du boot PXE
+						// mais dans la config DHCP parce que ce sont ces IP qui seront attribuÃ©es lors du boot PXE
 						echo "<td width='20%'>\n";
 						//$mp_curr=search_machines("(&(cn=$mpenc)(objectClass=ipHost))","computers");
 						if ($mp_curr[0]["macAddress"]) {
@@ -508,7 +508,7 @@ if(nb_parcs==1) {
 								echo "<img src=\"../elements/images/enabled.gif\" border='0' alt=\"$lig->ip\" title=\"$lig->ip\" />";
 							}
 							else {
-								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuée\" title=\"Pas d'adresse IP attribuée\" />";
+								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'adresse IP attribuÃ©e\" title=\"Pas d'adresse IP attribuÃ©e\" />";
 							}
 						}
 						else {
@@ -517,7 +517,7 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Sélection des récepteurs UDPCAST:
+						// SÃ©lection des rÃ©cepteurs UDPCAST:
 						echo "<td width='20%'>\n";
 						/*
 						foreach($mp_curr[0] as $champ => $valeur) {
@@ -531,10 +531,10 @@ if(nb_parcs==1) {
 									//echo "<input type='radio' name='id_emetteur' value='$id_machine' />\n";
 								//}
 								//else {
-								// On affiche quand même la case à cocher parce qu'il se peut que la case soit désactivée si l'identifiant est absent de la table se3_dhcp
+								// On affiche quand mÃªme la case Ã  cocher parce qu'il se peut que la case soit dÃ©sactivÃ©e si l'identifiant est absent de la table se3_dhcp
 								if($temoin_check=='n') {
-									//echo "<img src=\"../elements/images/info.png\" border='0' alt=\"La machine doit être dans plusieurs parcs ou inscrite sous plusieurs noms dans l'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."\" title=\"La machine doit être dans plusieurs parcs ou inscrite sous plusieurs noms dans l'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."\" />";
-									echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('La machine doit être dans plusieurs parcs ou inscrite sous plusieurs noms dans l\'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."')")."\"><img name=\"action_image$loop\"  src=\"../elements/images/info.png\"></u>\n";
+									//echo "<img src=\"../elements/images/info.png\" border='0' alt=\"La machine doit Ãªtre dans plusieurs parcs ou inscrite sous plusieurs noms dans l'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."\" title=\"La machine doit Ãªtre dans plusieurs parcs ou inscrite sous plusieurs noms dans l'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."\" />";
+									echo "<u onmouseover=\"this.T_SHADOWWIDTH=5;this.T_STICKY=1;return escape".gettext("('La machine doit Ãªtre dans plusieurs parcs ou inscrite sous plusieurs noms dans l\'annuaire: ".$tab_infos_doublons[$mp_curr[0]["macAddress"]]."')")."\"><img name=\"action_image$loop\"  src=\"../elements/images/info.png\"></u>\n";
 								}
 							}
 							else{
@@ -547,17 +547,17 @@ if(nb_parcs==1) {
 						echo "</td>\n";
 
 
-						// Action programmée
+						// Action programmÃ©e
 						echo "<td>\n";
 						if($id_machine!=""){
 							$sql="SELECT * FROM se3_tftp_action WHERE id='".$id_machine."';";
 							$res=mysql_query($sql);
 							if(mysql_num_rows($res)>0) {
 								$lig=mysql_fetch_object($res);
-								echo "<a href='visu_action.php?id_machine=$id_machine' target='_blank'>$lig->type programmé(e)</a>";
+								echo "<a href='visu_action.php?id_machine=$id_machine' target='_blank'>$lig->type programmÃ©(e)</a>";
 							}
 							else {
-								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmée\" title=\"Pas d'action programmée\" />";
+								echo "<img src=\"../elements/images/disabled.gif\" border='0' alt=\"Pas d'action programmÃ©e\" title=\"Pas d'action programmÃ©e\" />";
 							}
 						}
 						echo "</td>\n";
@@ -592,14 +592,14 @@ if(nb_parcs==1) {
 		else {
 			$validation_parametres=isset($_POST['validation_parametres']) ? $_POST['validation_parametres'] : (isset($_GET['validation_parametres']) ? $_GET['validation_parametres'] : NULL);
 			if(!isset($validation_parametres)) {
-				echo "<h2>Paramétrage du clonage</h2>\n";
+				echo "<h2>ParamÃ©trage du clonage</h2>\n";
 
 				//$nombre_machines=count($id_machine);
 				//if($nombre_machines==0){
 				if((!isset($id_emetteur))||(count($id_recepteur)==0)) {
-					echo "<p>ERREUR: Il faut choisir au moins un émetteur et un récepteur.</p>\n";
+					echo "<p>ERREUR: Il faut choisir au moins un Ã©metteur et un rÃ©cepteur.</p>\n";
 
-					echo "<p><a href='#' onclick='history.go(-1);'>Retour au choix des machines à cloner</a>.</p>\n";
+					echo "<p><a href='#' onclick='history.go(-1);'>Retour au choix des machines Ã  cloner</a>.</p>\n";
 
 					echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour au choix du/des parc(s)</a>.</p>\n";
 					include ("pdp.inc.php");
@@ -614,14 +614,14 @@ if(nb_parcs==1) {
 					echo "<input type=\"hidden\" name=\"parc[]\" value=\"$parc[$i]\" />\n";
 				}
 
-				// Infos sur l'émetteur:
+				// Infos sur l'Ã©metteur:
 				$sql="SELECT * FROM se3_dhcp WHERE id='$id_emetteur';";
 				$res=mysql_query($sql);
 				$lig=mysql_fetch_object($res);
 				echo "<p>Emetteur: $lig->name (<i>id:$id_emetteur</i>)</p>\n";
 				echo "<input type=\"hidden\" name=\"id_emetteur\" value=\"$id_emetteur\" />\n";
 
-				// Liste des machines récepteurs:
+				// Liste des machines rÃ©cepteurs:
 				$chaine="";
 				$tab_dedoublonnage=array();
 				for($i=0;$i<count($id_recepteur);$i++){
@@ -640,9 +640,9 @@ if(nb_parcs==1) {
 				}
 				//if(count($id_recepteur)>1){$s="s";}else{$s="";}
 				if(count($tab_dedoublonnage)>1){$s="s";}else{$s="";}
-				echo "<p>Machine$s clonée$s: $chaine</p>\n";
+				echo "<p>Machine$s clonÃ©e$s: $chaine</p>\n";
 
-				echo "<p>Choisissez les paramètres de clonage: </p>\n";
+				echo "<p>Choisissez les paramÃ¨tres de clonage: </p>\n";
 
 				$temoin_sysresccd=check_sysresccd_files();
 
@@ -671,7 +671,7 @@ if(nb_parcs==1) {
 
 					echo "<input type='radio' name='distrib' id='distrib_sysresccd' value='sysresccd' onchange='affiche_sections_distrib()' ";
 					if($pref_distrib_clonage=="sysresccd") {echo "checked ";}
-					echo "/><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long à booter et 300Mo de RAM minimum, mais meilleure détection des pilotes</i>)\n";
+					echo "/><label for='distrib_sysresccd'>Utiliser la distribution SysRescCD</label> (<i>plus long Ã  booter et 300Mo de RAM minimum, mais meilleure dÃ©tection des pilotes</i>)\n";
 					//echo "<br />\n";
 					echo "</p>\n";
 
@@ -702,8 +702,8 @@ echo "</div>\n";
 						echo "/><label for='ntfsclone_udpcast_n'> Utiliser udp-sender/udp-receiver seuls</label><br />\n";
 						echo "<input type='radio' name='ntfsclone_udpcast' id='ntfsclone_udpcast_y' value='y' ";
 						if($pref_ntfsclone_udpcast=="y") {echo "checked ";}
-						echo "/><label for='ntfsclone_udpcast_y'>Utiliser ntfsclone et udp-sender/udp-receiver</label> (<em style='color:red' title=\"Le caractère expérimental de ce mode doit être tempéré.
-De nombreux clonages ont été effectués avec succès et ce beaucoup plus vite grâce à ntfsclone qu'avec udpcast seul.\">experimental</em>)<br />\n";
+						echo "/><label for='ntfsclone_udpcast_y'>Utiliser ntfsclone et udp-sender/udp-receiver</label> (<em style='color:red' title=\"Le caractÃ¨re expÃ©rimental de ce mode doit Ãªtre tempÃ©rÃ©.
+De nombreux clonages ont Ã©tÃ© effectuÃ©s avec succÃ¨s et ce beaucoup plus vite grÃ¢ce Ã  ntfsclone qu'avec udpcast seul.\">experimental</em>)<br />\n";
 						echo "</p>\n";
 					}
 					else {
@@ -713,22 +713,22 @@ De nombreux clonages ont été effectués avec succès et ce beaucoup plus vite grâc
 
 				}
 				else {
-					echo "<p style='color:red'>SysRescCD est absent (<em>c'est pourtant le choix recommandé</em>).<br />Vous pouvez provoquer le téléchargement dans le menu Serveur TFTP/Configurer le module.<br />A défaut, UdpCast seul sera utilisé.</p>\n";
+					echo "<p style='color:red'>SysRescCD est absent (<em>c'est pourtant le choix recommandÃ©</em>).<br />Vous pouvez provoquer le tÃ©lÃ©chargement dans le menu Serveur TFTP/Configurer le module.<br />A dÃ©faut, UdpCast seul sera utilisÃ©.</p>\n";
 					echo "<input type=\"hidden\" name=\"distrib\" value=\"udpcast\" />\n";
 				}
 
 				echo "<table border='0'>\n";
 
-				echo "<tr><td valign='top'>Type du système à cloner: </td>\n";
+				echo "<tr><td valign='top'>Type du systÃ¨me Ã  cloner: </td>\n";
 				echo "<td>";
-				echo "<input type='radio' name='type_os' id='type_os_xp' value='xp' onchange='affiche_message_shutdown_cmd()' checked /><label for='type_os_xp'> Window XP, Seven, ou autre (<i>il y a une intégration du domaine à faire</i>)</label><br />\n";
-				echo "<input type='radio' name='type_os' id='type_os_autre' value='autre' onchange='affiche_message_shutdown_cmd()' /><label for='type_os_autre'> Linux ou autre cas (<i>pas d'intégration automatique du domaine</i>)</label>\n";
+				echo "<input type='radio' name='type_os' id='type_os_xp' value='xp' onchange='affiche_message_shutdown_cmd()' checked /><label for='type_os_xp'> Window XP, Seven, ou autre (<i>il y a une intÃ©gration du domaine Ã  faire</i>)</label><br />\n";
+				echo "<input type='radio' name='type_os' id='type_os_autre' value='autre' onchange='affiche_message_shutdown_cmd()' /><label for='type_os_autre'> Linux ou autre cas (<i>pas d'intÃ©gration automatique du domaine</i>)</label>\n";
 				echo "</td></tr>\n";
 
-				echo "<tr><td valign='top'>Périphérique à cloner: </td>\n";
+				echo "<tr><td valign='top'>PÃ©riphÃ©rique Ã  cloner: </td>\n";
 				echo "<td>";
                                 echo "<input type='text' name='disk' id='disk' value='sda' size='14' /><br>\n";
-                                echo "Habituellement: <a href=\"javascript:affecter_valeur_disk('hda1')\" title=\"Cliquez pour prendre cette valeur.\">hda1</a> ou <a href=\"javascript:affecter_valeur_disk('sda1')\" title=\"Cliquez pour prendre cette valeur.\">sda1</a> pour la première partition<br>\n";
+                                echo "Habituellement: <a href=\"javascript:affecter_valeur_disk('hda1')\" title=\"Cliquez pour prendre cette valeur.\">hda1</a> ou <a href=\"javascript:affecter_valeur_disk('sda1')\" title=\"Cliquez pour prendre cette valeur.\">sda1</a> pour la premiÃ¨re partition<br>\n";
                                 echo "et <a href=\"javascript:affecter_valeur_disk('hda')\" title=\"Cliquez pour prendre cette valeur.\">hda</a> ou <a href=\"javascript:affecter_valeur_disk('sda')\" title=\"Cliquez pour prendre cette valeur.\">sda</a> pour le disque complet.<br>\n";
 
                                 echo "<p><em>Avec le choix ntfsclone+udpcast&nbsp;:</em><br />";
@@ -737,7 +737,7 @@ De nombreux clonages ont été effectués avec succès et ce beaucoup plus vite grâc
 sup&eacute;rieure &agrave; 20140409.
 Version &agrave; controler dans la rubrique
     Serveur TFTP/Configurer le module\">(*)</span><br />";
-                                echo "Pour cloner (<em>par exemple</em>) les partitions sda1, sda2 et sda5, choisir <strong><a href=\"javascript:affecter_valeur_disk('sda1_sda2_sda5')\" title=\"Cliquez pour prendre cette valeur.\">sda1_sda2_sda5</a></strong> (<em>taper le nom des partitions sépar&eacute;es d'un tiret bas _</em>).<br />Avec le choix ntfsclone+udpcast, les partitions ntfs sont clon&eacute;es avec ntfsclone+udpcast et les autres partitions sont clon&eacute;es avec udpcast seul.";
+                                echo "Pour cloner (<em>par exemple</em>) les partitions sda1, sda2 et sda5, choisir <strong><a href=\"javascript:affecter_valeur_disk('sda1_sda2_sda5')\" title=\"Cliquez pour prendre cette valeur.\">sda1_sda2_sda5</a></strong> (<em>taper le nom des partitions sÃ©par&eacute;es d'un tiret bas _</em>).<br />Avec le choix ntfsclone+udpcast, les partitions ntfs sont clon&eacute;es avec ntfsclone+udpcast et les autres partitions sont clon&eacute;es avec udpcast seul.";
                                 echo "</td></tr>\n";
                                    
                                 echo "<tr><td valign='top'>Compression: </td><td>";
@@ -755,7 +755,7 @@ Version &agrave; controler dans la rubrique
                                 echo "/> Compression LZOP (<i>1 processeur ou gigabit</i>)</label><br />\n";
 				echo "</td></tr>\n";
 
-				// A FAIRE: Relever les clonage en attente (possible) ou en cours (pas possible en l'état) pour ne pas proposer le même port...
+				// A FAIRE: Relever les clonage en attente (possible) ou en cours (pas possible en l'Ã©tat) pour ne pas proposer le mÃªme port...
 				$sql="SELECT DISTINCT infos FROM se3_tftp_action WHERE type='udpcast_emetteur';";
 				$res_infos=mysql_query($sql);
 				if(mysql_num_rows($res_infos)>0) {
@@ -774,8 +774,8 @@ Version &agrave; controler dans la rubrique
 				}
 				echo "<tr><td valign='top'>Port: </td><td><input type='text' name='port' value='$port' size='5' />";
 				echo "<br />\n";
-				//echo "<b>Attention</b>: A l'heure actuelle, aucun test n'est fait sur les clonages programmés concernant le port utilisé.<br />Il ne faut pas qu'un autre clonage se déroule simultanément avec le même port.<br /><i>Remarque</i>: Le port doit être pair.\n";
-				echo "<b>Attention</b>: Aucun test n'est réalisé sur les clonages en cours concernant le port utilisé.<br />Seuls sont testés les clonages programmés, mais non encore amorcés.<br />Il ne faut pas qu'un autre clonage se déroule simultanément avec le même port.<br /><i>Remarque</i>: Le port doit être pair.\n";
+				//echo "<b>Attention</b>: A l'heure actuelle, aucun test n'est fait sur les clonages programmÃ©s concernant le port utilisÃ©.<br />Il ne faut pas qu'un autre clonage se dÃ©roule simultanÃ©ment avec le mÃªme port.<br /><i>Remarque</i>: Le port doit Ãªtre pair.\n";
+				echo "<b>Attention</b>: Aucun test n'est rÃ©alisÃ© sur les clonages en cours concernant le port utilisÃ©.<br />Seuls sont testÃ©s les clonages programmÃ©s, mais non encore amorcÃ©s.<br />Il ne faut pas qu'un autre clonage se dÃ©roule simultanÃ©ment avec le mÃªme port.<br /><i>Remarque</i>: Le port doit Ãªtre pair.\n";
 				echo "</td></tr>\n";
 
 				echo "<tr id='tr_module_disk'><td>Module Disk: </td><td>\n";
@@ -786,7 +786,7 @@ Version &agrave; controler dans la rubrique
 				$test_driver_emetteur=mysql_query($sql);
 				if(mysql_num_rows($test_driver_emetteur)>0) {
 					$chaine_pilote.="<br />\n";
-					$chaine_pilote.="<b>Pilote(s) relevé(s) lors d'un précédent rapport&nbsp;:</b> ";
+					$chaine_pilote.="<b>Pilote(s) relevÃ©(s) lors d'un prÃ©cÃ©dent rapport&nbsp;:</b> ";
 					$cpt_pilote=0;
 					while($lig_pilote=mysql_fetch_object($test_driver_emetteur)) {
 						if($cpt_pilote>0) {$chaine_pilote.=", ";}
@@ -807,14 +807,14 @@ Version &agrave; controler dans la rubrique
 				echo $chaine_pilote;
 				echo "</td></tr>\n";
 
-				echo "<tr id='tr_netmodule'><td>Pilote réseau: </td><td>\n";
+				echo "<tr id='tr_netmodule'><td>Pilote rÃ©seau: </td><td>\n";
 				$tab_pilote=array();
 				$chaine_pilote="";
 				$sql="SELECT valeur FROM se3_tftp_infos WHERE id='$id_emetteur' AND nom='network_driver';";
 				$test_driver_emetteur=mysql_query($sql);
 				if(mysql_num_rows($test_driver_emetteur)>0) {
 					$chaine_pilote.="<br />\n";
-					$chaine_pilote.="<b>Pilote(s) relevé(s) lors d'un précédent rapport&nbsp;:</b> ";
+					$chaine_pilote.="<b>Pilote(s) relevÃ©(s) lors d'un prÃ©cÃ©dent rapport&nbsp;:</b> ";
 					$cpt_pilote=0;
 					while($lig_pilote=mysql_fetch_object($test_driver_emetteur)) {
 						if($cpt_pilote>0) {$chaine_pilote.=", ";}
@@ -853,59 +853,59 @@ Version &agrave; controler dans la rubrique
 				echo "<tr><td valign='top'>Rebooter en fin de clonage: </td>\n";
 				echo "<td>\n";
 				echo "<label for='auto_reboot_always'><input type='radio' name='auto_reboot' id='auto_reboot_always' value='always' checked /> Toujours</label><br />\n";
-				echo "<label for='auto_reboot_success'><input type='radio' name='auto_reboot' id='auto_reboot_success' value='success' /> En cas de succès</label><br />\n";
+				echo "<label for='auto_reboot_success'><input type='radio' name='auto_reboot' id='auto_reboot_success' value='success' /> En cas de succÃ¨s</label><br />\n";
 				echo "<label for='auto_reboot_never'><input type='radio' name='auto_reboot' id='auto_reboot_never' value='never' /> Jamais</label>\n";
 				echo "</td></tr>\n";
 
-				echo "<tr><td valign='top'>Pour la ou les machines sélectionnées: </td>\n";
+				echo "<tr><td valign='top'>Pour la ou les machines sÃ©lectionnÃ©es: </td>\n";
 				echo "<td>\n";
 
 					echo "<table border='0'>\n";
-					echo "<tr><td valign='top'><input type='checkbox' id='wake' name='wake' value='y' checked /> </td><td><label for='wake'>Démarrer les machines par Wake-On-Lan/etherwake si elles sont éteintes.</label></td></tr>\n";
-					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait1' name='shutdown_reboot' value='wait1'  /> </td><td><label for='shutdown_reboot_wait1'>Attendre le reboot des machines même si aucune session n'est ouverte,</label></td></tr>\n";
-					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait2' name='shutdown_reboot' value='wait2'  /> </td><td><label for='shutdown_reboot_wait2'>Redémarrer les machines sans session ouverte et attendre le reboot pour les machines qui ont des sessions ouvertes,</label></td></tr>\n";
-					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_reboot' name='shutdown_reboot' value='reboot' checked /> </td><td><label for='shutdown_reboot_reboot'>Redémarrer les machines même si une session est ouverte (<i>pô cool</i>).</label></td></tr>\n";
+					echo "<tr><td valign='top'><input type='checkbox' id='wake' name='wake' value='y' checked /> </td><td><label for='wake'>DÃ©marrer les machines par Wake-On-Lan/etherwake si elles sont Ã©teintes.</label></td></tr>\n";
+					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait1' name='shutdown_reboot' value='wait1'  /> </td><td><label for='shutdown_reboot_wait1'>Attendre le reboot des machines mÃªme si aucune session n'est ouverte,</label></td></tr>\n";
+					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_wait2' name='shutdown_reboot' value='wait2'  /> </td><td><label for='shutdown_reboot_wait2'>RedÃ©marrer les machines sans session ouverte et attendre le reboot pour les machines qui ont des sessions ouvertes,</label></td></tr>\n";
+					echo "<tr><td valign='top'><input type='radio' id='shutdown_reboot_reboot' name='shutdown_reboot' value='reboot' checked /> </td><td><label for='shutdown_reboot_reboot'>RedÃ©marrer les machines mÃªme si une session est ouverte (<i>pÃ´ cool</i>).</label></td></tr>\n";
 					echo "</table>\n";
 
 				echo "</td></tr>\n";
 
 
-				echo "<tr><td colspan='2' style='background-color: silver;'>Paramètres spécifiques à l'émetteur</td></tr>\n";
+				echo "<tr><td colspan='2' style='background-color: silver;'>ParamÃ¨tres spÃ©cifiques Ã  l'Ã©metteur</td></tr>\n";
 
-				echo "<tr><td valign='top'>Nombre (<i>min</i>) de clients à attendre: </td>\n";
+				echo "<tr><td valign='top'>Nombre (<i>min</i>) de clients Ã  attendre: </td>\n";
 				echo "<td>\n";
 				echo "<input type='text' name='min_receivers' id='min_receivers' value='".count($id_recepteur)."' size='3' onkeydown=\"clavier_up_down_increment('min_receivers',event,1,100);\" autocomplete=\"off\" />\n";
 				echo "<br />\n";
-				echo "Vous pouvez par exemple annoncer 10 récepteurs minimum alors que vous souhaitez en cloner 12.<br />";
-				echo "Dans ce cas, vous acceptez que deux récepteurs manquent dans le clonage, mais pas plus.<br />";
+				echo "Vous pouvez par exemple annoncer 10 rÃ©cepteurs minimum alors que vous souhaitez en cloner 12.<br />";
+				echo "Dans ce cas, vous acceptez que deux rÃ©cepteurs manquent dans le clonage, mais pas plus.<br />";
 				echo "<br />\n";
-				echo "Lorsque le compte est atteint, le clonage démarre aussitôt le délais ci-dessous écoulé.<br />";
+				echo "Lorsque le compte est atteint, le clonage dÃ©marre aussitÃ´t le dÃ©lais ci-dessous Ã©coulÃ©.<br />";
 				echo "</td></tr>\n";
 				/*
-				echo "<tr><td valign='top'><b>Ou</b></td><td>(<i>mettre 0 ou vide pour l'option à ne pas retenir;<br />si aucun des deux champs n'est vidé l'option ci-dessus l'emporte</i>)</td></tr>\n";
+				echo "<tr><td valign='top'><b>Ou</b></td><td>(<i>mettre 0 ou vide pour l'option Ã  ne pas retenir;<br />si aucun des deux champs n'est vidÃ© l'option ci-dessus l'emporte</i>)</td></tr>\n";
 				*/
-				echo "<tr><td valign='top'>Délais minimum avant le démarrage:</td>\n";
+				echo "<tr><td valign='top'>DÃ©lais minimum avant le dÃ©marrage:</td>\n";
 				echo "<td valign='bottom'>\n";
 				echo "<input type='text' id='min_wait' name='min_wait' value='$pref_clonage_min_wait' size='3' onkeydown=\"clavier_up_down_increment('min_wait',event,1,60);\" autocomplete=\"off\" /> minutes.\n";
 				echo "<br />\n";
-				echo "Si vous fixez un nombre de récepteurs inférieur au nombre max de clients pouvant être clonés, ce délais permettra d'attendre les récepteurs au-delà pendant cette durée.\n";
+				echo "Si vous fixez un nombre de rÃ©cepteurs infÃ©rieur au nombre max de clients pouvant Ãªtre clonÃ©s, ce dÃ©lais permettra d'attendre les rÃ©cepteurs au-delÃ  pendant cette durÃ©e.\n";
 				echo "</td></tr>\n";
 
-				echo "<tr><td valign='top'>Si un ou des clients<br />font défaut,<br />démarrer après: </td>\n";
+				echo "<tr><td valign='top'>Si un ou des clients<br />font dÃ©faut,<br />dÃ©marrer aprÃ¨s: </td>\n";
 				echo "<td valign='bottom'>\n";
 				echo "<input type='text' id='max_wait' name='max_wait' value='$pref_clonage_max_wait' size='4' onkeydown=\"clavier_up_down_increment('max_wait',event,1,60);\" autocomplete=\"off\" /> minutes.\n";
 				echo "<br />\n";
-				echo "Néanmoins, le clonage ne démarre que si un client au moins est présent.\n";
+				echo "NÃ©anmoins, le clonage ne dÃ©marre que si un client au moins est prÃ©sent.\n";
 				echo "</td></tr>\n";
 
-				echo "<tr><td colspan='2' style='background-color: silver;'>Paramètres spécifiques au(x) récepteur(s)</td></tr>\n";
+				echo "<tr><td colspan='2' style='background-color: silver;'>ParamÃ¨tres spÃ©cifiques au(x) rÃ©cepteur(s)</td></tr>\n";
 
-				echo "<tr><td valign='top'>Abandonner après: </td>\n";
+				echo "<tr><td valign='top'>Abandonner aprÃ¨s: </td>\n";
 				echo "<td>\n";
-				//echo "<input type='text' id='start_timeout' name='start_timeout' value='20' size='3' onkeydown=\"clavier_up_down_increment(this.id,event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne démarre pas.\n";
-				echo "<input type='text' id='start_timeout' name='start_timeout' value='$pref_clonage_start_timeout' size='3' onkeydown=\"clavier_up_down_increment('start_timeout',event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne démarre pas.\n";
+				//echo "<input type='text' id='start_timeout' name='start_timeout' value='20' size='3' onkeydown=\"clavier_up_down_increment(this.id,event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne dÃ©marre pas.\n";
+				echo "<input type='text' id='start_timeout' name='start_timeout' value='$pref_clonage_start_timeout' size='3' onkeydown=\"clavier_up_down_increment('start_timeout',event,1,60);\" autocomplete=\"off\" /> minutes si le clonage ne dÃ©marre pas.\n";
 				echo "<br />\n";
-				echo "Veillez à ce que le timeout soit supérieur à la valeur 'max-wait' spécifiée pour l'émetteur.\n";
+				echo "Veillez Ã  ce que le timeout soit supÃ©rieur Ã  la valeur 'max-wait' spÃ©cifiÃ©e pour l'Ã©metteur.\n";
 				echo "</td></tr>\n";
 
 				/*
@@ -988,8 +988,8 @@ affiche_message_shutdown_cmd();
 
 function clavier_up_down_increment(n,e,vmin,vmax){
 	//alert(n);
-	// Fonction destinée à incrémenter/décrémenter le champ courant entre 0 et 255 (pour des composantes de couleurs)
-	// Modifié pour aller de vmin à vmax
+	// Fonction destinÃ©e Ã  incrÃ©menter/dÃ©crÃ©menter le champ courant entre 0 et 255 (pour des composantes de couleurs)
+	// ModifiÃ© pour aller de vmin Ã  vmax
 	touche= e.keyCode ;
 	//alert('touche='+touche);
 	if (touche == '40') {
@@ -1040,7 +1040,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 
 			}
 			else {
-				echo "<h2>Validation des paramètres du clonage</h2>\n";
+				echo "<h2>Validation des paramÃ¨tres du clonage</h2>\n";
 
 				$opt_url_authorized_keys="";
 				if((isset($_POST['prendre_en_compte_url_authorized_keys']))&&(isset($_POST['url_authorized_keys']))&&($_POST['url_authorized_keys']!='')&&(preg_replace('|[A-Za-z0-9/:_\.\-]|','',$_POST['url_authorized_keys'])=='')) {
@@ -1049,7 +1049,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 				}
 
 				//===================================
-				// Contrôle des variables:
+				// ContrÃ´le des variables:
 				$tab_compr=array('none','gzip','lzop','pbzip2');
 				if(!in_array($compr,$tab_compr)){$compr='lzop';}
 
@@ -1072,14 +1072,14 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 				$sauvegarde_pref=crob_setParam('pref_clonage_start_timeout', $start_timeout, 'Clonage: Valeur max d attente des recepteurs');
 				$sauvegarde_pref=crob_setParam('pref_clonage_compression', $compr, 'Clonage: Mode de compression prefere');
 
-				echo "<p>Rappel des paramètres:</p>\n";
+				echo "<p>Rappel des paramÃ¨tres:</p>\n";
 
 				$temoin_sysresccd=check_sysresccd_files();
 
 				if($temoin_sysresccd=="y") {
 					echo "<table class='crob'>\n";
 					echo "<tr>\n";
-					echo "<th style='text-align:left;'>Distribution linux à utiliser: </th>\n";
+					echo "<th style='text-align:left;'>Distribution linux Ã  utiliser: </th>\n";
 					echo "<td>\n";
 					echo $distrib;
 					if($distrib=='sysresccd') {
@@ -1095,7 +1095,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 				}
 
 				echo "<tr>\n";
-				echo "<th style='text-align:left;'>Partition/disque à cloner: </th>\n";
+				echo "<th style='text-align:left;'>Partition/disque Ã  cloner: </th>\n";
 				echo "<td>\n";
 				echo $disk;
 				echo "</td>\n";
@@ -1133,7 +1133,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 					}
 	
 					echo "<tr>\n";
-					echo "<th style='text-align:left;'>Module réseau: </th>\n";
+					echo "<th style='text-align:left;'>Module rÃ©seau: </th>\n";
 					echo "<td>\n";
 					echo $netmodule;
 					echo "</td>\n";
@@ -1154,7 +1154,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 					echo "Toujours";
 				}
 				elseif($auto_reboot=="success") {
-					echo "En cas de succès";
+					echo "En cas de succÃ¨s";
 				}
 				elseif($auto_reboot=="never") {
 					echo "Jamais (<i>reboot manuel</i>)";
@@ -1192,8 +1192,8 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 				//$udpcparam="--max-wait=".$sec_max_wait."--min-receivers=".$min_receivers;
 				$udpcparam="--max-wait=".$sec_max_wait."|--min-receivers=".$min_receivers;
 
-				// Je ne parviens pas à renseigner correctement le /udpcfg.txt avec les infos passées par la boot_cmdline
-				// Je ne m'en sors qu'avec un seul paramètre en udpcparam
+				// Je ne parviens pas Ã  renseigner correctement le /udpcfg.txt avec les infos passÃ©es par la boot_cmdline
+				// Je ne m'en sors qu'avec un seul paramÃ¨tre en udpcparam
 				if(($min_receivers!=0)&&($min_receivers!='')) {
 					$udpcparam="--min-receivers=".$min_receivers;
 				}
@@ -1206,7 +1206,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 				$sec_max_wait=$max_wait*60;
 				$sec_min_wait=$min_wait*60;
 				$udpcparam="--max-wait=".$sec_max_wait." --min-wait=".$sec_min_wait." --min-receivers=".$min_receivers;
-				$udpcparam_temp=strtr($udpcparam," ","_"); // Pour passer la récupération de variable dans pxe_gen_cfg.sh, l'espace dans le contenu de la variable pose un pb. On remplace par un _ et on fait la correction inverse dans pxe_gen_cfg.sh
+				$udpcparam_temp=strtr($udpcparam," ","_"); // Pour passer la rÃ©cupÃ©ration de variable dans pxe_gen_cfg.sh, l'espace dans le contenu de la variable pose un pb. On remplace par un _ et on fait la correction inverse dans pxe_gen_cfg.sh
 
 				$mac_machine=$lig->mac;
 				$nom_machine=$lig->name;
@@ -1217,19 +1217,19 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 				if($restriction_parcs=="y") {
 					$temoin_erreur='y';
 					for($loop=0; $loop<count($tab_delegated_parcs);$loop++) {
-						// La machine est-elle dans un des parcs délégués?
+						// La machine est-elle dans un des parcs dÃ©lÃ©guÃ©s?
 						if(is_machine_in_parc($nom_machine,$tab_delegated_parcs[$loop])) {$temoin_erreur='n';break;}
 					}
 				}
 
 				if($temoin_erreur=="y") {
-					echo "<p style='color:red'>La machine $nom_machine ne vous est pas déléguée</p>\n";
+					echo "<p style='color:red'>La machine $nom_machine ne vous est pas dÃ©lÃ©guÃ©e</p>\n";
 				}
 				else {
 
 					// Nettoyage de scories d'autres programmations:
 					if(file_exists("/tftpboot/pxelinux.cfg/01-".$corrige_mac)) {
-						echo "<p><span style='color:red;'>Suppression d'une programmation précédente pour $nom_machine</span><br>\n";
+						echo "<p><span style='color:red;'>Suppression d'une programmation prÃ©cÃ©dente pour $nom_machine</span><br>\n";
 						//unlink("/tftpboot/pxelinux.cfg/01-".$corrige_mac);
 
 						$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'menage_tftpboot_pxelinux_cfg' 'mac=$corrige_mac'", $retour);
@@ -1261,19 +1261,19 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 							if($restriction_parcs=="y") {
 								$temoin_erreur_client='y';
 								for($loop=0; $loop<count($tab_delegated_parcs);$loop++) {
-									// La machine est-elle dans un des parcs délégués?
+									// La machine est-elle dans un des parcs dÃ©lÃ©guÃ©s?
 									if(is_machine_in_parc($nom_machine_client,$tab_delegated_parcs[$loop])) {$temoin_erreur='n';break;}
 								}
 							}
 
 							if($temoin_erreur_client=="y") {
-								echo "<p style='color:red'>La machine $nom_machine_client ne vous est pas déléguée</p>\n";
+								echo "<p style='color:red'>La machine $nom_machine_client ne vous est pas dÃ©lÃ©guÃ©e</p>\n";
 							}
 							else {
 
 								$corrige_mac_client=strtolower(strtr($mac_machine_client,":","-"));
 								if(file_exists("/tftpboot/pxelinux.cfg/01-".$corrige_mac_client)) {
-									echo "<p><span style='color:red;'>Suppression d'une programmation précédente pour $nom_machine_client</span><br>\n";
+									echo "<p><span style='color:red;'>Suppression d'une programmation prÃ©cÃ©dente pour $nom_machine_client</span><br>\n";
 									//unlink("/tftpboot/pxelinux.cfg/01-".$corrige_mac);
 
 									$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'menage_tftpboot_pxelinux_cfg' 'mac=$corrige_mac_client'", $retour);
@@ -1300,10 +1300,10 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 	
 					if($type_os=='xp') {
 
-						echo "<p><span style='color:red; font-weight:bold;'>Rappel&nbsp;:</span> Il faut que les postes émetteur et récepteur(s) bootent en priorité sur le réseau (<em>PXE</em>) pour que le redémarrage se fasse sur ".$distrib." et que le clonage s'ensuive.</p>\n";
+						echo "<p><span style='color:red; font-weight:bold;'>Rappel&nbsp;:</span> Il faut que les postes Ã©metteur et rÃ©cepteur(s) bootent en prioritÃ© sur le rÃ©seau (<em>PXE</em>) pour que le redÃ©marrage se fasse sur ".$distrib." et que le clonage s'ensuive.</p>\n";
 
-						echo "<p><span style='font-weight:bold;'>Informations sur la suite&nbsp;:</span> Le poste émetteur va être sorti du domaine, renommé en 'clone' et préparé pour une réintégration après clonage,...<br>\n";
-						echo "L'opération prend couramment 5 minutes avant que la préparation soit effectuée et que la fin de la présente page HTML s'affiche.<br />\n";
+						echo "<p><span style='font-weight:bold;'>Informations sur la suite&nbsp;:</span> Le poste Ã©metteur va Ãªtre sorti du domaine, renommÃ© en 'clone' et prÃ©parÃ© pour une rÃ©intÃ©gration aprÃ¨s clonage,...<br>\n";
+						echo "L'opÃ©ration prend couramment 5 minutes avant que la prÃ©paration soit effectuÃ©e et que la fin de la prÃ©sente page HTML s'affiche.<br />\n";
 						echo "Soyez patient...</p>\n";
 
 						flush();
@@ -1348,7 +1348,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 				}
 
 				if ("$temoin_erreur"=="n") {
-					echo "<p>Génération des fichiers dans /tftpboot/pxelinux.cfg/ pour l'émetteur.<br />\n";
+					echo "<p>GÃ©nÃ©ration des fichiers dans /tftpboot/pxelinux.cfg/ pour l'Ã©metteur.<br />\n";
 					echo "<p>Emetteur: $lig->name (<i>$id_emetteur</i>): \n";
 					if($distrib=='udpcast') {
 						//$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_emetteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
@@ -1365,14 +1365,14 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 					}
 
 					if(count($retour)>0){
-						echo "<span style='color:red;'>ECHEC de la génération du fichier</span><br />\n";
+						echo "<span style='color:red;'>ECHEC de la gÃ©nÃ©ration du fichier</span><br />\n";
 						for($j=0;$j<count($retour);$j++){
 							echo "$retour[$j]<br />\n";
 						}
 						$temoin_erreur="y";
 					}
 					else {
-						// Numéro de l'opération de sauvegarde:
+						// NumÃ©ro de l'opÃ©ration de sauvegarde:
 						//$num_op=get_free_se3_action_tftp_num_op();
 						$sql="UPDATE se3_tftp_rapports SET statut='VALIDE' WHERE id='$id_emetteur' AND tache='preparation' AND statut='SUCCES';";
 						$upd=mysql_query($sql); 
@@ -1412,18 +1412,18 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 
 
 				if($temoin_erreur=="y") {
-					echo "<p>La mise en place a échoué pour l'emetteur.<br />On abandonne avant de générer les fichiers pour les émetteurs.</p>\n et on retablit la configuration initiale";
+					echo "<p>La mise en place a Ã©chouÃ© pour l'emetteur.<br />On abandonne avant de gÃ©nÃ©rer les fichiers pour les Ã©metteurs.</p>\n et on retablit la configuration initiale";
 					system("/usr/bin/sudo /usr/share/se3/scripts/integreDomaine.sh ldap $nom_machine $ip_machine $mac_machine > /dev/null");
 					include ("pdp.inc.php");
 					exit();
 				}
 
-				// On n'affiche le fichier que pour le dernier (à titre d'info):
+				// On n'affiche le fichier que pour le dernier (Ã  titre d'info):
 				if(isset($corrige_mac)) {
 					//$fich=fopen("/tftpboot/pxelinux.cfg/01-$lig1->mac","r");
 					$fich=fopen("/tftpboot/pxelinux.cfg/01-$corrige_mac","r");
 					if($fich) {
-						echo "<p>Pour information, voici le contenu du fichier généré:<br />\n";
+						echo "<p>Pour information, voici le contenu du fichier gÃ©nÃ©rÃ©:<br />\n";
 						echo "<pre style='border:1px solid black; color:green;'>";
 						while(!feof($fich)) {
 							$ligne=fgets($fich,4096);
@@ -1433,13 +1433,13 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 						fclose($fich);
 					}
 					else {
-						echo "<p style='color:red;'>Il n'a pas été possible d'ouvrir le fichier /tftpboot/pxelinux.cfg/01-$corrige_mac</p>\n";
+						echo "<p style='color:red;'>Il n'a pas Ã©tÃ© possible d'ouvrir le fichier /tftpboot/pxelinux.cfg/01-$corrige_mac</p>\n";
 					}
 				}
 
 				//====================================================
 
-				echo "<p>Génération des fichiers dans /tftpboot/pxelinux.cfg/ pour les récepteurs.<br />\n";
+				echo "<p>GÃ©nÃ©ration des fichiers dans /tftpboot/pxelinux.cfg/ pour les rÃ©cepteurs.<br />\n";
 				//$udpcparam="--start-timeout=".$start_timeout;
 				$sec_start_timeout=$start_timeout*60;
 				//$udpcparam="--start-timeout=".$sec_start_timeout;
@@ -1447,7 +1447,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 				//$sec_max_wait=$max_wait*60;
 				//$udpcparam="--start-timeout=".$sec_start_timeout." --max-wait=".$sec_max_wait." --min-wait=".$sec_min_wait;
 				$udpcparam="--start-timeout=".$sec_start_timeout;
-				$udpcparam_temp=strtr($udpcparam," ","_"); // Pour passer la récupération de variable dans pxe_gen_cfg.sh, l'espace dans le contenu de la variable pose un pb. On remplace par un _ et on fait la correction inverse dans pxe_gen_cfg.sh
+				$udpcparam_temp=strtr($udpcparam," ","_"); // Pour passer la rÃ©cupÃ©ration de variable dans pxe_gen_cfg.sh, l'espace dans le contenu de la variable pose un pb. On remplace par un _ et on fait la correction inverse dans pxe_gen_cfg.sh
 
 				// BOUCLE SUR LA LISTE DES $id_recepteur[$i]
 
@@ -1469,16 +1469,16 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 						if($restriction_parcs=="y") {
 							$temoin_erreur='y';
 							for($loop=0; $loop<count($tab_delegated_parcs);$loop++) {
-								// La machine est-elle dans un des parcs délégués?
+								// La machine est-elle dans un des parcs dÃ©lÃ©guÃ©s?
 								if(is_machine_in_parc($nom_machine,$tab_delegated_parcs[$loop])) {$temoin_erreur='n';break;}
 							}
 						}
 
 						if($temoin_erreur=="y") {
-							echo "<p style='color:red'>La machine $nom_machine ne vous est pas déléguée</p>\n";
+							echo "<p style='color:red'>La machine $nom_machine ne vous est pas dÃ©lÃ©guÃ©e</p>\n";
 						}
 						else {
-							echo "Génération pour $nom_machine: ";
+							echo "GÃ©nÃ©ration pour $nom_machine: ";
 	
 							$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 	
@@ -1499,7 +1499,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 							}
 	
 							if(count($retour)>0){
-								echo "<span style='color:red;'>ECHEC de la génération du fichier</span><br />\n";
+								echo "<span style='color:red;'>ECHEC de la gÃ©nÃ©ration du fichier</span><br />\n";
 								for($j=0;$j<count($retour);$j++){
 									echo "$retour[$j]<br />\n";
 								}
@@ -1546,11 +1546,11 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 				// Ajouter un champ?
 				// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
-				// On n'affiche le fichier que pour le dernier (à titre d'info):
+				// On n'affiche le fichier que pour le dernier (Ã  titre d'info):
 				if(isset($corrige_mac)) {
 					$fich=fopen("/tftpboot/pxelinux.cfg/01-$corrige_mac","r");
 					if($fich) {
-						echo "<p>Pour information, voici le contenu du fichier généré:<br />\n";
+						echo "<p>Pour information, voici le contenu du fichier gÃ©nÃ©rÃ©:<br />\n";
 						echo "<pre style='border:1px solid black; color:green;'>";
 						while(!feof($fich)) {
 							$ligne=fgets($fich,4096);
@@ -1560,7 +1560,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 						fclose($fich);
 					}
 					else {
-						echo "<p style='color:red;'>Il n'a pas été possible d'ouvrir le fichier /tftpboot/pxelinux.cfg/01-$corrige_mac</p>\n";
+						echo "<p style='color:red;'>Il n'a pas Ã©tÃ© possible d'ouvrir le fichier /tftpboot/pxelinux.cfg/01-$corrige_mac</p>\n";
 					}
 				}
 			}
@@ -1569,7 +1569,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 	}
 }
 else {
-	print (gettext("Vous n'avez pas les droits nécessaires pour ouvrir cette page..."));
+	print (gettext("Vous n'avez pas les droits nÃ©cessaires pour ouvrir cette page..."));
 }
 
 // Footer

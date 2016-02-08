@@ -1,10 +1,10 @@
 <?php
-/* $Id$
+/* $Id: visu_action.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
    Stephane Boireau
-   Distribué selon les termes de la licence GPL
+   DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -35,7 +35,7 @@ else {
 		$restriction_parcs="y";
 		$tab_delegated_parcs=list_delegated_parcs($login);
 		if(count($tab_delegated_parcs)==0) {
-			echo "<p style='color:red'>Aucun parc ne vous a été délégué.</p>\n";
+			echo "<p style='color:red'>Aucun parc ne vous a Ã©tÃ© dÃ©lÃ©guÃ©.</p>\n";
 			die();
 		}
 
@@ -49,7 +49,7 @@ else {
 			$nom=$lig->name;
 
 			for($loop=0;$loop<count($tab_delegated_parcs);$loop++) {
-				// La machine est-elle dans un des parcs délégués?
+				// La machine est-elle dans un des parcs dÃ©lÃ©guÃ©s?
 				if(is_machine_in_parc($nom,$tab_delegated_parcs[$loop])) {
 					$temoin_erreur='n';
 					break;
@@ -67,21 +67,21 @@ else {
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		$lig=mysql_fetch_object($res);
-		echo "<h1>Action programmée sur $lig->name</h1>\n";
+		echo "<h1>Action programmÃ©e sur $lig->name</h1>\n";
 		$mac_machine=$lig->mac;
 
 		visu_tache($mac_machine);
 
-		echo "<p><i>NOTE:</i> Ajouter la possibilité de supprimer une tâche.</p>\n";
+		echo "<p><i>NOTE:</i> Ajouter la possibilitÃ© de supprimer une tÃ¢che.</p>\n";
 
 	}
 	else {
-		echo "<h1>Visualisation d'action programmée</h1>\n";
+		echo "<h1>Visualisation d'action programmÃ©e</h1>\n";
 		$sql="SELECT * FROM se3_dhcp WHERE id='".$id_machine."';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
 			$lig=mysql_fetch_object($res);
-			echo "<p>L'action programmée sur $lig->name doit être achevée.<br />La tâche n'est plus présente dans la table 'se3_tftp_action'.</p>\n";
+			echo "<p>L'action programmÃ©e sur $lig->name doit Ãªtre achevÃ©e.<br />La tÃ¢che n'est plus prÃ©sente dans la table 'se3_tftp_action'.</p>\n";
 		}
 		else {
 			echo "<p>ERREUR: Machine inconnue dans la table 'se3_dhcp'.</p>\n";

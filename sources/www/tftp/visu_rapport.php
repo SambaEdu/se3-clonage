@@ -1,10 +1,10 @@
 <?php
-/* $Id$
+/* $Id: visu_rapport.php 9151 2016-02-08 01:05:04Z keyser $
 ===========================================
    Projet SE3
    Dispositif SE3+TFTP+Sauvegarde/Restauration/Clonage
    Stephane Boireau
-   Distribué selon les termes de la licence GPL
+   DistribuÃ© selon les termes de la licence GPL
 =============================================
 */
 
@@ -43,7 +43,7 @@ else {
 		$restriction_parcs="y";
 		$tab_delegated_parcs=list_delegated_parcs($login);
 		if(count($tab_delegated_parcs)==0) {
-			echo "<p style='color:red'>Aucun parc ne vous a été délégué.</p>\n";
+			echo "<p style='color:red'>Aucun parc ne vous a Ã©tÃ© dÃ©lÃ©guÃ©.</p>\n";
 			include ("pdp.inc.php");
 			die();
 		}
@@ -58,7 +58,7 @@ else {
 			$nom=$lig->name;
 
 			for($loop=0;$loop<count($tab_delegated_parcs);$loop++) {
-				// La machine est-elle dans un des parcs délégués?
+				// La machine est-elle dans un des parcs dÃ©lÃ©guÃ©s?
 				if(is_machine_in_parc($nom,$tab_delegated_parcs[$loop])) {
 					$temoin_erreur='n';
 					break;
@@ -80,7 +80,7 @@ else {
 			$sql="DELETE FROM se3_tftp_rapports WHERE id='$id_machine' AND identifiant='$suppr[$i]';";
 			$res=mysql_query($sql);
 			if(!$res) {
-				$chaine.="<span style='color:red;'>Erreur lors de la suppression du rapport n°$suppr[$i].</span><br />\n";
+				$chaine.="<span style='color:red;'>Erreur lors de la suppression du rapport nÂ°$suppr[$i].</span><br />\n";
 			}
 		}
 		echo $chaine;
@@ -98,7 +98,7 @@ else {
 		$sql="SELECT * FROM se3_tftp_rapports WHERE id='$id_machine' ORDER BY date DESC;";
 		$res2=mysql_query($sql);
 		if(mysql_num_rows($res2)==0) {
-			echo "<p>Aucun rapport trouvé.</p>\n";
+			echo "<p>Aucun rapport trouvÃ©.</p>\n";
 		}
 		else {
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -106,13 +106,13 @@ else {
 			echo "<tr>\n";
 			echo "<th>Nom</th>\n";
 			echo "<th>Date</th>\n";
-			echo "<th>Tâche</th>\n";
+			echo "<th>TÃ¢che</th>\n";
 			echo "<th>Statut</th>\n";
 			echo "<th>Descriptif</th>\n";
 			//echo "<th>Supprimer</th>\n";
 			echo "<th><input type='submit' name='supprimer' value='Supprimer' /><br />\n";
 			echo "<a href='#' onclick='check_suppr(\"check\");return false'><img src=\"../elements/images/enabled.gif\" border='0' alt=\"Tout cocher\" title=\"Tout cocher\" /></a>\n";
-			echo " / <a href='#' onclick='check_suppr(\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout décocher\" title=\"Tout décocher\" /></a>\n";
+			echo " / <a href='#' onclick='check_suppr(\"uncheck\");return false'><img src=\"../elements/images/disabled.gif\" border='0' alt=\"Tout dÃ©cocher\" title=\"Tout dÃ©cocher\" /></a>\n";
 			echo "</th>\n";
 			echo "</tr>\n";
 			//$nb_rapports=mysql_num_rows($res2);
@@ -125,7 +125,7 @@ else {
 				echo "<td>\n";
 				$tmp=ucfirst(strtolower($lig2->statut));
 				if($tmp=="Succes") {
-					echo "<span style='color:green;'>Succès</span>";
+					echo "<span style='color:green;'>SuccÃ¨s</span>";
 				}
 				elseif($tmp=="Echec") {
 					echo "<span style='color:red;'>Echec</span>";
@@ -170,7 +170,7 @@ else {
 </script>\n";
 		}
 
-		//echo "<p><i>NOTE:</i> Ajouter la possibilité de supprimer des rapports.</p>\n";
+		//echo "<p><i>NOTE:</i> Ajouter la possibilitÃ© de supprimer des rapports.</p>\n";
 	}
 	else {
 		echo "<h1>Visualisation de rapport</h1>\n";
