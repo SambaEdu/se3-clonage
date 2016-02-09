@@ -32,6 +32,6 @@ cd  "$script_dir/$pkg_name"
 dh_clean
 debuild -uc -us -b
 # Cleaning.
-# rm -r "$script_dir/$pkg_name"
+rm -r "$script_dir/$pkg_name"
 
 
