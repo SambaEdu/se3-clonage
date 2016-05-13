@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # $Id$
-# Script destiné à faire le ménage dans les tâches planifiées pour ne pas lancer plusieurs fois la même récupération de rapport de sauvegarde/restauration/rapport
+# Script destinÃ© Ã  faire le mÃ©nage dans les tÃ¢ches planifiÃ©es pour ne pas lancer plusieurs fois la mÃªme rÃ©cupÃ©ration de rapport de sauvegarde/restauration/rapport
 
 if [ -z "$1" ]; then
-	echo "USAGE: Passer en paramètre l'identifiant de la machine"
-	echo "       où l'identifiant est le champ id de la table 'se3_dhcp'."
+	echo "USAGE: Passer en paramÃ¨tre l'identifiant de la machine"
+	echo "       oÃ¹ l'identifiant est le champ id de la table 'se3_dhcp'."
 	exit
 fi
 

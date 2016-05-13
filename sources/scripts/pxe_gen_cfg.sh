@@ -2,7 +2,7 @@
 
 # $Id$
 # Auteur: Stephane Boireau
-# Dernière modification: 12/2014
+# DerniÃ¨re modification: 12/2014
 
 # Ajout en visudo:
 # Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh
@@ -70,13 +70,13 @@ LABEL linuxinst
 KERNEL  debian-installer/$architecture/linux
 APPEND  auto=true priority=critical preseed/url=$url_preseed initrd=debian-installer/$architecture/initrd.gz --
     
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default linuxinst
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " > $fich
@@ -91,7 +91,7 @@ prompt 1
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		#ip=$3
 		#pc=$4
-		#nom_image=$(echo "$5" | tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+		#nom_image=$(echo "$5" | tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 		#src_part=$6
 		#dest_part=$7
 		#auto_reboot=$8
@@ -101,7 +101,7 @@ prompt 1
 		mac=$(echo "$*" | sed -e "s| |\n|g"|grep "^mac="|cut -d"=" -f2 | sed -e "s/:/-/g")
 		ip=$(echo "$*" | sed -e "s| |\n|g"|grep "^ip="|cut -d"=" -f2)
 		pc=$(echo "$*" | sed -e "s| |\n|g"|grep "pc="|cut -d"=" -f2)
-		nom_image=$(echo "$*" | sed -e "s| |\n|g"|grep "^nom_image="|cut -d"=" -f2 | tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+		nom_image=$(echo "$*" | sed -e "s| |\n|g"|grep "^nom_image="|cut -d"=" -f2 | tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 		src_part=$(echo "$*" | sed -e "s| |\n|g"|grep "^src_part="|cut -d"=" -f2)
 		dest_part=$(echo "$*" | sed -e "s| |\n|g"|grep "dest_part="|cut -d"=" -f2)
 		auto_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "auto_reboot="|cut -d"=" -f2)
@@ -185,13 +185,13 @@ label tazsvg
 		fi
 
 		echo "
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default tazsvg
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -201,7 +201,7 @@ prompt 1
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		#ip=$3
 		#pc=$4
-		#nom_image=$(echo "$5" | tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+		#nom_image=$(echo "$5" | tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 		#src_part=$6
 		#dest_part=$7
 		#auto_reboot=$8
@@ -210,7 +210,7 @@ prompt 1
 		mac=$(echo "$*" | sed -e "s| |\n|g"|grep "^mac="|cut -d"=" -f2 | sed -e "s/:/-/g")
 		ip=$(echo "$*" | sed -e "s| |\n|g"|grep "^ip="|cut -d"=" -f2)
 		pc=$(echo "$*" | sed -e "s| |\n|g"|grep "pc="|cut -d"=" -f2)
-		nom_image=$(echo "$*" | sed -e "s| |\n|g"|grep "^nom_image="|cut -d"=" -f2| tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+		nom_image=$(echo "$*" | sed -e "s| |\n|g"|grep "^nom_image="|cut -d"=" -f2| tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 		src_part=$(echo "$*" | sed -e "s| |\n|g"|grep "^src_part="|cut -d"=" -f2)
 		dest_part=$(echo "$*" | sed -e "s| |\n|g"|grep "dest_part="|cut -d"=" -f2)
 		auto_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "auto_reboot="|cut -d"=" -f2)
@@ -288,13 +288,13 @@ label tazrst
 		fi
 
 		echo "
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default tazrst
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -304,7 +304,7 @@ prompt 1
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		#ip=$3
 		#pc=$4
-		#nom_image=$(echo "$5" | tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+		#nom_image=$(echo "$5" | tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 		#src_part=$6
 		#dest_part=$7
 		#auto_reboot=$8
@@ -314,7 +314,7 @@ prompt 1
 		mac=$(echo "$*" | sed -e "s| |\n|g"|grep "^mac="|cut -d"=" -f2 | sed -e "s/:/-/g")
 		ip=$(echo "$*" | sed -e "s| |\n|g"|grep "^ip="|cut -d"=" -f2)
 		pc=$(echo "$*" | sed -e "s| |\n|g"|grep "pc="|cut -d"=" -f2)
-		nom_image=$(echo "$*" | sed -e "s| |\n|g"|grep "^nom_image="|cut -d"=" -f2 | tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+		nom_image=$(echo "$*" | sed -e "s| |\n|g"|grep "^nom_image="|cut -d"=" -f2 | tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 		src_part=$(echo "$*" | sed -e "s| |\n|g"|grep "^src_part="|cut -d"=" -f2)
 		dest_part=$(echo "$*" | sed -e "s| |\n|g"|grep "dest_part="|cut -d"=" -f2)
 		auto_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "auto_reboot="|cut -d"=" -f2)
@@ -425,13 +425,13 @@ label sysrcdsvg
 		fi
 
 		echo "
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default sysrcdsvg
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -441,7 +441,7 @@ prompt 1
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		#ip=$3
 		#pc=$4
-		#nom_image=$(echo "$5" | tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+		#nom_image=$(echo "$5" | tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 		#src_part=$6
 		#dest_part=$7
 		#auto_reboot=$8
@@ -450,7 +450,7 @@ prompt 1
 		mac=$(echo "$*" | sed -e "s| |\n|g"|grep "^mac="|cut -d"=" -f2 | sed -e "s/:/-/g")
 		ip=$(echo "$*" | sed -e "s| |\n|g"|grep "^ip="|cut -d"=" -f2)
 		pc=$(echo "$*" | sed -e "s| |\n|g"|grep "pc="|cut -d"=" -f2)
-		nom_image=$(echo "$*" | sed -e "s| |\n|g"|grep "^nom_image="|cut -d"=" -f2 | tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+		nom_image=$(echo "$*" | sed -e "s| |\n|g"|grep "^nom_image="|cut -d"=" -f2 | tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 		src_part=$(echo "$*" | sed -e "s| |\n|g"|grep "^src_part="|cut -d"=" -f2)
 		dest_part=$(echo "$*" | sed -e "s| |\n|g"|grep "dest_part="|cut -d"=" -f2)
 		auto_reboot=$(echo "$*" | sed -e "s| |\n|g"|grep "auto_reboot="|cut -d"=" -f2)
@@ -550,13 +550,13 @@ label sysrcdrst
 		fi
 
 		echo "
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default sysrcdrst
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -565,7 +565,7 @@ prompt 1
 	"udpcast_emetteur")
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		# IP ou dhcp
-		# Comme on démarre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
+		# Comme on dÃ©marre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
 		#ip=$3
 		#mask=$4
 		#pc=$4
@@ -609,7 +609,7 @@ prompt 1
 
 		# --min-wait t
 		#    Even when the necessary amount of receivers do have connected, still wait until t seconds since first receiver connection have passed.
-		# --max-wait t
+		#Â --max-wait t
 		#    When not enough receivers have connected (but at least one), start anyways when t seconds since first receiver connection have pased.
 		# --start-timeout sec
 		#    receiver aborts at start if it doesn't see a sender within this many seconds. Furthermore, the sender needs to start transmission of data within this delay. Once transmission is started, the timeout no longer applies.
@@ -667,13 +667,13 @@ label u1auto
 			fi
 		fi
 
-		echo "# Choix de boot par défaut:
+		echo "# Choix de boot par dÃ©faut:
 default u1auto
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -682,7 +682,7 @@ prompt 1
 	"udpcast_recepteur")
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		# IP ou dhcp
-		# Comme on démarre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
+		# Comme on dÃ©marre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
 		#ip=$3
 		#mask=$4
 		#pc=$4
@@ -724,7 +724,7 @@ prompt 1
 
 		# --min-wait t
 		#    Even when the necessary amount of receivers do have connected, still wait until t seconds since first receiver connection have passed.
-		# --max-wait t
+		#Â --max-wait t
 		#    When not enough receivers have connected (but at least one), start anyways when t seconds since first receiver connection have pased.
 		# --start-timeout sec
 		#    receiver aborts at start if it doesn't see a sender within this many seconds. Furthermore, the sender needs to start transmission of data within this delay. Once transmission is started, the timeout no longer applies.
@@ -784,13 +784,13 @@ label u2auto
 			fi
 		fi
 
-		echo "# Choix de boot par défaut:
+		echo "# Choix de boot par dÃ©faut:
 default u2auto
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -800,7 +800,7 @@ prompt 1
 	"sysresccd_udpcast_emetteur")
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		# IP ou dhcp
-		# Comme on démarre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
+		# Comme on dÃ©marre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
 		#ip=$3
 		#mask=$4
 		#pc=$4
@@ -860,7 +860,7 @@ prompt 1
 
 		# --min-wait t
 		#    Even when the necessary amount of receivers do have connected, still wait until t seconds since first receiver connection have passed.
-		# --max-wait t
+		#Â --max-wait t
 		#    When not enough receivers have connected (but at least one), start anyways when t seconds since first receiver connection have pased.
 		# --start-timeout sec
 		#    receiver aborts at start if it doesn't see a sender within this many seconds. Furthermore, the sender needs to start transmission of data within this delay. Once transmission is started, the timeout no longer applies.
@@ -949,13 +949,13 @@ label srcdu1
 			fi
 		fi
 
-		echo "# Choix de boot par défaut:
+		echo "# Choix de boot par dÃ©faut:
 default srcdu1
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -964,7 +964,7 @@ prompt 1
 	"sysresccd_udpcast_recepteur")
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		# IP ou dhcp
-		# Comme on démarre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
+		# Comme on dÃ©marre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
 		#ip=$3
 		#mask=$4
 		#pc=$4
@@ -1025,7 +1025,7 @@ prompt 1
 
 		# --min-wait t
 		#    Even when the necessary amount of receivers do have connected, still wait until t seconds since first receiver connection have passed.
-		# --max-wait t
+		#Â --max-wait t
 		#    When not enough receivers have connected (but at least one), start anyways when t seconds since first receiver connection have pased.
 		# --start-timeout sec
 		#    receiver aborts at start if it doesn't see a sender within this many seconds. Furthermore, the sender needs to start transmission of data within this delay. Once transmission is started, the timeout no longer applies.
@@ -1109,13 +1109,13 @@ label srcdu2
 			fi
 		fi
 
-		echo "# Choix de boot par défaut:
+		echo "# Choix de boot par dÃ©faut:
 default srcdu2
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -1125,7 +1125,7 @@ prompt 1
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		#ip=$3
 		#pc=$4
-			#nom_image=$(echo "$5" | tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+			#nom_image=$(echo "$5" | tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 			#src_part=$6
 			#dest_part=$7
 		#auto_reboot=$5
@@ -1206,13 +1206,13 @@ label tazrap
 		echo "   append initrd=rootfs.gz rw root=/dev/null lang=fr_FR kmap=fr-latin1 vga=normal sound=no screen=text auto_reboot=$auto_reboot delais_reboot=$delais_reboot work=/root/bin/rapport.sh ${chaine_modules} ${tftp_slitaz_cmdline}" >> $fich
 
 		echo "
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default tazrap
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -1222,7 +1222,7 @@ prompt 1
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		#ip=$3
 		#pc=$4
-			#nom_image=$(echo "$5" | tr "[ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
+			#nom_image=$(echo "$5" | tr "[Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡Ã§Ã Ã¤Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼]" "[AAAEEEEIIOOUUUCcaaaeeeeiioouuu]" | sed -e "s/[^A-Za-z0-9_.]//g")
 			#src_part=$6
 			#dest_part=$7
 		#auto_reboot=$5
@@ -1295,13 +1295,13 @@ label sysrcdrap
 		fi
 
 		echo "
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default sysrcdrap
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -1341,13 +1341,13 @@ label install
     # Add options (z_user=..., z_path=..., etc.) to this line.
     append initrd=initrdunattend
 
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default install
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -1387,13 +1387,13 @@ label seven32
     kernel seven32/wdsnbp.0
 
 
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default seven64
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -1432,13 +1432,13 @@ label seven32
 label seven64
     kernel seven64/wdsnbp.0
 
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default seven32
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -1473,13 +1473,13 @@ label disk2
 label memtest
   kernel memtp
 
-# Choix de boot par défaut:
+# Choix de boot par dÃ©faut:
 default memtest
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -1492,7 +1492,7 @@ prompt 1
 	"sysresccd_ntfsclone_udpcast_emetteur")
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		# IP ou dhcp
-		# Comme on démarre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
+		# Comme on dÃ©marre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
 		#ip=$3
 		#mask=$4
 		#pc=$4
@@ -1555,7 +1555,7 @@ prompt 1
 
 		# --min-wait t
 		#    Even when the necessary amount of receivers do have connected, still wait until t seconds since first receiver connection have passed.
-		# --max-wait t
+		#Â --max-wait t
 		#    When not enough receivers have connected (but at least one), start anyways when t seconds since first receiver connection have pased.
 		# --start-timeout sec
 		#    receiver aborts at start if it doesn't see a sender within this many seconds. Furthermore, the sender needs to start transmission of data within this delay. Once transmission is started, the timeout no longer applies.
@@ -1648,13 +1648,13 @@ label srcdu1
 			fi
 		fi
 
-		echo "# Choix de boot par défaut:
+		echo "# Choix de boot par dÃ©faut:
 default srcdu1
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -1663,7 +1663,7 @@ prompt 1
 	"sysresccd_ntfsclone_udpcast_recepteur")
 		#mac=$(echo "$2" | sed -e "s/:/-/g")
 		# IP ou dhcp
-		# Comme on démarre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
+		# Comme on dÃ©marre en PXE, on note l'IP pour info dans le CFG, mais on fonctionne en DHCP sur UDPCAST
 		#ip=$3
 		#mask=$4
 		#pc=$4
@@ -1725,7 +1725,7 @@ prompt 1
 
 		# --min-wait t
 		#    Even when the necessary amount of receivers do have connected, still wait until t seconds since first receiver connection have passed.
-		# --max-wait t
+		#Â --max-wait t
 		#    When not enough receivers have connected (but at least one), start anyways when t seconds since first receiver connection have pased.
 		# --start-timeout sec
 		#    receiver aborts at start if it doesn't see a sender within this many seconds. Furthermore, the sender needs to start transmission of data within this delay. Once transmission is started, the timeout no longer applies.
@@ -1813,13 +1813,13 @@ label srcdu2
 			fi
 		fi
 
-		echo "# Choix de boot par défaut:
+		echo "# Choix de boot par dÃ©faut:
 default srcdu2
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich
@@ -1917,13 +1917,13 @@ label srcdmdp
 		" >> $fich
 		fi
 
-		echo "# Choix de boot par défaut:
+		echo "# Choix de boot par dÃ©faut:
 default srcdmdp
 
-# On boote après 6 secondes:
+# On boote aprÃ¨s 6 secondes:
 timeout 60
 
-# Permet-on à l'utilisateur de choisir l'option de boot?
+# Permet-on Ã  l'utilisateur de choisir l'option de boot?
 # Si on ne permet pas, le timeout n'est pas pris en compte.
 prompt 1
 " >> $fich

@@ -2,7 +2,7 @@
 
 # $Id$
 # Auteur: Stephane Boireau
-# Dernière modification: 16/03/2015
+# DerniÃ¨re modification: 16/03/2015
 
 # Ajout en visudo:
 # Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/se3_get_sysresccd.sh,/usr/share/se3/scripts/se3_get_clonezilla.sh
@@ -109,7 +109,7 @@ ln -sf $depot_clonezilla /var/www/
 
 #============================
 # Script test
-# Si le script existe deja, il n'est pas ecrase.
+#Â Si le script existe deja, il n'est pas ecrase.
 # C'est une possibilite pour tester...
 if [ ! -e $depot_clonezilla/script_clonezilla_test.sh ]; then
 	echo '#!/bin/bash

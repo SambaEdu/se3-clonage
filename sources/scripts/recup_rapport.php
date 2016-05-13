@@ -5,12 +5,12 @@
 */
 
 	if($argc < 5 || in_array($argv[1], array('--help', '-help', '-h', '-?'))){
-		echo "Script de récupération de rapport de sauvegarde/restauration/...\n";
-		echo "USAGE: Passer en paramètres:\n";
+		echo "Script de rÃ©cupÃ©ration de rapport de sauvegarde/restauration/...\n";
+		echo "USAGE: Passer en paramÃ¨tres:\n";
 		echo "       - l'identifiant de la machine (champ 'id' de 'se3_dhcp')\n";
 		echo "       - l'adresse IP de la machine (champ 'ip' de 'se3_dhcp')\n";
-		echo "       - la nature de l'action lancée (sauvegarde, restauration,...)\n";
-		echo "       - le timestamp de la date limite de la tentative de récupération.\n";
+		echo "       - la nature de l'action lancÃ©e (sauvegarde, restauration,...)\n";
+		echo "       - le timestamp de la date limite de la tentative de rÃ©cupÃ©ration.\n";
 		exit();
 	}
 
@@ -46,7 +46,7 @@
 	function fich_log_debug($texte) {
 		global $id_machine;
 
-		// Passer la variable à "y" pour activer le renseignement du fichier de log
+		// Passer la variable Ã  "y" pour activer le renseignement du fichier de log
 		$temoin_fich_log_debug="n";
 
 		if($temoin_fich_log_debug=="y") {
@@ -59,8 +59,8 @@
 	// On active les rapports d'erreurs:
 	error_reporting(E_ALL);
 
-	// Dossier contenant le lanceur de récupération de rapport.
-	// www-se3 doit en être proprio ou au moins pouvoir y écrire.
+	// Dossier contenant le lanceur de rÃ©cupÃ©ration de rapport.
+	// www-se3 doit en Ãªtre proprio ou au moins pouvoir y Ã©crire.
 	//$dossier="/var/se3/tmp/tftp/$id_machine";
 	$dossier="/etc/se3/www-tools/tftp/$id_machine";
 	$lanceur_recup="$dossier/lanceur_recup_rapport_action_tftp.sh";
@@ -70,7 +70,7 @@
 
 	// Ici et maintenant...
 	$instant=time();
-	// La date limite de récupération est-elle atteinte?
+	// La date limite de rÃ©cupÃ©ration est-elle atteinte?
 	if($instant>=$limite) {
 		if(file_exists($lanceur_recup)) {
 			unlink($lanceur_recup);
@@ -80,7 +80,7 @@
 		// INSERER UN RAPPORT COMME QUOI L'ACTION EST ABANDONNEE...
 		$creation_table=creation_tftp_tables();
 		if(!$creation_table){
-			echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
+			echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_rapports'\n";
 		}
 		else{
 			//$sql="SELECT * FROM se3_tftp_action WHERE id='$id_machine';";
@@ -88,16 +88,16 @@
 			$info_machine=mysql_query($sql);
 
 			if(!$info_machine){
-				echo "La machine n°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
+				echo "La machine nÂ°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
 
-				# Insérer dans une table rapport
+				# InsÃ©rer dans une table rapport
 				$sql="INSERT INTO se3_tftp_rapports SET id='$id_machine',
 														name='',
 														mac='',
 														date='".timestamp_to_mysql_date($instant)."',
 														tache='$nature',
 														statut='ECHEC',
-														descriptif='Abandon: date limite de récupération atteinte.';";
+														descriptif='Abandon: date limite de rÃ©cupÃ©ration atteinte.';";
 				//echo $sql;
 				$insert=mysql_query($sql);
 				if(!$insert){
@@ -111,14 +111,14 @@
 
 				$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 
-				// Insérer dans une table rapport
+				// InsÃ©rer dans une table rapport
 				$sql="INSERT INTO se3_tftp_rapports SET id='$id_machine',
 														name='$nom_machine',
 														mac='$mac_machine',
 														date='".timestamp_to_mysql_date($instant)."',
 														tache='$nature',
 														statut='ECHEC',
-														descriptif='Abandon: date limite de récupération atteinte.';";
+														descriptif='Abandon: date limite de rÃ©cupÃ©ration atteinte.';";
 				//echo $sql;
 				$insert=mysql_query($sql);
 				if(!$insert){
@@ -132,7 +132,7 @@
 				}
 			}
 
-			// Supprimer l'entrée dans se3_tftp_action
+			// Supprimer l'entrÃ©e dans se3_tftp_action
 			$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine';";
 			$nettoyage=mysql_query($sql);
 			if(!$nettoyage){
@@ -142,7 +142,7 @@
 		exit();
 	}
 
-	// Le fichier à récupérer diffère d'une action à l'autre:
+	// Le fichier Ã  rÃ©cupÃ©rer diffÃ¨re d'une action Ã  l'autre:
 	switch($nature) {
 		case "restauration":
 			$url="http://$ip/~hacker/resultat_restauration.txt";
@@ -150,7 +150,7 @@
 
 			if(@exec("ping ".$ip." -c 1 -w 1 | grep received | awk '{print $4}'")) {
 				if($fl=@file($url)){
-					// Terminé... on renseigne une table
+					// TerminÃ©... on renseigne une table
 
 					$statut=trim($fl[0]);
 					//if("$statut"=="SUCCES") {
@@ -163,7 +163,7 @@
 
 					$creation_table=creation_tftp_tables();
 					if(!$creation_table){
-						echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
+						echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_rapports'\n";
 					}
 					else{
 						//$sql="SELECT * FROM se3_tftp_action WHERE id='$id_machine';";
@@ -171,7 +171,7 @@
 						$info_machine=mysql_query($sql);
 
 						if(!$info_machine){
-							echo "La machine n°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
+							echo "La machine nÂ°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
 						}
 						else{
 							$lig_machine=mysql_fetch_object($info_machine);
@@ -180,7 +180,7 @@
 
 							$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 
-							# Insérer dans une table rapport
+							# InsÃ©rer dans une table rapport
 							$sql="INSERT INTO se3_tftp_rapports SET id='$id_machine',
 																	name='$nom_machine',
 																	mac='$mac_machine',
@@ -193,16 +193,16 @@
 							if(!$insert){
 								echo "ERREUR sur $sql\n";
 							}
-							# Insérer dans une table sauvegarde si il s'agit d'une sauvegarde
+							# InsÃ©rer dans une table sauvegarde si il s'agit d'une sauvegarde
 						}
 					}
-					// Ménage:
+					// MÃ©nage:
 					//rm -f resultat_restauration.txt
-					// Celui-là est récupéré où? en /tmp?
+					// Celui-lÃ  est rÃ©cupÃ©rÃ© oÃ¹? en /tmp?
 					if(file_exists($lanceur_recup)) {
 						//unlink($lanceur_recup);
 						if(!unlink($lanceur_recup)){
-							echo "La suppression de $lanceur_recup a échoué.\n";
+							echo "La suppression de $lanceur_recup a Ã©chouÃ©.\n";
 						}
 					}
 
@@ -212,7 +212,7 @@
 						}
 					}
 
-					// Supprimer l'entrée dans se3_tftp_action
+					// Supprimer l'entrÃ©e dans se3_tftp_action
 					$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine';";
 					$nettoyage=mysql_query($sql);
 					if(!$nettoyage){
@@ -221,17 +221,17 @@
 					exit();
 				}
 				else {
-					# On remet à plus tard...
+					# On remet Ã  plus tard...
 					#at +f 1 minute $0 $*
 					//exec("at +f 1 minute $lanceur_recup",$retour);
 					//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 					@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-					# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+					# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 					# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 					// Tester le $retour
 					if(count($retour)>0){
-						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 						for($i=0;$i<count($retour);$i++){
 							echo "$retour[$i]\n";
 						}
@@ -239,17 +239,17 @@
 				}
 			}
 			else {
-				# On remet à plus tard...
+				# On remet Ã  plus tard...
 				#at +f 1 minute $0 $*
 				//exec("at +f 1 minute $lanceur_recup",$retour);
 				//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 				@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-				# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+				# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 				# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 				// Tester le $retour
 				if(count($retour)>0){
-					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 					for($i=0;$i<count($retour);$i++){
 						echo "$retour[$i]\n";
 					}
@@ -262,7 +262,7 @@
 
 			if(@exec("ping ".$ip." -c 1 -w 1 | grep received | awk '{print $4}'")) {
 				if($fl=@file($url)){
-					// Terminé... on renseigne une table
+					// TerminÃ©... on renseigne une table
 
 					$statut=trim($fl[0]);
 					//if("$statut"=="SUCCES") {
@@ -279,7 +279,7 @@
 
 					$creation_table=creation_tftp_tables();
 					if(!$creation_table){
-						echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
+						echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_rapports'\n";
 					}
 					else{
 						//$sql="SELECT * FROM se3_tftp_action WHERE id='$id_machine';";
@@ -287,7 +287,7 @@
 						$info_machine=mysql_query($sql);
 
 						if(!$info_machine){
-							echo "La machine n°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
+							echo "La machine nÂ°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
 						}
 						else{
 							$lig_machine=mysql_fetch_object($info_machine);
@@ -296,7 +296,7 @@
 
 							$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 
-							# Insérer dans une table rapport
+							# InsÃ©rer dans une table rapport
 							$sql="INSERT INTO se3_tftp_rapports SET id='$id_machine',
 																	name='$nom_machine',
 																	mac='$mac_machine',
@@ -335,10 +335,10 @@
 									}
 								}
 
-								# Insérer dans une table sauvegarde si il s'agit d'une sauvegarde
+								# InsÃ©rer dans une table sauvegarde si il s'agit d'une sauvegarde
 								$creation_table=creation_tftp_tables();
 								if(!$creation_table){
-									echo "Erreur lors de la création de la table 'se3_tftp_sauvegardes'\n";
+									echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_sauvegardes'\n";
 								}
 								else{
 									$sql="INSERT INTO se3_tftp_sauvegardes SET id='$id_machine',
@@ -360,13 +360,13 @@
 							}
 						}
 					}
-					// Ménage:
+					// MÃ©nage:
 					//rm -f resultat_restauration.txt
-					// Celui-là est récupéré où? en /tmp?
+					// Celui-lÃ  est rÃ©cupÃ©rÃ© oÃ¹? en /tmp?
 					if(file_exists($lanceur_recup)) {
 						//unlink($lanceur_recup);
 						if(!unlink($lanceur_recup)){
-							echo "La suppression de $lanceur_recup a échoué.\n";
+							echo "La suppression de $lanceur_recup a Ã©chouÃ©.\n";
 						}
 					}
 
@@ -376,7 +376,7 @@
 						}
 					}
 
-					// Supprimer l'entrée dans se3_tftp_action
+					// Supprimer l'entrÃ©e dans se3_tftp_action
 					$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine';";
 					$nettoyage=mysql_query($sql);
 					if(!$nettoyage){
@@ -385,17 +385,17 @@
 					exit();
 				}
 				else {
-					# On remet à plus tard...
+					# On remet Ã  plus tard...
 					#at +f 1 minute $0 $*
 					//exec("at +f 1 minute $lanceur_recup",$retour);
 					//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 					@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-					# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+					# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 					# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 					// Tester le $retour
 					if(count($retour)>0){
-						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 						for($i=0;$i<count($retour);$i++){
 							echo "$retour[$i]\n";
 						}
@@ -403,17 +403,17 @@
 				}
 			}
 			else {
-				# On remet à plus tard...
+				# On remet Ã  plus tard...
 				#at +f 1 minute $0 $*
 				//exec("at +f 1 minute $lanceur_recup",$retour);
 				//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 				@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-				# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+				# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 				# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 				// Tester le $retour
 				if(count($retour)>0){
-					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 					for($i=0;$i<count($retour);$i++){
 						echo "$retour[$i]\n";
 					}
@@ -429,12 +429,12 @@
 			tar -czf disques.tar.gz disk_*.out disk_*.fdisk
 			disk_${A}.out
 			disk_${A}.fdisk
-			# à inscrire dans la table se3_tftp_sauvegardes
+			# Ã  inscrire dans la table se3_tftp_sauvegardes
 
 			tar -czf sauvegardes.tar.gz sauvegardes_*.txt
 			sauvegardes_${B}.txt
 			sauvegardes_${B}_details.txt
-			# à inscrire dans la table se3_tftp_sauvegardes
+			# Ã  inscrire dans la table se3_tftp_sauvegardes
 
 			tar -czf df.tar.gz df_*.txt
 			*/
@@ -444,15 +444,15 @@
 
 			if(@exec("ping ".$ip." -c 1 -w 1 | grep received | awk '{print $4}'")) {
 				if($fl=@file($url)){
-					// Terminé... on renseigne une table
+					// TerminÃ©... on renseigne une table
 
-					fich_log_debug("Le lsmod.txt a été trouvé.\n");
+					fich_log_debug("Le lsmod.txt a Ã©tÃ© trouvÃ©.\n");
 
-					// Le rapport a été généré.
+					// Le rapport a Ã©tÃ© gÃ©nÃ©rÃ©.
 					// On va tester l'existence des fichiers...
 					$tab_fich=array("hda","hdb","hdc","hdd","sda","sdb","sdc","sdd");
 
-					// Variable destinée à contenir les disk_*.out correspondant aux tables de partitions des disques de la machine
+					// Variable destinÃ©e Ã  contenir les disk_*.out correspondant aux tables de partitions des disques de la machine
 					$partitionnement="";
 					// CE PARTITIONNEMENT DEVRAIT ETRE DANS LA BOUCLE for($i=0;$i<count($tab_fich);$i++) {
 					// SI PLUSIEURS DISQUES DURS SONT PARCOURUS...
@@ -468,7 +468,7 @@
 						$url="http://$ip/~hacker/disk_".$tab_fich[$i].".out";
 						unset($fl2);
 						if($fl2=@file($url)){
-							fich_log_debug("Le fichier disk_".$tab_fich[$i].".out a été trouvé.\n");
+							fich_log_debug("Le fichier disk_".$tab_fich[$i].".out a Ã©tÃ© trouvÃ©.\n");
 
 							if($i>0) {
 								$partitionnement.="___+*+___";
@@ -497,9 +497,9 @@
 									fich_log_debug("Recherche de $url\n");
 									unset($fl4);
 									if($fl4=@file($url)) {
-										//fich_log_debug("df_".preg_replace("/^/dev//","",$tab_tmp[0]).".txt trouvé.\n");
-										//fich_log_debug("df_".preg_replace("|^/dev/|","",$tab_tmp[0]).".txt trouvé.\n");
-										fich_log_debug("df_".mb_ereg_replace("^/dev/","",$tab_tmp[0]).".txt trouvé.\n");
+										//fich_log_debug("df_".preg_replace("/^/dev//","",$tab_tmp[0]).".txt trouvÃ©.\n");
+										//fich_log_debug("df_".preg_replace("|^/dev/|","",$tab_tmp[0]).".txt trouvÃ©.\n");
+										fich_log_debug("df_".mb_ereg_replace("^/dev/","",$tab_tmp[0]).".txt trouvÃ©.\n");
 										for($m=0;$m<count($fl4);$m++){
 											$infos.=$fl4[$m];
 										}
@@ -515,14 +515,14 @@
 						fich_log_debug("\n\$partitionnement=$partitionnement\n");
 
 
-						// Traitement des fichiers de sauvegarde trouvés pour renseigner la table se3_tftp_sauvegardes
+						// Traitement des fichiers de sauvegarde trouvÃ©s pour renseigner la table se3_tftp_sauvegardes
 						for($k=0;$k<count($tab_part);$k++) {
 							fich_log_debug("Test de \$tab_part[$k]=".$tab_part[$k]."\n");
 
 							$url="http://$ip/~hacker/sauvegardes_".$tab_part[$k].".txt";
 							unset($fl2);
 							if($fl2=@file($url)){
-								fich_log_debug("sauvegardes_".$tab_part[$k].".txt trouvé.\n");
+								fich_log_debug("sauvegardes_".$tab_part[$k].".txt trouvÃ©.\n");
 
 								$url="http://$ip/~hacker/sauvegardes_".$tab_part[$k]."_details.txt";
 								unset($fl3);
@@ -534,7 +534,7 @@
 
 								for($j=0;$j<count($fl2);$j++){
 									$sauvegardes[$cpt]=array();
-									// $tab_part[$k] est la partition de stockage, pas la partition sauvegardée
+									// $tab_part[$k] est la partition de stockage, pas la partition sauvegardÃ©e
 									//$sauvegardes[$cpt]['partition']=$tab_part[$k];
 									$sauvegardes[$cpt]['partition']="";
 									$sauvegardes[$cpt]['chemin']=trim($fl2[$j]);
@@ -544,7 +544,7 @@
 									fich_log_debug("\$sauvegardes[$cpt]['chemin']=".$sauvegardes[$cpt]['chemin']."\n");
 
 									if($fl3) {
-										fich_log_debug("sauvegardes_".$tab_part[$k]."_details.txt trouvé.\n");
+										fich_log_debug("sauvegardes_".$tab_part[$k]."_details.txt trouvÃ©.\n");
 										$temoin1="n";
 										for($m=0;$m<count($fl3);$m++){
 											//if(preg_match("/Infos sur /i".$sauvegardes[$cpt]['chemin'],$fl3[$m])) {$temoin1="y";}
@@ -563,7 +563,7 @@
 									}
 
 									if($fl4) {
-										fich_log_debug("df_".$tab_part[$k].".txt trouvé.\n");
+										fich_log_debug("df_".$tab_part[$k].".txt trouvÃ©.\n");
 										for($m=0;$m<count($fl4);$m++){
 											$sauvegardes[$cpt]['df'].=$fl4[$m];
 										}
@@ -601,7 +601,7 @@
 
 					$creation_table=creation_tftp_tables();
 					if(!$creation_table){
-						echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
+						echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_rapports'\n";
 					}
 					else{
 						//$sql="SELECT * FROM se3_tftp_action WHERE id='$id_machine';";
@@ -609,7 +609,7 @@
 						$info_machine=mysql_query($sql);
 
 						if(!$info_machine){
-							echo "La machine n°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
+							echo "La machine nÂ°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
 						}
 						else{
 							$lig_machine=mysql_fetch_object($info_machine);
@@ -642,7 +642,7 @@
 										$descriptif.=$sauvegardes[$i]['details']."\n";
 									}
 									/*
-									// Là, on insère le volume dispo autant de fois qu'il y a de sauvegarde, alors que le df est inséré une fois après les infos sur le partitionnement.
+									// LÃ , on insÃ¨re le volume dispo autant de fois qu'il y a de sauvegarde, alors que le df est insÃ©rÃ© une fois aprÃ¨s les infos sur le partitionnement.
 									if($sauvegardes[$i]['df']!="") {
 										$descriptif.=$sauvegardes[$i]['df']."\n";
 									}
@@ -650,7 +650,7 @@
 								}
 							}
 
-							# Insérer dans une table rapport
+							# InsÃ©rer dans une table rapport
 							$sql="INSERT INTO se3_tftp_rapports SET id='$id_machine',
 																	name='$nom_machine',
 																	mac='$mac_machine',
@@ -699,7 +699,7 @@
 							if(count($sauvegardes)>0) {
 								$creation_table=creation_tftp_tables();
 								if(!$creation_table){
-									echo "Erreur lors de la création de la table 'se3_tftp_sauvegardes'\n";
+									echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_sauvegardes'\n";
 								}
 								else{
 									for($i=0;$i<count($sauvegardes);$i++) {
@@ -722,13 +722,13 @@
 							}
 						}
 					}
-					// Ménage:
+					// MÃ©nage:
 					//rm -f resultat_restauration.txt
-					// Celui-là est récupéré où? en /tmp?
+					// Celui-lÃ  est rÃ©cupÃ©rÃ© oÃ¹? en /tmp?
 					if(file_exists($lanceur_recup)) {
 						//unlink($lanceur_recup);
 						if(!unlink($lanceur_recup)){
-							echo "La suppression de $lanceur_recup a échoué.\n";
+							echo "La suppression de $lanceur_recup a Ã©chouÃ©.\n";
 						}
 					}
 
@@ -738,7 +738,7 @@
 						}
 					}
 
-					// Supprimer l'entrée dans se3_tftp_action
+					// Supprimer l'entrÃ©e dans se3_tftp_action
 					$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine';";
 					$nettoyage=mysql_query($sql);
 					if(!$nettoyage){
@@ -747,17 +747,17 @@
 					exit();
 				}
 				else {
-					# On remet à plus tard...
+					# On remet Ã  plus tard...
 					#at +f 1 minute $0 $*
 					//exec("at +f 1 minute $lanceur_recup",$retour);
 					//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 					@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-					# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+					# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 					# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 					// Tester le $retour
 					if(count($retour)>0){
-						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 						for($i=0;$i<count($retour);$i++){
 							echo "$retour[$i]\n";
 						}
@@ -765,17 +765,17 @@
 				}
 			}
 			else {
-				# On remet à plus tard...
+				# On remet Ã  plus tard...
 				#at +f 1 minute $0 $*
 				//exec("at +f 1 minute $lanceur_recup",$retour);
 				//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 				@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-				# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+				# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 				# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 				// Tester le $retour
 				if(count($retour)>0){
-					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 					for($i=0;$i<count($retour);$i++){
 						echo "$retour[$i]\n";
 					}
@@ -790,7 +790,7 @@
 
 			if(@exec("ping ".$ip." -c 1 -w 1 | grep received | awk '{print $4}'")) {
 				if($fl=@file($url)){
-					// Terminé... on renseigne une table
+					// TerminÃ©... on renseigne une table
 
 					$statut=trim($fl[0]);
 					//if("$statut"=="SUCCES") {
@@ -803,7 +803,7 @@
 
 					$creation_table=creation_tftp_tables();
 					if(!$creation_table){
-						echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
+						echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_rapports'\n";
 					}
 					else{
 						//$sql="SELECT * FROM se3_tftp_action WHERE id='$id_machine';";
@@ -811,7 +811,7 @@
 						$info_machine=mysql_query($sql);
 
 						if(!$info_machine){
-							echo "La machine n°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
+							echo "La machine nÂ°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
 						}
 						else{
 							$lig_machine=mysql_fetch_object($info_machine);
@@ -820,7 +820,7 @@
 
 							$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 
-							# Insérer dans une table rapport
+							# InsÃ©rer dans une table rapport
 							$sql="INSERT INTO se3_tftp_rapports SET id='$id_machine',
 																	name='$nom_machine',
 																	mac='$mac_machine',
@@ -833,16 +833,16 @@
 							if(!$insert){
 								echo "ERREUR sur $sql\n";
 							}
-							# Insérer dans une table sauvegarde si il s'agit d'une sauvegarde
+							# InsÃ©rer dans une table sauvegarde si il s'agit d'une sauvegarde
 						}
 					}
-					// Ménage:
+					// MÃ©nage:
 					//rm -f resultat_restauration.txt
-					// Celui-là est récupéré où? en /tmp?
+					// Celui-lÃ  est rÃ©cupÃ©rÃ© oÃ¹? en /tmp?
 					if(file_exists($lanceur_recup)) {
 						//unlink($lanceur_recup);
 						if(!unlink($lanceur_recup)){
-							echo "La suppression de $lanceur_recup a échoué.\n";
+							echo "La suppression de $lanceur_recup a Ã©chouÃ©.\n";
 						}
 					}
 
@@ -852,7 +852,7 @@
 						}
 					}
 
-					// Supprimer l'entrée dans se3_tftp_action
+					// Supprimer l'entrÃ©e dans se3_tftp_action
 					$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine';";
 					$nettoyage=mysql_query($sql);
 					if(!$nettoyage){
@@ -861,17 +861,17 @@
 					exit();
 				}
 				else {
-					# On remet à plus tard...
+					# On remet Ã  plus tard...
 					#at +f 1 minute $0 $*
 					//exec("at +f 1 minute $lanceur_recup",$retour);
 					//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 					@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-					# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+					# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 					# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 					// Tester le $retour
 					if(count($retour)>0){
-						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 						for($i=0;$i<count($retour);$i++){
 							echo "$retour[$i]\n";
 						}
@@ -879,17 +879,17 @@
 				}
 			}
 			else {
-				# On remet à plus tard...
+				# On remet Ã  plus tard...
 				#at +f 1 minute $0 $*
 				//exec("at +f 1 minute $lanceur_recup",$retour);
 				//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 				@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-				# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+				# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 				# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 				// Tester le $retour
 				if(count($retour)>0){
-					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 					for($i=0;$i<count($retour);$i++){
 						echo "$retour[$i]\n";
 					}
@@ -902,7 +902,7 @@
 
 			if(@exec("ping ".$ip." -c 1 -w 1 | grep received | awk '{print $4}'")) {
 				if($fl=@file($url)){
-					// Terminé... on renseigne une table
+					// TerminÃ©... on renseigne une table
 
 					$statut=trim($fl[0]);
 					//if("$statut"=="SUCCES") {
@@ -919,7 +919,7 @@
 
 					$creation_table=creation_tftp_tables();
 					if(!$creation_table){
-						echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
+						echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_rapports'\n";
 					}
 					else{
 						//$sql="SELECT * FROM se3_tftp_action WHERE id='$id_machine';";
@@ -927,7 +927,7 @@
 						$info_machine=mysql_query($sql);
 
 						if(!$info_machine){
-							echo "La machine n°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
+							echo "La machine nÂ°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
 						}
 						else{
 							$lig_machine=mysql_fetch_object($info_machine);
@@ -936,7 +936,7 @@
 
 							$corrige_mac=strtolower(strtr($mac_machine,":","-"));
 
-							# Insérer dans une table rapport
+							# InsÃ©rer dans une table rapport
 							$sql="INSERT INTO se3_tftp_rapports SET id='$id_machine',
 																	name='$nom_machine',
 																	mac='$mac_machine',
@@ -977,10 +977,10 @@
 									}
 								}
 
-								# Insérer dans une table sauvegarde si il s'agit d'une sauvegarde
+								# InsÃ©rer dans une table sauvegarde si il s'agit d'une sauvegarde
 								$creation_table=creation_tftp_tables();
 								if(!$creation_table){
-									echo "Erreur lors de la création de la table 'se3_tftp_sauvegardes'\n";
+									echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_sauvegardes'\n";
 								}
 								else{
 									$sql="INSERT INTO se3_tftp_sauvegardes SET id='$id_machine',
@@ -1002,13 +1002,13 @@
 							}
 						}
 					}
-					// Ménage:
+					// MÃ©nage:
 					//rm -f resultat_restauration.txt
-					// Celui-là est récupéré où? en /tmp?
+					// Celui-lÃ  est rÃ©cupÃ©rÃ© oÃ¹? en /tmp?
 					if(file_exists($lanceur_recup)) {
 						//unlink($lanceur_recup);
 						if(!unlink($lanceur_recup)){
-							echo "La suppression de $lanceur_recup a échoué.\n";
+							echo "La suppression de $lanceur_recup a Ã©chouÃ©.\n";
 						}
 					}
 
@@ -1018,7 +1018,7 @@
 						}
 					}
 
-					// Supprimer l'entrée dans se3_tftp_action
+					// Supprimer l'entrÃ©e dans se3_tftp_action
 					$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine';";
 					$nettoyage=mysql_query($sql);
 					if(!$nettoyage){
@@ -1027,17 +1027,17 @@
 					exit();
 				}
 				else {
-					# On remet à plus tard...
+					# On remet Ã  plus tard...
 					#at +f 1 minute $0 $*
 					//exec("at +f 1 minute $lanceur_recup",$retour);
 					//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 					@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-					# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+					# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 					# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 					// Tester le $retour
 					if(count($retour)>0){
-						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 						for($i=0;$i<count($retour);$i++){
 							echo "$retour[$i]\n";
 						}
@@ -1045,17 +1045,17 @@
 				}
 			}
 			else {
-				# On remet à plus tard...
+				# On remet Ã  plus tard...
 				#at +f 1 minute $0 $*
 				//exec("at +f 1 minute $lanceur_recup",$retour);
 				//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 				@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-				# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+				# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 				# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 				// Tester le $retour
 				if(count($retour)>0){
-					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 					for($i=0;$i<count($retour);$i++){
 						echo "$retour[$i]\n";
 					}
@@ -1071,12 +1071,12 @@
 			tar -czf disques.tar.gz disk_*.out disk_*.fdisk
 			disk_${A}.out
 			disk_${A}.fdisk
-			# à inscrire dans la table se3_tftp_sauvegardes
+			# Ã  inscrire dans la table se3_tftp_sauvegardes
 
 			tar -czf sauvegardes.tar.gz sauvegardes_*.txt
 			sauvegardes_${B}.txt
 			sauvegardes_${B}_details.txt
-			# à inscrire dans la table se3_tftp_sauvegardes
+			# Ã  inscrire dans la table se3_tftp_sauvegardes
 
 			tar -czf df.tar.gz df_*.txt
 			*/
@@ -1086,15 +1086,15 @@
 
 			if(@exec("ping ".$ip." -c 1 -w 1 | grep received | awk '{print $4}'")) {
 				if($fl=@file($url)){
-					// Terminé... on renseigne une table
+					// TerminÃ©... on renseigne une table
 
-					fich_log_debug("Le lsmod.txt a été trouvé.\n");
+					fich_log_debug("Le lsmod.txt a Ã©tÃ© trouvÃ©.\n");
 
-					// Le rapport a été généré.
+					// Le rapport a Ã©tÃ© gÃ©nÃ©rÃ©.
 					// On va tester l'existence des fichiers...
 					$tab_fich=array("hda","hdb","hdc","hdd","sda","sdb","sdc","sdd");
 
-					// Variable destinée à contenir les disk_*.out correspondant aux tables de partitions des disques de la machine
+					// Variable destinÃ©e Ã  contenir les disk_*.out correspondant aux tables de partitions des disques de la machine
 					$partitionnement="";
 					// CE PARTITIONNEMENT DEVRAIT ETRE DANS LA BOUCLE for($i=0;$i<count($tab_fich);$i++) {
 					// SI PLUSIEURS DISQUES DURS SONT PARCOURUS...
@@ -1111,7 +1111,7 @@
 						$url="http://$ip/disk_".$tab_fich[$i].".out";
 						unset($fl2);
 						if($fl2=@file($url)){
-							fich_log_debug("Le fichier disk_".$tab_fich[$i].".out a été trouvé.\n");
+							fich_log_debug("Le fichier disk_".$tab_fich[$i].".out a Ã©tÃ© trouvÃ©.\n");
 
 							if($i>0) {
 								$partitionnement.="___+*+___";
@@ -1142,9 +1142,9 @@
 									fich_log_debug("Recherche de $url\n");
 									unset($fl4);
 									if($fl4=@file($url)) {
-										//fich_log_debug("df_".preg_replace("/^/dev//","",$tab_tmp[0]).".txt trouvé.\n");
-										//fich_log_debug("df_".preg_replace("|^/dev/|","",$tab_tmp[0]).".txt trouvé.\n");
-										fich_log_debug("df_".mb_ereg_replace("^/dev/","",$tab_tmp[0]).".txt trouvé.\n");
+										//fich_log_debug("df_".preg_replace("/^/dev//","",$tab_tmp[0]).".txt trouvÃ©.\n");
+										//fich_log_debug("df_".preg_replace("|^/dev/|","",$tab_tmp[0]).".txt trouvÃ©.\n");
+										fich_log_debug("df_".mb_ereg_replace("^/dev/","",$tab_tmp[0]).".txt trouvÃ©.\n");
 										for($m=0;$m<count($fl4);$m++){
 											$infos.=$fl4[$m];
 										}
@@ -1160,7 +1160,7 @@
 						fich_log_debug("\n\$partitionnement=$partitionnement\n");
 
 
-						// Traitement des fichiers de sauvegarde trouvés pour renseigner la table se3_tftp_sauvegardes
+						// Traitement des fichiers de sauvegarde trouvÃ©s pour renseigner la table se3_tftp_sauvegardes
 						for($k=0;$k<count($tab_part);$k++) {
 							fich_log_debug("Test de \$tab_part[$k]=".$tab_part[$k]."\n");
 
@@ -1168,7 +1168,7 @@
 							$url="http://$ip/sauvegardes_".$tab_part[$k].".txt";
 							unset($fl2);
 							if($fl2=@file($url)){
-								fich_log_debug("sauvegardes_".$tab_part[$k].".txt trouvé.\n");
+								fich_log_debug("sauvegardes_".$tab_part[$k].".txt trouvÃ©.\n");
 
 								//$url="http://$ip/~hacker/sauvegardes_".$tab_part[$k]."_details.txt";
 								$url="http://$ip/sauvegardes_".$tab_part[$k]."_details.txt";
@@ -1182,7 +1182,7 @@
 
 								for($j=0;$j<count($fl2);$j++){
 									$sauvegardes[$cpt]=array();
-									// $tab_part[$k] est la partition de stockage, pas la partition sauvegardée
+									// $tab_part[$k] est la partition de stockage, pas la partition sauvegardÃ©e
 									//$sauvegardes[$cpt]['partition']=$tab_part[$k];
 									$sauvegardes[$cpt]['partition']="";
 									$sauvegardes[$cpt]['chemin']=trim($fl2[$j]);
@@ -1192,7 +1192,7 @@
 									fich_log_debug("\$sauvegardes[$cpt]['chemin']=".$sauvegardes[$cpt]['chemin']."\n");
 
 									if($fl3) {
-										fich_log_debug("sauvegardes_".$tab_part[$k]."_details.txt trouvé.\n");
+										fich_log_debug("sauvegardes_".$tab_part[$k]."_details.txt trouvÃ©.\n");
 										$temoin1="n";
 										for($m=0;$m<count($fl3);$m++){
 											//if(preg_match("/Infos sur /i".$sauvegardes[$cpt]['chemin'],$fl3[$m])) {$temoin1="y";}
@@ -1211,7 +1211,7 @@
 									}
 
 									if($fl4) {
-										fich_log_debug("df_".$tab_part[$k].".txt trouvé.\n");
+										fich_log_debug("df_".$tab_part[$k].".txt trouvÃ©.\n");
 										for($m=0;$m<count($fl4);$m++){
 											$sauvegardes[$cpt]['df'].=$fl4[$m];
 										}
@@ -1249,7 +1249,7 @@
 					// Insertion dans les tables
 					$creation_table=creation_tftp_tables();
 					if(!$creation_table){
-						echo "Erreur lors de la création de la table 'se3_tftp_rapports'\n";
+						echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_rapports'\n";
 					}
 					else{
 						//$sql="SELECT * FROM se3_tftp_action WHERE id='$id_machine';";
@@ -1257,7 +1257,7 @@
 						$info_machine=mysql_query($sql);
 
 						if(!$info_machine){
-							echo "La machine n°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
+							echo "La machine nÂ°$id_machine n'existe pas dans la table 'se3_dhcp'.\n";
 						}
 						else{
 							$lig_machine=mysql_fetch_object($info_machine);
@@ -1290,7 +1290,7 @@
 										$descriptif.=$sauvegardes[$i]['details']."\n";
 									}
 									/*
-									// Là, on insère le volume dispo autant de fois qu'il y a de sauvegarde, alors que le df est inséré une fois après les infos sur le partitionnement.
+									// LÃ , on insÃ¨re le volume dispo autant de fois qu'il y a de sauvegarde, alors que le df est insÃ©rÃ© une fois aprÃ¨s les infos sur le partitionnement.
 									if($sauvegardes[$i]['df']!="") {
 										$descriptif.=$sauvegardes[$i]['df']."\n";
 									}
@@ -1298,7 +1298,7 @@
 								}
 							}
 
-							# Insérer dans une table rapport
+							# InsÃ©rer dans une table rapport
 							$sql="INSERT INTO se3_tftp_rapports SET id='$id_machine',
 																	name='$nom_machine',
 																	mac='$mac_machine',
@@ -1315,7 +1315,7 @@
 							if(count($sauvegardes)>0) {
 								$creation_table=creation_tftp_tables();
 								if(!$creation_table){
-									echo "Erreur lors de la création de la table 'se3_tftp_sauvegardes'\n";
+									echo "Erreur lors de la crÃ©ation de la table 'se3_tftp_sauvegardes'\n";
 								}
 								else{
 									for($i=0;$i<count($sauvegardes);$i++) {
@@ -1370,13 +1370,13 @@
 
 						}
 					}
-					// Ménage:
+					// MÃ©nage:
 					//rm -f resultat_restauration.txt
-					// Celui-là est récupéré où? en /tmp?
+					// Celui-lÃ  est rÃ©cupÃ©rÃ© oÃ¹? en /tmp?
 					if(file_exists($lanceur_recup)) {
 						//unlink($lanceur_recup);
 						if(!unlink($lanceur_recup)){
-							echo "La suppression de $lanceur_recup a échoué.\n";
+							echo "La suppression de $lanceur_recup a Ã©chouÃ©.\n";
 						}
 					}
 
@@ -1386,7 +1386,7 @@
 						}
 					}
 
-					// Supprimer l'entrée dans se3_tftp_action
+					// Supprimer l'entrÃ©e dans se3_tftp_action
 					$sql="DELETE FROM se3_tftp_action WHERE id='$id_machine';";
 					$nettoyage=mysql_query($sql);
 					if(!$nettoyage){
@@ -1395,17 +1395,17 @@
 					exit();
 				}
 				else {
-					# On remet à plus tard...
+					# On remet Ã  plus tard...
 					#at +f 1 minute $0 $*
 					//exec("at +f 1 minute $lanceur_recup",$retour);
 					//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 					@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-					# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+					# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 					# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 					// Tester le $retour
 					if(count($retour)>0){
-						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+						echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 						for($i=0;$i<count($retour);$i++){
 							echo "$retour[$i]\n";
 						}
@@ -1413,17 +1413,17 @@
 				}
 			}
 			else {
-				# On remet à plus tard...
+				# On remet Ã  plus tard...
 				#at +f 1 minute $0 $*
 				//exec("at +f 1 minute $lanceur_recup",$retour);
 				//@exec("at -f $lanceur_recup now + 1 minute 2>/dev/null",$retour);
 				@exec("at -f $lanceur_recup now + 1 minute 2>$dossier/at.txt",$retour);
-				# où $lanceur_recup est généré par l'interface Web SE3 et effectue:
+				# oÃ¹ $lanceur_recup est gÃ©nÃ©rÃ© par l'interface Web SE3 et effectue:
 				# recup_rapport.sh $id_machine $ip $nature_tache $timestamp_limite_validite_relance
 
 				// Tester le $retour
 				if(count($retour)>0){
-					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na échoué...\n";
+					echo "La programmation\n   at -f $lanceur_recup now + 1 minute\na Ã©chouÃ©...\n";
 					for($i=0;$i<count($retour);$i++){
 						echo "$retour[$i]\n";
 					}

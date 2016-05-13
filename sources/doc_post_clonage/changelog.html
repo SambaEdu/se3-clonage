@@ -25,101 +25,101 @@
 			<li><p></p></li-->
 
 			<li>
-				<p><a href="#" onClick="telech('paquet_post-clonage_20080714.zip');">20080714</a>: Possibilité de fournir un fichier de correspondance NOM;MAC;IP;WORKGROUP avec IP=DHCP.<br />
-				Correction d'un bug sur le renommage du poste en mode client DHCP: La saisie d'un nom de machine était proposé même si la correspondance NOM;MAC avait été trouvée dans le fichier clients.ini</p>
+				<p><a href="#" onClick="telech('paquet_post-clonage_20080714.zip');">20080714</a>: PossibilitÃ© de fournir un fichier de correspondance NOM;MAC;IP;WORKGROUP avec IP=DHCP.<br />
+				Correction d'un bug sur le renommage du poste en mode client DHCP: La saisie d'un nom de machine Ã©tait proposÃ© mÃªme si la correspondance NOM;MAC avait Ã©tÃ© trouvÃ©e dans le fichier clients.ini</p>
 			</li>
 
 			<li>
-				<p><a href="#" onClick="telech('paquet_post-clonage_20080120.zip');">20080120</a>: Ajout dans post_clonage_xp...au3 de la suppression du fichier @WindowsDir &amp; "\wpkg-client.vbs" et de la tâche @WindowsDir &amp; "\Tasks\wpkg.job" s'ils existent.<br />Le fichier et la tâche sont remis en place avec prise en compte du nouveau SID si se3-wpkg est activé.</p>
+				<p><a href="#" onClick="telech('paquet_post-clonage_20080120.zip');">20080120</a>: Ajout dans post_clonage_xp...au3 de la suppression du fichier @WindowsDir &amp; "\wpkg-client.vbs" et de la tÃ¢che @WindowsDir &amp; "\Tasks\wpkg.job" s'ils existent.<br />Le fichier et la tÃ¢che sont remis en place avec prise en compte du nouveau SID si se3-wpkg est activÃ©.</p>
 			</li>
 			<li>
-				<p><a href="#" onClick="telech('paquet_post-clonage_20070616.zip');">20070616</a>: Ajout dans clone.au3 de la suppression du fichier @WindowsDir &amp; "\wpkg-client.vbs" s'il existe.<br />Ce fichier est remis en place avec prise en compte du nouveau SID si se3-wpkg est activé.</p>
+				<p><a href="#" onClick="telech('paquet_post-clonage_20070616.zip');">20070616</a>: Ajout dans clone.au3 de la suppression du fichier @WindowsDir &amp; "\wpkg-client.vbs" s'il existe.<br />Ce fichier est remis en place avec prise en compte du nouveau SID si se3-wpkg est activÃ©.</p>
 			</li>
 			<li>
-				<p><a href="#" onClick="telech('paquet_post-clonage_20070326.zip');">20070326</a>: Ajout d'un test pour ne pas proposer de fichier de correspondance NOM;IP;MAC;WORKGROUP lorsque l'on choisit le mode DHCP+Jonction à un domaine SambaEdu3.<br />
-				Suppression du fichier admin_mdp.bat aussitôt après que le rejoin_se3_XP.vbs ait été lancé.<br />
-				Ajout de la recherche d'un éventuel paramètre SMB_DOMAIN dans le temp\clone\param.ini</p>
+				<p><a href="#" onClick="telech('paquet_post-clonage_20070326.zip');">20070326</a>: Ajout d'un test pour ne pas proposer de fichier de correspondance NOM;IP;MAC;WORKGROUP lorsque l'on choisit le mode DHCP+Jonction Ã  un domaine SambaEdu3.<br />
+				Suppression du fichier admin_mdp.bat aussitÃ´t aprÃ¨s que le rejoin_se3_XP.vbs ait Ã©tÃ© lancÃ©.<br />
+				Ajout de la recherche d'un Ã©ventuel paramÃ¨tre SMB_DOMAIN dans le temp\clone\param.ini</p>
 			</li>
 			<li>
 				<p><a href="#" onClick="telech('paquet_post-clonage_20070323.zip');">20070323</a>: Correction d'un bug sur le mode DHCP.</p>
 			</li>
 			<li>
-				<p><a href="#" onClick="telech('paquet_post-clonage_20070201.zip');">20070201</a>: Ajout d'un peu de souplesse sur le fichier de correspondances NOM;MAC;IP;WORKGROUP:<br />Le séparateur dans l'adresse MAC peut maintenant aussi bien être "-" que ":".</p>
+				<p><a href="#" onClick="telech('paquet_post-clonage_20070201.zip');">20070201</a>: Ajout d'un peu de souplesse sur le fichier de correspondances NOM;MAC;IP;WORKGROUP:<br />Le sÃ©parateur dans l'adresse MAC peut maintenant aussi bien Ãªtre "-" que ":".</p>
 			</li>
 			<li>
-				<p><a href="#" onClick="telech('paquet_post-clonage_20070131.zip');">20070131</a>: Ajout d'une case à cocher permettant de ne pas mettre en place d'ACL si cela pose un problème.</p>
+				<p><a href="#" onClick="telech('paquet_post-clonage_20070131.zip');">20070131</a>: Ajout d'une case Ã  cocher permettant de ne pas mettre en place d'ACL si cela pose un problÃ¨me.</p>
 			</li>
 			<li>
-				<p><a href="#" onClick="telech('paquet_post-clonage_20061129.zip');">20061129</a>: Correction d'un problème sur l'ordre des ACL dans \clone\modif_acl.bat et ajout d'ACL pour le groupe Administrateurs (<i>solution proposée par Robert Julien</i>).</p>
+				<p><a href="#" onClick="telech('paquet_post-clonage_20061129.zip');">20061129</a>: Correction d'un problÃ¨me sur l'ordre des ACL dans \clone\modif_acl.bat et ajout d'ACL pour le groupe Administrateurs (<i>solution proposÃ©e par Robert Julien</i>).</p>
 			</li>
 			<li>
 				<p><a href="#" onClick="telech('paquet_post-clonage_20061128.zip');">20061128</a>: Grosses modifications.</p>
 				<ul>
-					<li>Passage du lancement de 'clone.exe' en clé Run de la base de registre.<br />
-					On n'utilise plus le menu Démarrer/Programmes/Démarrage</li>
-					<li>Modification du fichier 'param.ini' d'après les saisies effectuées sur le premier écran, si l'un des deux premiers octets de la passerelle définies au départ dans param.ini diffèrent de ce qui a été saisi sur le premier écran.</li>
+					<li>Passage du lancement de 'clone.exe' en clÃ© Run de la base de registre.<br />
+					On n'utilise plus le menu DÃ©marrer/Programmes/DÃ©marrage</li>
+					<li>Modification du fichier 'param.ini' d'aprÃ¨s les saisies effectuÃ©es sur le premier Ã©cran, si l'un des deux premiers octets de la passerelle dÃ©finies au dÃ©part dans param.ini diffÃ¨rent de ce qui a Ã©tÃ© saisi sur le premier Ã©cran.</li>
 				</ul>
 			</li>
 			<li>
 				<p><a href="#" onClick="telech('paquet_post-clonage_20061101.zip');">20061101</a>: Diverses modifications:</p>
 				<ul>
-					<li>Ajout du passage en client DHCP juste avant le clonage (<i>en fin de mise en place du post-clonage</i>) pour éviter les conflits IP après clonage.</li>
+					<li>Ajout du passage en client DHCP juste avant le clonage (<i>en fin de mise en place du post-clonage</i>) pour Ã©viter les conflits IP aprÃ¨s clonage.</li>
 					<li>
-						Ajout d'un fichier '/temp/clone/param.ini' pour permettre de personnaliser les valeurs proposées par défaut.<br />
+						Ajout d'un fichier '/temp/clone/param.ini' pour permettre de personnaliser les valeurs proposÃ©es par dÃ©faut.<br />
 						Les valeurs prises en comptes sont:
 						<ul>
-							<li>GW: pour l'IP de la passerelle proposée à l'étape 1 de la mise en place du paquet post-clonage.</li>
-							<li>MASK: pour le masque de sous-réseau proposé à l'étape 1 de la mise en place du paquet post-clonage.</li>
-							<li>DNS: pour l'IP du serveur DNS proposée à l'étape 1 de la mise en place du paquet post-clonage.</li>
-							<li>WINS: pour l'IP du serveur WINS proposée à l'étape 1 de la mise en place du paquet post-clonage.</li>
-							<li>PREFIP: pour le préfixe de l'IP proposée après clonage.</li>
+							<li>GW: pour l'IP de la passerelle proposÃ©e Ã  l'Ã©tape 1 de la mise en place du paquet post-clonage.</li>
+							<li>MASK: pour le masque de sous-rÃ©seau proposÃ© Ã  l'Ã©tape 1 de la mise en place du paquet post-clonage.</li>
+							<li>DNS: pour l'IP du serveur DNS proposÃ©e Ã  l'Ã©tape 1 de la mise en place du paquet post-clonage.</li>
+							<li>WINS: pour l'IP du serveur WINS proposÃ©e Ã  l'Ã©tape 1 de la mise en place du paquet post-clonage.</li>
+							<li>PREFIP: pour le prÃ©fixe de l'IP proposÃ©e aprÃ¨s clonage.</li>
 						</ul>
 					</li>
 				</ul>
 			</li>
-			<li><p><a href="#" onClick="telech('paquet_post-clonage_20051119.zip');">20051119</a>: Correction du rejoin_se3_clone.au3 pour tenir compte de la mise à jour du 09/11/2005 du 'rejoin_se3_XP.vbs'.</p></li>
+			<li><p><a href="#" onClick="telech('paquet_post-clonage_20051119.zip');">20051119</a>: Correction du rejoin_se3_clone.au3 pour tenir compte de la mise Ã  jour du 09/11/2005 du 'rejoin_se3_XP.vbs'.</p></li>
 			<li>
 				<p><a href="#" onClick="telech('paquet_post-clonage_20051008.zip');">20051008</a>: Diverses modifications:</p>
 				<ul>
-					<li>Ajout d'une fonctionnalité: Possibilité d'automatiser complètement les opérations après clonage en fournissant un fichier de correspondance NOM;MAC;IP;WORKGROUP (<i>avec des : pour séparateurs dans l'adresse MAC</i>).</li>
-					<li>Correction du nettoye2.au3 (<i>si le processus 'clone.exe', il est stoppé avant de tenter de supprimer le programme</i>).</li>
-					<li>Utilisation d'un VBS (<i>plus léger</i>) à la place de NETDOM.EXE pour rejoindre un WorkGroup.</li>
+					<li>Ajout d'une fonctionnalitÃ©: PossibilitÃ© d'automatiser complÃ¨tement les opÃ©rations aprÃ¨s clonage en fournissant un fichier de correspondance NOM;MAC;IP;WORKGROUP (<i>avec des : pour sÃ©parateurs dans l'adresse MAC</i>).</li>
+					<li>Correction du nettoye2.au3 (<i>si le processus 'clone.exe', il est stoppÃ© avant de tenter de supprimer le programme</i>).</li>
+					<li>Utilisation d'un VBS (<i>plus lÃ©ger</i>) Ã  la place de NETDOM.EXE pour rejoindre un WorkGroup.</li>
 				</ul>
 			</li>
 			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050925.zip');">20050925</a>: Correction du clone.au3 pour permettre de ne pas modifier le WorkGroup (<i>en laissant le champ vide</i>).</p></li>
-			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050918.zip');">20050918</a>: Ajout d'une ligne au post_clonageXX.au3 pour mettre le focus sur le champmot de passe dans la fenêtre SambaEdu3.</p></li>
-			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050910.zip');">20050910</a>: Ajout de quelques lignes au clone.au3 pour confirmer l'exécution lorsque le SP2 est installé.</p></li>
+			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050918.zip');">20050918</a>: Ajout d'une ligne au post_clonageXX.au3 pour mettre le focus sur le champmot de passe dans la fenÃªtre SambaEdu3.</p></li>
+			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050910.zip');">20050910</a>: Ajout de quelques lignes au clone.au3 pour confirmer l'exÃ©cution lorsque le SP2 est installÃ©.</p></li>
 			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050906.zip');">20050906</a>: Correction du script de nettoyage pour:</p>
 				<ul>
-					<li>Supprimer l'autologon si cela n'a pas été fait ailleurs dans les opérations (<i>en cas d'annulation notamment</i>)</li>
-					<li>Ne pas afficher d'erreur disgracieuse lorsque nettoye2.exe est lancé à plusieurs reprises.</li>
+					<li>Supprimer l'autologon si cela n'a pas Ã©tÃ© fait ailleurs dans les opÃ©rations (<i>en cas d'annulation notamment</i>)</li>
+					<li>Ne pas afficher d'erreur disgracieuse lorsque nettoye2.exe est lancÃ© Ã  plusieurs reprises.</li>
 				</ul>
 				<p>&nbsp;</p>
 			</li>
-			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050903b.zip');">20050903b</a>: Mise en place de la suppression du fichier de mot de passe de l'utilisateur admin de SambaEdu3 juste après l'initialisation de l'intégration au domaine.</p></li>
+			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050903b.zip');">20050903b</a>: Mise en place de la suppression du fichier de mot de passe de l'utilisateur admin de SambaEdu3 juste aprÃ¨s l'initialisation de l'intÃ©gration au domaine.</p></li>
 			<li>
 				<p><a href="#" onClick="telech('paquet_post-clonage_20050903.zip');">20050903</a>: Correction de deux erreurs:</p>
 				<ul>
-					<li>Le rejoinsambaedu3_clone.vbs n'était jamais lancé pour les postes WNT/2K (<i>rejoinsambaedu3.vbs était systématiquement lancé à la place</i>).</li>
-					<li>Si rejoin_se3_XP.vbs n'existait pas (<i>avec seulement rejoinsambaedu3.vbs présent</i>), l'intégration XP échouait.</li>
+					<li>Le rejoinsambaedu3_clone.vbs n'Ã©tait jamais lancÃ© pour les postes WNT/2K (<i>rejoinsambaedu3.vbs Ã©tait systÃ©matiquement lancÃ© Ã  la place</i>).</li>
+					<li>Si rejoin_se3_XP.vbs n'existait pas (<i>avec seulement rejoinsambaedu3.vbs prÃ©sent</i>), l'intÃ©gration XP Ã©chouait.</li>
 				</ul>
 				<p>&nbsp;</p>
 			</li>
-			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050830.zip');">20050830</a>: Une version corrigée et améliorée en tenant compte des modifications de Fabien Malfoy (<i>du Lycée Gaston Bachelard à Chelles;o</i>).<br />
-			Possibilité de changer le groupe de travail en même temps que le changement de nom et d'IP (<i>lorsqu'on n'intègre pas un domaine SambaEdu3</i>).<br />
+			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050830.zip');">20050830</a>: Une version corrigÃ©e et amÃ©liorÃ©e en tenant compte des modifications de Fabien Malfoy (<i>du LycÃ©e Gaston Bachelard Ã  Chelles;o</i>).<br />
+			PossibilitÃ© de changer le groupe de travail en mÃªme temps que le changement de nom et d'IP (<i>lorsqu'on n'intÃ¨gre pas un domaine SambaEdu3</i>).<br />
 			Autorisation des noms de machine contenant un tiret "-"<br />
-			Possibilité de modifier le nom, l'IP,... en cas de saisie erronée.</p></li>
-			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050822.zip');">20050822</a>: Correction d'un bug sur un chemin relatif pour permettre d'appeler le setup depuis un autre programme non situé dans le même dossier.</p></li>
-			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050728.zip');">20050728</a>: Ajout d'un autologon pour éviter le login juste après le clonage,...</p></li>
-			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050716b.zip');">20050716b</a>: Version modifiée pour permettre l'intégration de machines WNT/2K</p></li>
-			<li><p><a href="#" onClick="telech('paquet_post-clonage_20051008.zip');">20050714</a>: Première version mise en ligne.</p></li>
+			PossibilitÃ© de modifier le nom, l'IP,... en cas de saisie erronÃ©e.</p></li>
+			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050822.zip');">20050822</a>: Correction d'un bug sur un chemin relatif pour permettre d'appeler le setup depuis un autre programme non situÃ© dans le mÃªme dossier.</p></li>
+			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050728.zip');">20050728</a>: Ajout d'un autologon pour Ã©viter le login juste aprÃ¨s le clonage,...</p></li>
+			<li><p><a href="#" onClick="telech('paquet_post-clonage_20050716b.zip');">20050716b</a>: Version modifiÃ©e pour permettre l'intÃ©gration de machines WNT/2K</p></li>
+			<li><p><a href="#" onClick="telech('paquet_post-clonage_20051008.zip');">20050714</a>: PremiÃ¨re version mise en ligne.</p></li>
 		</ul>
 		<p><br /></p>
 
 		<p><i>NOTE:</i></p>
 		<blockquote>
 			<p>Il se peut que certaines archives ne soient pas disponibles (<i>pour des questions de place</i>) sur le CD multiboot proposant entre autres ce dispositif post-clonage.</p>
-			<p>Une page avec toutes les archives présentes est disponible à l'adresse <a href="http://stephane.boireau.free.fr/post_clonage/post_clonage.html">http://stephane.boireau.free.fr/post_clonage/post_clonage.html</a></p>
+			<p>Une page avec toutes les archives prÃ©sentes est disponible Ã  l'adresse <a href="http://stephane.boireau.free.fr/post_clonage/post_clonage.html">http://stephane.boireau.free.fr/post_clonage/post_clonage.html</a></p>
 			<p><br /></p>
 		</blockquote>
 	</div>

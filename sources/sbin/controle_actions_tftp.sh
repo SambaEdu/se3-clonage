@@ -2,19 +2,19 @@
 
 # $Id$
 #
-# Script à lancer régulièrement pour scruter le /var/log/syslog
-# de façon à trouver si un boot a été effectué sur le choix indiqué en
-# /tftpboot/pxelinux.cfg/01-$MAC depuis la dernière action programmée.
-# Si oui, on supprime le /tftpboot/pxelinux.cfg/01-$MAC pour ne pas relancer la tâche
+# Script Ã  lancer rÃ©guliÃ¨rement pour scruter le /var/log/syslog
+# de faÃ§on Ã  trouver si un boot a Ã©tÃ© effectuÃ© sur le choix indiquÃ© en
+# /tftpboot/pxelinux.cfg/01-$MAC depuis la derniÃ¨re action programmÃ©e.
+# Si oui, on supprime le /tftpboot/pxelinux.cfg/01-$MAC pour ne pas relancer la tÃ¢che
 #
 # Auteur: Stephane Boireau
-# Dernière modification: 05/02/2008
+# DerniÃ¨re modification: 05/02/2008
 #
 # Attention: Si on modifie le /etc/inetd.conf en ajoutant un --logfile /var/log/atftpd.log pour atftpd
 #            et touch /var/log/atftpd.log && chown nobody:nogroup /var/log/atftpd.log
-#            le fichier de conf à considérer n'est plus le même.
-#            Ce changement permet d'alléger le syslog... et rendre les recherches grep moins lourdes,
-#            mais chez moi la modif n'a pris qu'après un redémarrage de la machine.
+#            le fichier de conf Ã  considÃ©rer n'est plus le mÃªme.
+#            Ce changement permet d'allÃ©ger le syslog... et rendre les recherches grep moins lourdes,
+#            mais chez moi la modif n'a pris qu'aprÃ¨s un redÃ©marrage de la machine.
 #            (un killall -HUP inetd n'a pas suffit)
 logfile=/var/log/syslog
 
@@ -71,7 +71,7 @@ fi
 #verif=$(echo "SHOW TABLES LIKE se3_tftp_action;" | mysql -h $dbhost -u$dbuser -p$dbpass $dbname)
 #if [ -z "$verif" ]; then
 if [ ! -e "/var/lib/mysql/se3db/se3_tftp_action.frm" ]; then
-	# Aucune action n'a encore été initialisée et la table n'existe pas.
+	# Aucune action n'a encore Ã©tÃ© initialisÃ©e et la table n'existe pas.
 	exit
 fi
 
@@ -82,7 +82,7 @@ FICHDEBUG "SELECT DISTINCT mac FROM se3_tftp_action;"
 #echo "SELECT DISTINCT mac FROM se3_tftp_action UNION SELECT DISTINCT mac FROM se3_tftp_rapports;" | mysql -h $dbhost -u$dbuser -p$dbpass $dbname | while read mac
 echo "SELECT DISTINCT mac FROM se3_tftp_action;" | mysql -h $dbhost -u$dbuser -p$dbpass $dbname | while read mac
 do
-	# Pour passer la première ligne indiquant le nom des champs
+	# Pour passer la premiÃ¨re ligne indiquant le nom des champs
 	if [ "$mac" != "mac" -a ! -z "$mac" ]; then
 		FICHDEBUG "mac=$mac"
 		corrige_mac=$(echo "$mac" | tr ":[A-Z]" "\-[a-z]")
@@ -90,7 +90,7 @@ do
 		FICHDEBUG "SELECT date FROM se3_tftp_action WHERE mac='$mac';"
 		echo "SELECT date FROM se3_tftp_action WHERE mac='$mac';" | mysql -h $dbhost -u$dbuser -p$dbpass $dbname | while read date
 		do
-			# Pour passer la première ligne indiquant le nom des champs
+			# Pour passer la premiÃ¨re ligne indiquant le nom des champs
 			if [ "$date" != "date" -a ! -z "$date" ]; then
 				FICHDEBUG "date=$date"
 				grep atftp $logfile | sed -e "s/ \{2,\}/ /g" | grep -i "Serving pxelinux.cfg/01-${corrige_mac} to " | cut -d" " -f1-3 | while read A

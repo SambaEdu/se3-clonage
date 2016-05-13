@@ -481,7 +481,7 @@ if [ "$temoin_telech_requis" = "y" ]; then
 
 		chmod +x install_client_linux_mise_en_place.sh
 		
-		#NEttoyage des version précédentes 
+		#NEttoyage des version prÃ©cÃ©dentes 
 		rm -f bashrc inittab  logon_perso mise_en_place_win_on_linux_se3.sh tty1.conf
 		rm -f mesapplis* inst_* post-install_* preseed_*
 		rm -rf .mozilla .config unefois
@@ -491,10 +491,10 @@ if [ "$temoin_telech_requis" = "y" ]; then
 
 		if [ "$?" != "0"  ]; then
 
-			# ########################
-			#        A FAIRE
+			#Â ########################
+			#Â        A FAIRE
 			# Il faudrait effectuer un retour succes/erreur dans le install_client_linux_mise_en_place.sh
-			# ########################
+			#Â ########################
 
 			if [ "$mode" = "cmdline" ]; then
 				echo -e "$COLERREUR"

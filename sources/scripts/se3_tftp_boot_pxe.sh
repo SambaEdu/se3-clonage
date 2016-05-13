@@ -2,7 +2,7 @@
 #
 ## $Id$ ##
 #
-##### Permet de faire, l'activation ou la désactivation de tftp_boot #####
+##### Permet de faire, l'activation ou la dÃ©sactivation de tftp_boot #####
 
 # Franck Molle - 12/2006...
 LADATE=$(date +%x)
@@ -29,8 +29,8 @@ MAIL_REPORT()
 [ -e /etc/ssmtp/ssmtp.conf ] && MAIL_ADMIN=$(cat /etc/ssmtp/ssmtp.conf | grep root | cut -d= -f2)
 if [ ! -z "$MAIL_ADMIN" ]; then
 	REPORT=$(cat $REPORT_FILE)
-	#On envoie un mail à l'admin
-	echo "$REPORT"  | mail -s "[SE3] Résultat de $0" $MAIL_ADMIN
+	#On envoie un mail Ã  l'admin
+	echo "$REPORT"  | mail -s "[SE3] RÃ©sultat de $0" $MAIL_ADMIN
 fi
 }
 
@@ -57,7 +57,7 @@ case "$1" in
 	
 	stop)
 	sed -e "/tftp/d" -i /etc/inetd.conf
-	echo "Arrêt du serveur Tftp" | tee -a $REPORT_FILE
+	echo "ArrÃªt du serveur Tftp" | tee -a $REPORT_FILE
 	killall in.tftpd 2>/dev/null
 	$INETD_SCRIPT restart
 	;;
