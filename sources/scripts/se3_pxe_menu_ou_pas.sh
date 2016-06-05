@@ -2,7 +2,7 @@
 
 # $Id$
 # Auteur: Stephane Boireau
-# Dernière modification: 08/11/2010
+# Dernière modification: mai 2016
 
 # Ajout en visudo:
 # Cmnd_Alias SE3CLONAGE=/usr/share/se3/scripts/se3_tftp_boot_pxe.sh,/usr/share/se3/scripts/pxe_gen_cfg.sh,/usr/share/se3/scripts/se3_pxe_menu_ou_pas.sh,/usr/share/se3/scripts/set_password_menu_tftp.sh,/usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh
@@ -19,7 +19,7 @@ fi
 
 # Positionnement de l'url de telechargement dispo linux en bdd
 if [ -z "$SrcPxeClientLin" ]; then
-	src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux_ng"
+	src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux_xenial"
 	SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
 fi
 

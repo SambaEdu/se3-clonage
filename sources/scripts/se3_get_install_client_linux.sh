@@ -40,9 +40,15 @@ if [ "$1" = "url" ]; then
 fi
 
 if [ -n "$SrcPxeClientLin" ]; then
-		src="$SrcPxeClientLin"
+	if [ "$SrcPxeClientLin" = "http://wawadeb.crdp.ac-caen.fr/iso/client_linux_ng" ]; then
+		src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux_xenial"
+		SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
 	else
-		src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux_ng"
+		src="$SrcPxeClientLin"
+	fi
+		
+else
+		src="http://wawadeb.crdp.ac-caen.fr/iso/client_linux_xenial"
 		SETMYSQL SrcPxeClientLin "$src" "url du dispositif installation PXE client Linux" 7
 fi
 
