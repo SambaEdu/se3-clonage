@@ -83,6 +83,7 @@ if (is_admin("system_is_admin",$login)=="Y")
 			$resultat1=crob_setParam('tftp_slitaz_cmdline',"$tftp_slitaz_cmdline",'option de la ligne de commande');
 			if($resultat1) {$nb_reg++;}
 			//echo "/usr/bin/sudo /usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh '$tftp_slitaz_cmdline'<br />";
+			
 			$resultat=exec("/usr/bin/sudo /usr/share/se3/scripts/se3_pxe_slitaz_cmdline.sh '$tftp_slitaz_cmdline'", $retour);
 			foreach($retour as $key => $value) {echo "\$retour[$key]=$value<br />";}
 		}
@@ -96,6 +97,8 @@ if (is_admin("system_is_admin",$login)=="Y")
 
 	echo "<h1>".gettext("Configuration TFTP")."</h1>\n";
 	if(isset($_POST['action'])){
+		ob_implicit_flush(true); 
+		ob_end_flush();
 		if($_POST['action']=='download_sysresccd') {
 			echo "Lancement du t&#233;l&#233;chargement de System Rescue CD...";
 			system("/usr/bin/sudo /usr/share/se3/scripts/se3_get_sysresccd.sh mode=html 2>&1");
