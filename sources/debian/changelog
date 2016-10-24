@@ -1,3 +1,9 @@
+se3-clonage (0.89) UNRELEASED; urgency=low
+
+  * Optimisation installations displaying
+
+ -- root <root@debian-se3.stage.ac-rouen.fr>  Tue, 23 Oct 2016 01:12:59 +0100
+
 se3-clonage (0.88) UNRELEASED; urgency=low
 
   * Change url of archive client linux
