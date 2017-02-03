@@ -1,4 +1,10 @@
-se3-clonage (0.89) UNRELEASED; urgency=low
+se3-clonage (0.90) UNRELEASED; urgency=low
+
+  * Add choice for IPXE boot
+
+ -- denis <denis.bonnenfant@diderot.org>  Fri, 4 Feb 2017 09:12:59 +0100
+ 
+ se3-clonage (0.89) UNRELEASED; urgency=low
 
   * Optimisation installations displaying
 
