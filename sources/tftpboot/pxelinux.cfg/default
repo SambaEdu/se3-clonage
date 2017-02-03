@@ -102,6 +102,9 @@ label install
     # Add options (z_user=..., z_path=..., etc.) to this line.
     append initrd=initrdunattend
 
+label ipxe
+    kernel ipxe.lkrn
+    
 label memtest
   kernel memtp
 
