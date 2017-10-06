@@ -110,6 +110,10 @@ label install
     # Add options (z_user=..., z_path=..., etc.) to this line.
     append initrd=initrdunattend
 
+label i
+    kernel ipxe.lkrn
+    append dhcp && chain http://###IPSE3###:909/ipxe/boot.php 
+
 label memtest
   kernel memtp
 

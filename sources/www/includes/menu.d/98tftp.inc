@@ -1,7 +1,7 @@
 <?
 /* $Id$ */
 
-	// Si le module se3-unattended est actif, on ajoute la ligne correspondante:
+	// Si le module sambaedu-client-windows est actif, on ajoute la ligne correspondante:
 		$liens1 = array(array(
 		"Serveur tftp", "parc_can_clone",3,
 		"Configurer le module", "tftp/config_tftp.php","system_is_admin",3,
@@ -15,10 +15,8 @@
 		));
 		
 	if ($menu_unattended=="1") {
-		array_push ($liens1[0], "Programmer une install XP", "tftp/action_unattend_xp_tftp.php","system_is_admin",3);
-        }
-	if ($menu_seven=="1") {
-		array_push ($liens1[0], "Programmer une install seven", "tftp/action_seven_tftp.php","system_is_admin",3);
+		array_push ($liens1[0], "Programmer une install Windows", "tftp/action_unattend_w10_tftp.php","system_is_admin",3);
+		array_push ($liens1[0], "Configurer une install Windows", "tftp/action_conf_w10_tftp.php","system_is_admin",3);
 	}
 	$liens=array_merge($liens,$liens1);
 
