@@ -8,11 +8,10 @@ LABEL Menu_maintenance
       KERNEL menu.c32
       APPEND pxelinux.cfg/maintenance.menu
 
-###install-win###label unattended
-###install-win###    MENU LABEL ^Unattended
-###install-win###    kernel bzImageunattend
-###install-win###    # Add options (z_user=..., z_path=..., etc.) to this line.
-###install-win###    append initrd=initrdunattend
+###install_win###label i
+###install_win###    MENU LABEL ^Installation Windows
+###install_win###    kernel ipxe.lkrn
+###install_win###    append dhcp && chain http://###IPSE3###:909/ipxe/boot.php 
 
 ###install-linux###LABEL Installation Debian Jessie
 ###install-linux###    MENU LABEL ^Installation Debian Jessie

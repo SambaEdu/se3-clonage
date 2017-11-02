@@ -15,6 +15,9 @@ if [ "$1" = "menu" ]; then
 	cp /tftpboot/tftp_modeles_pxelinux.cfg/menu/* /tftpboot/pxelinux.cfg/
 else
 	cp /tftpboot/tftp_modeles_pxelinux.cfg/standard/* /tftpboot/pxelinux.cfg/
+	if [ -e /var/www/se3/ipxe/boot.php ]; then
+		sed -i "s|###IPSE3###|${se3ip}|" /tftpboot/pxelinux.cfg/default
+	fi
 fi
 
 # Positionnement de l'url de telechargement dispo linux en bdd
@@ -91,8 +94,9 @@ fi
 
 	if [ -e /tftpboot/pxelinux.cfg/install.menu ]; then
 		sed -i "s|###install-linux###||" /tftpboot/pxelinux.cfg/install.menu
-		if [ -e /usr/share/se3/scripts/unattended_generate.sh ]; then
+		if [ -e /var/www/se3/ipxe/boot.php ]; then
 			sed -i "s|###install-win###||" /tftpboot/pxelinux.cfg/install.menu
+			sed -i "s|###IPSE3###|${se3ip}|" /tftpboot/pxelinux.cfg/install.menu
 		fi
 	fi
 	
