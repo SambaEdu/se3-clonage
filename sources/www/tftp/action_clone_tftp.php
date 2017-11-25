@@ -1299,11 +1299,11 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 					$chemin="/usr/share/se3/scripts";
 	
 					if($type_os=='xp') {
-
+						$duree = 40;
 						echo "<p><span style='color:red; font-weight:bold;'>Rappel&nbsp;:</span> Il faut que les postes émetteur et récepteur(s) bootent en priorité sur le réseau (<em>PXE</em>) pour que le redémarrage se fasse sur ".$distrib." et que le clonage s'ensuive.</p>\n";
 
 						echo "<p><span style='font-weight:bold;'>Informations sur la suite&nbsp;:</span> Le poste émetteur va être sorti du domaine, renommé en 'clone' et préparé pour une réintégration après clonage,...<br>\n";
-						echo "L'opération prend couramment 5 minutes avant que la préparation soit effectuée et que la fin de la présente page HTML s'affiche.<br />\n";
+						echo "L'opération prend de 5 jusqu'à $duree minutes avant que la préparation sysprep  soit effectuée et que la fin de la présente page HTML s'affiche.<br />\n";
 						echo "Soyez patient...</p>\n";
 
 						flush();
@@ -1323,9 +1323,11 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 							while ($num==0) { 
 								$count=mysql_query($sql);
 								$num=mysql_result($count, 0);
-								echo ".";
-								sleep(10);
-								if ($incr++==60) { 
+								$reste=$duree-$count;
+								echo "on attend encore $reste minutes <br>";
+								flush();
+								sleep(60);
+								if ($incr++==$duree) { 
 									echo "<br>Probleme : pas de rapport remonte pour la preparation du clonage. Si le poste emetteur n'a pas reboote en adminstrateur local, relancez le clonage, connectez vous en administrateur local et lancez netinst\\shutdown.cmd";
 									$temoin_erreur="y";
 									break;
