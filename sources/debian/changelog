@@ -1,3 +1,9 @@
+se3-clonage (0.93) UNRELEASED; urgency=low
+
+    * bugs corrections for sysprep Cloning for W7 and W10
+
+ -- Denis Bonnenfant <denis.bonnenfant@se3.diderot.org>  Tue, 05 Fev 2018 14:13:39 +0100
+
 se3-clonage (0.92) UNRELEASED; urgency=low
 
     * Add sysprep Cloning for W7 and W10
