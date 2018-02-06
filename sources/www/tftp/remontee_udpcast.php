@@ -48,11 +48,11 @@ if(mysql_num_rows($res)>0) {
     if ($umode=='pre') {
         $sql.="tache='preparation',";
     }
-    elseif ($umode=='post') {
+    elseif ($umode=='rejoint') {
         $sql.="tache='jonction',";
     }
     else {
-        $sql.="tache='clonage',";
+        $sql.="tache='jonction',";
     }
     if($succes=='y') {
         $sql.="statut='SUCCES',";

@@ -1309,7 +1309,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 						flush();
 
 						// on lance la preparation du poste emetteur
-						$resultat=system("/usr/bin/sudo /usr/share/se3/scripts/integreDomaine.sh clone clone $ip_machine $nom_machine adminse3 $xppass > /dev/null", $retint);
+						$resultat=system("/usr/bin/sudo /usr/share/se3/scripts/integreDomaine.sh clone $nom_machine $ip_machine adminse3 $xppass > /dev/null", $retint);
 		
 						if ($retint) {
 							echo "<span style='color:red;'>ECHEC de la preparation du poste</span><br>\n";
@@ -1323,7 +1323,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 							while ($num==0) { 
 								$count=mysql_query($sql);
 								$num=mysql_result($count, 0);
-								$reste=$duree-$count;
+								$reste=$duree-$incr;
 								echo "on attend encore $reste minutes <br>";
 								flush();
 								sleep(60);
