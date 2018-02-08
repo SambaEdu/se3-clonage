@@ -1302,14 +1302,14 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 						$duree = 40;
 						echo "<p><span style='color:red; font-weight:bold;'>Rappel&nbsp;:</span> Il faut que les postes émetteur et récepteur(s) bootent en priorité sur le réseau (<em>PXE</em>) pour que le redémarrage se fasse sur ".$distrib." et que le clonage s'ensuive.</p>\n";
 
-						echo "<p><span style='font-weight:bold;'>Informations sur la suite&nbsp;:</span> Le poste émetteur va être sorti du domaine, renommé en 'clone' et préparé pour une réintégration après clonage,...<br>\n";
-						echo "L'opération prend de 5 jusqu'à $duree minutes avant que la préparation sysprep  soit effectuée et que la fin de la présente page HTML s'affiche.<br />\n";
+						echo "<p><span style='font-weight:bold;'>Informations sur la suite&nbsp;:</span> Le poste émetteur va être sorti du domaine, renommé de façon aléatoire et préparé pour une réintégration après clonage,...<br>\n";
+						echo "L'opération prend de 5 jusqu'à $duree minutes avant que la préparation sysprep  soit effectuée et que la fin de la présente page HTML s'affiche.<br/>\n";
 						echo "Soyez patient...</p>\n";
 
 						flush();
 
 						// on lance la preparation du poste emetteur
-						$resultat=system("/usr/bin/sudo /usr/share/se3/scripts/integreDomaine.sh clone $nom_machine $ip_machine adminse3 $xppass > /dev/null", $retint);
+						$resultat=system("/usr/bin/sudo /usr/share/se3/scripts/se3sysprep.sh clone $nom_machine $ip_machine adminse3 $xppass 2>&1", $retint);
 		
 						if ($retint) {
 							echo "<span style='color:red;'>ECHEC de la preparation du poste</span><br>\n";
@@ -1328,7 +1328,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 								flush();
 								sleep(60);
 								if ($incr++==$duree) { 
-									echo "<br>Probleme : pas de rapport remonte pour la preparation du clonage. Si le poste emetteur n'a pas reboote en adminstrateur local, relancez le clonage, connectez vous en administrateur local et lancez netinst\\shutdown.cmd";
+									echo "<br>Probleme : pas de rapport remonte pour la preparation du clonage. Si le poste emetteur n'a pas reboote en administrateur local, relancez le clonage, connectez vous en administrateur local et lancez netinst\\shutdown.cmd";
 									$temoin_erreur="y";
 									break;
 								}
@@ -1354,7 +1354,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 					echo "<p>Emetteur: $lig->name (<i>$id_emetteur</i>): \n";
 					if($distrib=='udpcast') {
 						//$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_emetteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
-						$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcast_emetteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$urlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface'", $retour);
+						$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'udpcrlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface'", $retour);
 					}
 					else {
 						//$resultat.=exec("/usr/bin/sudo $chemin/pxe_gen_cfg.sh 'sysresccd_udpcast_emetteur' '$corrige_mac' '$ip_machine' '$nom_machine' '$compr' '$port' '$enableDiskmodule' '$diskmodule' '$netmodule' '$disk' '$auto_reboot' '$udpcparam' '$urlse3' '$num_op' '$dhcp' '$dhcp_iface'", $retour);
@@ -1415,7 +1415,7 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 
 				if($temoin_erreur=="y") {
 					echo "<p>La mise en place a échoué pour l'emetteur.<br />On abandonne avant de générer les fichiers pour les émetteurs.</p>\n et on retablit la configuration initiale";
-					system("/usr/bin/sudo /usr/share/se3/scripts/integreDomaine.sh ldap $nom_machine $ip_machine $mac_machine > /dev/null");
+					system("/usr/bin/sudo /usr/share/se3/scripts/se3sysprep.sh ldap $nom_machine $ip_machine $mac_machine 2>&1");
 					include ("pdp.inc.php");
 					exit();
 				}
@@ -1576,4 +1576,4 @@ else {
 
 // Footer
 include ("pdp.inc.php");
-?>
+?>ast_emetteur' 'mac=$corrige_mac ip=$ip_machine pc=$nom_machine compr=$compr port=$port enableDiskmodule=$enableDiskmodule diskmodule=$diskmodule netmodule=$netmodule disk=$disk auto_reboot=$auto_reboot udpcparam=$udpcparam_temp urlse3=$u
