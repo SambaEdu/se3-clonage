@@ -1306,10 +1306,11 @@ function clavier_up_down_increment(n,e,vmin,vmax){
 						echo "L'opération prend de 5 jusqu'à $duree minutes avant que la préparation sysprep  soit effectuée et que la fin de la présente page HTML s'affiche.<br/>\n";
 						echo "Soyez patient...</p>\n";
 
-						flush();
+						ob_implicit_flush(true); 
+						ob_end_flush();
 
 						// on lance la preparation du poste emetteur
-						$resultat=system("/usr/bin/sudo /usr/share/se3/scripts/se3sysprep.sh clone $nom_machine $ip_machine adminse3 $xppass 2>&1", $retint);
+						$resultat=system("/usr/bin/sudo /usr/share/se3/scripts/sysprep.sh clone $nom_machine $ip_machine $mac_machine adminse3 $xppass 2>&1", $retint);
 		
 						if ($retint) {
 							echo "<span style='color:red;'>ECHEC de la preparation du poste</span><br>\n";
@@ -1416,7 +1417,7 @@ rlse3 num_op=$num_op dhcp=$dhcp dhcp_iface=$dhcp_iface'", $retour);
 
 				if($temoin_erreur=="y") {
 					echo "<p>La mise en place a échoué pour l'emetteur.<br />On abandonne avant de générer les fichiers pour les émetteurs.</p>\n et on retablit la configuration initiale";
-					system("/usr/bin/sudo /usr/share/se3/scripts/se3sysprep.sh ldap $nom_machine $ip_machine $mac_machine 2>&1");
+					system("/usr/bin/sudo /usr/share/se3/scripts/sysprep.sh ldap $nom_machine $ip_machine $mac_machine 2>&1");
 					include ("pdp.inc.php");
 					exit();
 				}
