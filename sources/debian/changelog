@@ -1,3 +1,9 @@
+se3-clonage (0.93.1) UNRELEASED; urgency=low
+
+    * Menu w10 correction - del config page
+
+ -- Franck Molle <franck.molle@sambaedu.org>  Mon, 18 May 2018 15:41:10 +0100
+
 se3-clonage (0.93) UNRELEASED; urgency=low
 
     * bugs corrections for sysprep Cloning for W7 and W10
